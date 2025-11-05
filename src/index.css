@@ -1,0 +1,91 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Global enhancements for better UX */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  * {
+    @apply transition-colors duration-200;
+  }
+
+  body {
+    @apply antialiased;
+  }
+
+  /* Focus states for accessibility */
+  *:focus-visible {
+    @apply outline-none ring-2 ring-primary-500 ring-offset-2;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-gray-100;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-primary-300 rounded-full;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-primary-400;
+  }
+}
+
+@layer components {
+  /* Enhanced button styles */
+  .btn-primary {
+    @apply bg-primary-600 text-white px-8 py-4 rounded-xl font-semibold text-lg;
+    @apply hover:bg-primary-700 hover:shadow-button-hover hover:scale-105;
+    @apply active:scale-95 transition-all duration-200;
+  }
+
+  .btn-secondary {
+    @apply bg-white text-primary-600 px-8 py-4 rounded-xl font-semibold text-lg;
+    @apply hover:bg-gray-50 hover:shadow-card-hover border-2 border-primary-600;
+    @apply active:scale-95 transition-all duration-200;
+  }
+
+  .btn-accent {
+    @apply bg-accent-500 text-white px-8 py-4 rounded-xl font-semibold text-lg;
+    @apply hover:bg-accent-600 hover:shadow-glow-yellow hover:scale-105;
+    @apply active:scale-95 transition-all duration-200;
+  }
+
+  /* Card hover effects */
+  .card-hover {
+    @apply hover:shadow-card-hover hover:scale-105 transition-all duration-300;
+  }
+
+  /* Form enhancements */
+  .form-input {
+    @apply w-full px-6 py-4 border-2 border-gray-200 rounded-xl;
+    @apply focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-200;
+    @apply transition-all duration-200 text-lg;
+  }
+
+  .form-label {
+    @apply block text-lg font-semibold text-gray-700 mb-3;
+  }
+
+  /* Loading states */
+  .loading-spinner {
+    @apply animate-spin rounded-full border-4 border-primary-200 border-t-primary-600;
+  }
+
+  /* Micro-interactions */
+  .hover-lift {
+    @apply hover:-translate-y-2 transition-transform duration-300;
+  }
+
+  .hover-glow {
+    @apply hover:shadow-glow-green transition-shadow duration-300;
+  }
+}
