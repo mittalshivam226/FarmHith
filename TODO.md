@@ -1,40 +1,27 @@
-# Frontend Enhancement TODO List
+# Backend and Database Improvements TODO
 
-## 1. Enhance Tailwind Config
-- [x] Add custom animations (fade-in, slide-up, bounce)
-- [x] Add custom color palette (extended greens, modern gradients)
-- [x] Add custom utilities (glassmorphism, better shadows)
-- [x] Add custom spacing and typography scales
+## 1. Database Security Fixes
+- [ ] Create new migration to fix RLS policies for proper data access control
+- [ ] Add admin authentication setup in Supabase
+- [ ] Restrict report access to authenticated users or verified tracking IDs
 
-## 2. Header Improvements
-- [x] Increase navigation button sizes (px-6 py-3 to px-8 py-4)
-- [x] Add enhanced hover effects (scale, glow, better transitions)
-- [x] Improve mobile menu with slide animations
-- [x] Enhance logo and branding elements
+## 2. API Enhancements
+- [ ] Add input validation to all API functions using Zod schema validation
+- [ ] Enhance error handling with more specific error messages
+- [ ] Add rate limiting considerations (document for future implementation)
 
-## 3. Home Page Modernization
-- [x] Make CTA buttons bigger and more prominent
-- [x] Add enhanced hover effects on service cards
-- [x] Implement smooth counter animations
-- [x] Add modern gradients and improved shadows
-- [x] Enhance testimonial cards with better interactions
+## 3. Admin Functionality
+- [ ] Create admin authentication service
+- [ ] Add admin API functions for managing bookings and reports
+- [ ] Add functions for updating booking/report status
+- [ ] Add contact message management for admins
 
-## 4. BookTest Form Enhancement
-- [x] Increase form input sizes and button dimensions
-- [x] Add animated progress indicator
-- [x] Improve validation feedback with animations
-- [x] Enhance step transitions with smooth effects
+## 4. Code Quality
+- [ ] Add TypeScript types for all API responses
+- [ ] Improve logging in API functions
+- [ ] Add JSDoc comments to all functions
 
-## 5. Global UX Improvements
-- [x] Add smooth scrolling behavior
-- [x] Implement loading states and micro-interactions
-- [x] Improve focus states for accessibility
-- [x] Optimize button sizes and spacing throughout
-- [x] Add subtle animations for better user feedback
-
-## Followup Steps
-- [x] Test responsiveness across devices
-- [x] Verify accessibility improvements
-- [x] Check performance impact of animations
-- [x] Run lighthouse audit for performance metrics
-- [x] Fix ESLint warnings (only 1 remaining warning about fast refresh, which is acceptable)
+## 5. Testing and Validation
+- [ ] Test all API functions with edge cases
+- [ ] Verify database constraints and triggers work correctly
+- [ ] Test RLS policies with different user roles
