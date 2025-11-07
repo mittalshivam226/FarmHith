@@ -66,3 +66,66 @@ export interface BlogPost {
   image: string;
   tags: string[];
 }
+
+// Database types matching Supabase schema
+export interface Booking {
+  id: string;
+  tracking_id: string;
+  package_id: string;
+  farmer_name: string;
+  mobile: string;
+  village: string;
+  district: string;
+  state: string;
+  crop_type: string;
+  pickup_type: 'pickup' | 'drop';
+  address?: string;
+  payment_method: string;
+  payment_status: string;
+  status: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface SoilReport {
+  id: string;
+  booking_id: string;
+  tracking_id: string;
+  status: 'pending' | 'in_process' | 'completed';
+  submitted_date: string;
+  completed_date?: string;
+  ph_level?: number;
+  nitrogen?: number;
+  phosphorus?: number;
+  potassium?: number;
+  organic_carbon?: number;
+  pdf_url?: string;
+  recommendations?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface ContactMessage {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  subject: string;
+  message: string;
+  status: string;
+  created_at: string;
+}
+
+// API Response types
+export interface ApiResponse<T> {
+  data?: T;
+  error?: string;
+  message?: string;
+}
+
+export interface PaginatedResponse<T> {
+  data: T[];
+  count: number;
+  page: number;
+  totalPages: number;
+}

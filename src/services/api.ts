@@ -1,6 +1,6 @@
 import { z } from 'zod'
 import { supabase } from '../lib/supabase'
-import { BookingFormData } from '../types'
+import { BookingFormData, Booking, SoilReport, ContactMessage, ApiResponse } from '../types'
 
 // Validation schemas
 const bookingSubmissionSchema = z.object({
@@ -136,7 +136,7 @@ export const getReportByTrackingId = async (trackingId: string) => {
  * Retrieves all bookings for admin management
  * @returns Array of all booking records
  */
-export const getAllBookings = async () => {
+export const getAllBookings = async (): Promise<Booking[]> => {
   const { data: bookings, error } = await supabase
     .from('bookings')
     .select('*')
@@ -147,7 +147,7 @@ export const getAllBookings = async () => {
     throw new Error('Failed to fetch bookings.')
   }
 
-  return bookings
+  return bookings as Booking[]
 }
 
 /**
@@ -157,8 +157,8 @@ export const getAllBookings = async () => {
  * @param paymentStatus - New payment status (optional)
  * @returns Updated booking record
  */
-export const updateBookingStatus = async (id: string, status: string, paymentStatus?: string) => {
-  const updateData: any = { status }
+export const updateBookingStatus = async (id: string, status: string, paymentStatus?: string): Promise<Booking> => {
+  const updateData: Partial<Booking> = { status }
   if (paymentStatus) updateData.payment_status = paymentStatus
 
   const { data: booking, error } = await supabase
@@ -173,14 +173,14 @@ export const updateBookingStatus = async (id: string, status: string, paymentSta
     throw new Error('Failed to update booking.')
   }
 
-  return booking
+  return booking as Booking
 }
 
 /**
  * Retrieves all reports for admin management
  * @returns Array of all report records
  */
-export const getAllReports = async () => {
+export const getAllReports = async (): Promise<SoilReport[]> => {
   const { data: reports, error } = await supabase
     .from('reports')
     .select('*')
@@ -191,7 +191,7 @@ export const getAllReports = async () => {
     throw new Error('Failed to fetch reports.')
   }
 
-  return reports
+  return reports as SoilReport[]
 }
 
 /**
@@ -199,7 +199,7 @@ export const getAllReports = async () => {
  * @param reportData - Report data
  * @returns Updated or created report record
  */
-export const upsertReport = async (reportData: any) => {
+export const upsertReport = async (reportData: Partial<SoilReport>): Promise<SoilReport> => {
   const { data: report, error } = await supabase
     .from('reports')
     .upsert(reportData)
@@ -211,5 +211,5 @@ export const upsertReport = async (reportData: any) => {
     throw new Error('Failed to save report.')
   }
 
-  return report
+  return report as SoilReport
 }
