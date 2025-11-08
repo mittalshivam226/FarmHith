@@ -116,6 +116,32 @@ export interface ContactMessage {
   created_at: string;
 }
 
+// User Profile types
+export interface UserProfile {
+  id: string;
+  user_id: string;
+  name: string;
+  email?: string;
+  phone: string;
+  village?: string;
+  district?: string;
+  state?: string;
+  address?: string;
+  farm_details?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface UserProfileFormData {
+  name: string;
+  email?: string;
+  village?: string;
+  district?: string;
+  state?: string;
+  address?: string;
+  farm_details?: string;
+}
+
 // API Response types
 export interface ApiResponse<T> {
   data?: T;

@@ -1,8 +1,9 @@
-# Profile Page Implementation
+# User Profile Implementation
 
 ## Tasks
-- [x] Create `src/pages/Profile.tsx` component with user information display
-- [x] Add 'profile' case to `src/App.tsx` renderPage switch
-- [x] Add 'Profile' navigation item to `src/components/Header.tsx` navItems (authenticated users only)
-- [x] Test profile page navigation and display (dev server running on http://localhost:5174)
-- [x] Add authentication guard to redirect unauthenticated users
+- [ ] Create user_profiles table migration
+- [ ] Add UserProfile interface to types
+- [ ] Modify Login.tsx to include profile collection step after OTP verification
+- [ ] Update auth.ts to handle profile creation/update
+- [ ] Update Profile.tsx to display collected information
+- [ ] Test the complete flow

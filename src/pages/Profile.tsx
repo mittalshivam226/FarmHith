@@ -1,6 +1,8 @@
-import { User, Phone, Calendar, MapPin, FileText, Settings } from 'lucide-react';
+import { User, Phone, Calendar, MapPin, FileText, Settings, Mail } from 'lucide-react';
 import { useNavigation } from '../context/NavigationContext';
 import { useEffect, useState } from 'react';
+import { getCurrentUserProfile } from '../services/auth';
+import type { UserProfile } from '../types';
 
 interface BookingItem {
   id: string;
@@ -13,12 +15,27 @@ interface BookingItem {
 const Profile = () => {
   const { user, isAuthenticated, navigateTo } = useNavigation();
   const [recentBookings, setRecentBookings] = useState<BookingItem[]>([]);
+  const [profile, setProfile] = useState<UserProfile | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (!isAuthenticated) {
       navigateTo('login');
       return;
     }
+
+    const fetchProfile = async () => {
+      try {
+        const userProfile = await getCurrentUserProfile();
+        setProfile(userProfile);
+      } catch (error) {
+        console.error('Failed to fetch profile:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProfile();
 
     // TODO: Fetch user's recent bookings from API
     // For now, showing placeholder data
@@ -42,6 +59,17 @@ const Profile = () => {
 
   if (!isAuthenticated || !user) {
     return null;
+  }
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-primary-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading profile...</p>
+        </div>
+      </div>
+    );
   }
 
   const getStatusColor = (status: string) => {
@@ -81,7 +109,7 @@ const Profile = () => {
             </div>
             <div className="flex-1">
               <h1 className="text-3xl font-bold text-gray-900 mb-2">
-                Welcome back!
+                Welcome back, {profile?.name || 'User'}!
               </h1>
               <p className="text-lg text-gray-600">
                 Manage your account and view your soil testing history
@@ -101,14 +129,48 @@ const Profile = () => {
 
               <div className="space-y-4">
                 <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-xl">
+                  <User size={20} className="text-primary-600" />
+                  <div>
+                    <p className="text-sm text-gray-600">Full Name</p>
+                    <p className="font-semibold text-gray-900">
+                      {profile?.name || 'Not provided'}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-xl">
                   <Phone size={20} className="text-primary-600" />
                   <div>
                     <p className="text-sm text-gray-600">Phone Number</p>
                     <p className="font-semibold text-gray-900">
-                      {user.phone || 'Not provided'}
+                      {profile?.phone || user.phone || 'Not provided'}
                     </p>
                   </div>
                 </div>
+
+                {profile?.email && (
+                  <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-xl">
+                    <Mail size={20} className="text-primary-600" />
+                    <div>
+                      <p className="text-sm text-gray-600">Email Address</p>
+                      <p className="font-semibold text-gray-900">
+                        {profile.email}
+                      </p>
+                    </div>
+                  </div>
+                )}
+
+                {(profile?.village || profile?.district || profile?.state) && (
+                  <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-xl">
+                    <MapPin size={20} className="text-primary-600" />
+                    <div>
+                      <p className="text-sm text-gray-600">Location</p>
+                      <p className="font-semibold text-gray-900">
+                        {[profile.village, profile.district, profile.state].filter(Boolean).join(', ')}
+                      </p>
+                    </div>
+                  </div>
+                )}
 
                 <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-xl">
                   <Calendar size={20} className="text-primary-600" />

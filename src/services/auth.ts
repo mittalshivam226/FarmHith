@@ -1,6 +1,7 @@
 import { supabase } from '../lib/supabase'
 import { logger } from '../utils/logger'
 import type { User, Session } from '@supabase/supabase-js'
+import type { UserProfile, UserProfileFormData } from '../types'
 
 export interface UserCredentials {
   phone: string
@@ -230,7 +231,97 @@ export const verifyPhoneOTP = async (credentials: UserCredentials): Promise<User
   }
 }
 
+/**
+ * Creates or updates user profile after authentication
+ * @param profileData - User profile information
+ * @returns Created/updated user profile
+ * @throws Error if profile creation/update fails
+ */
+export const createOrUpdateUserProfile = async (profileData: UserProfileFormData): Promise<UserProfile> => {
+  try {
+    const { data: { user }, error: authError } = await supabase.auth.getUser()
 
+    if (authError || !user) {
+      logger.error('User not authenticated for profile creation', { error: authError?.message })
+      throw new Error('User not authenticated')
+    }
+
+    const { data, error } = await supabase
+      .from('user_profiles')
+      .upsert({
+        user_id: user.id,
+        name: profileData.name,
+        email: profileData.email,
+        phone: user.phone || '',
+        village: profileData.village,
+        district: profileData.district,
+        state: profileData.state,
+        address: profileData.address,
+        farm_details: profileData.farm_details,
+      }, {
+        onConflict: 'user_id'
+      })
+      .select()
+      .single()
+
+    if (error) {
+      logger.error('User profile creation/update failed', {
+        error: error.message,
+        userId: user.id,
+      })
+      throw new Error('Failed to save profile')
+    }
+
+    logger.info('User profile created/updated successfully', {
+      userId: user.id,
+      profileId: data.id,
+    })
+
+    return data
+  } catch (error) {
+    logger.error('User profile creation/update error', { error: error instanceof Error ? error.message : String(error) })
+    throw error
+  }
+}
+
+/**
+ * Gets the current user's profile
+ * @returns User profile or null if not found
+ * @throws Error if query fails
+ */
+export const getCurrentUserProfile = async (): Promise<UserProfile | null> => {
+  try {
+    const { data: { user }, error: authError } = await supabase.auth.getUser()
+
+    if (authError || !user) {
+      logger.error('User not authenticated for profile fetch', { error: authError?.message })
+      return null
+    }
+
+    const { data, error } = await supabase
+      .from('user_profiles')
+      .select('*')
+      .eq('user_id', user.id)
+      .single()
+
+    if (error) {
+      if (error.code === 'PGRST116') {
+        // No profile found
+        return null
+      }
+      logger.error('User profile fetch failed', {
+        error: error.message,
+        userId: user.id,
+      })
+      throw new Error('Failed to fetch profile')
+    }
+
+    return data
+  } catch (error) {
+    logger.error('User profile fetch error', { error: error instanceof Error ? error.message : String(error) })
+    throw error
+  }
+}
 
 /**
  * Signs out the current user
