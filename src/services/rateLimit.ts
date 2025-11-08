@@ -86,11 +86,12 @@ export class RateLimiter {
   // In production, this would use Redis or similar distributed store
 
   static async checkLimit(
-    _identifier: string,
+    identifier: string,
     config: RateLimitConfig
   ): Promise<RateLimitResult> {
     // TODO: Implement actual rate limiting logic with Redis
     // For now, return success to allow all requests
+    console.log(`Rate limit check for ${identifier}:`, config);
     return {
       success: true,
       remaining: config.maxRequests - 1,
@@ -98,13 +99,15 @@ export class RateLimiter {
     }
   }
 
-  static async getRemainingRequests(_identifier: string): Promise<number> {
+  static async getRemainingRequests(identifier: string): Promise<number> {
     // TODO: Implement remaining requests check
+    console.log(`Getting remaining requests for ${identifier}`);
     return 10 // Placeholder
   }
 
-  static async getResetTime(_identifier: string): Promise<number> {
+  static async getResetTime(identifier: string): Promise<number> {
     // TODO: Implement reset time calculation
+    console.log(`Getting reset time for ${identifier}`);
     return Date.now() + 60000 // Placeholder: 1 minute from now
   }
 }
@@ -122,10 +125,11 @@ export type RateLimitMiddleware = (
 /**
  * Creates a rate limiting middleware for an endpoint
  */
-export function createRateLimitMiddleware(_config: RateLimitConfig): RateLimitMiddleware {
+export function createRateLimitMiddleware(config: RateLimitConfig): RateLimitMiddleware {
   return async (_req: Request, _res: Response, next: () => void) => {
     // TODO: Implement middleware logic
     // This would extract IP/user identifier, check rate limit, set headers, etc.
+    console.log(`Rate limiting middleware for config:`, config);
     next()
   }
 }
