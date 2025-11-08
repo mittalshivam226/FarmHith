@@ -1,4 +1,4 @@
-import { Sprout, Beaker, TrendingUp, Users, Leaf, Award, ArrowRight, CheckCircle } from 'lucide-react';
+import { Beaker, TrendingUp, Users, Leaf, Award, ArrowRight, CheckCircle } from 'lucide-react';
 import { useNavigation } from '../context/NavigationContext';
 import { TESTIMONIALS, PARTNERS, STATS } from '../utils/constants';
 import { useEffect, useState } from 'react';
@@ -95,9 +95,16 @@ const Home = () => {
 
             <div className="relative">
               <div className="aspect-square bg-gradient-to-br from-green-400 to-green-600 rounded-3xl shadow-2xl overflow-hidden">
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <Sprout size={200} className="text-white opacity-20" />
-                </div>
+                <video
+                  className="w-full h-full object-cover"
+                  autoPlay
+                  muted
+                  loop
+                  playsInline
+                >
+                  <source src="/MEDIA/6555a60f7a7674fa7ece69c3978a6857.mp4" type="video/mp4" />
+                  Your browser does not support the video tag.
+                </video>
                 <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent flex items-end justify-center p-8">
                   <p className="text-white text-center text-xl font-semibold">
                     Empowering 500+ Villages Across India
