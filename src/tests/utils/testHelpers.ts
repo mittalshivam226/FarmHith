@@ -33,7 +33,9 @@ export const mockSupabase = {
     signOut: vi.fn(),
     getSession: vi.fn(),
     getUser: vi.fn(),
-    refreshSession: vi.fn()
+    refreshSession: vi.fn(),
+    signInWithOtp: vi.fn(),
+    verifyOtp: vi.fn()
   }
 }
 

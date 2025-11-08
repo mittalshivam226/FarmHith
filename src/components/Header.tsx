@@ -12,6 +12,7 @@ const Header = () => {
     { id: 'services', label: 'Services', labelHindi: 'सेवाएं' },
     { id: 'book-test', label: 'Book Test', labelHindi: 'टेस्ट बुक करें', highlight: true },
     { id: 'reports', label: 'My Reports', labelHindi: 'मेरी रिपोर्ट' },
+    { id: 'profile', label: 'Profile', labelHindi: 'प्रोफ़ाइल', authenticated: true },
     { id: 'education', label: 'Learn', labelHindi: 'सीखें' },
     { id: 'blog', label: 'Blog', labelHindi: 'ब्लॉग' },
     { id: 'contact', label: 'Contact', labelHindi: 'संपर्क' },
@@ -37,7 +38,9 @@ const Header = () => {
           </div>
 
           <nav className="hidden lg:flex items-center gap-2">
-            {navItems.map((item) => (
+            {navItems
+              .filter((item) => !item.authenticated || isAuthenticated)
+              .map((item) => (
               <button
                 key={item.id}
                 onClick={() => navigateTo(item.id)}
@@ -86,7 +89,9 @@ const Header = () => {
       {mobileMenuOpen && (
         <div className="lg:hidden bg-white/95 backdrop-blur-md border-t border-gray-200 animate-slide-down shadow-lg">
           <nav className="px-6 py-6 space-y-3">
-            {navItems.map((item) => (
+            {navItems
+              .filter((item) => !item.authenticated || isAuthenticated)
+              .map((item) => (
               <button
                 key={item.id}
                 onClick={() => {

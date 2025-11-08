@@ -12,7 +12,7 @@ vi.mock('../../utils/logger', () => ({
 }))
 
 // Import after mocks
-import { signInAdmin, signOutAdmin, getCurrentAdminSession } from '../../services/auth'
+import { signInAdmin, signOutAdmin, getCurrentAdminSession, sendPhoneOTP, verifyPhoneOTP } from '../../services/auth'
 
 describe('Auth Service Tests', () => {
   beforeEach(() => {
@@ -98,6 +98,83 @@ describe('Auth Service Tests', () => {
       const result = await getCurrentAdminSession()
 
       expect(result).toBeNull()
+    })
+  })
+
+  describe('sendPhoneOTP', () => {
+    it('should send OTP successfully', async () => {
+      const phoneData = { phone: '+1234567890' }
+
+      mockSupabase.auth.signInWithOtp.mockResolvedValue({
+        error: null
+      })
+
+      await expect(sendPhoneOTP(phoneData)).resolves.toBeUndefined()
+      expect(mockLogger.info).toHaveBeenCalledWith(
+        'OTP sent successfully',
+        { phone: phoneData.phone }
+      )
+    })
+
+    it('should handle OTP sending errors', async () => {
+      const phoneData = { phone: '+1234567890' }
+
+      mockSupabase.auth.signInWithOtp.mockResolvedValue({
+        error: { message: 'Invalid phone number' }
+      })
+
+      await expect(sendPhoneOTP(phoneData)).rejects.toThrow('Failed to send OTP')
+      expect(mockLogger.error).toHaveBeenCalledWith(
+        'Phone OTP sending failed',
+        expect.objectContaining({
+          error: 'Invalid phone number',
+          phone: phoneData.phone
+        })
+      )
+    })
+  })
+
+  describe('verifyPhoneOTP', () => {
+    it('should verify OTP successfully', async () => {
+      const credentials = { phone: '+1234567890', otp: '123456' }
+      const mockResponse = {
+        user: { id: '123', phone: credentials.phone },
+        session: { access_token: 'token' }
+      }
+
+      mockSupabase.auth.verifyOtp.mockResolvedValue({
+        data: mockResponse,
+        error: null
+      })
+
+      const result = await verifyPhoneOTP(credentials)
+
+      expect(result).toEqual(mockResponse)
+      expect(mockLogger.info).toHaveBeenCalledWith(
+        'User signed in successfully with phone',
+        expect.objectContaining({
+          userId: '123',
+          phone: credentials.phone
+        })
+      )
+    })
+
+    it('should handle invalid OTP', async () => {
+      const credentials = { phone: '+1234567890', otp: 'wrongotp' }
+
+      mockSupabase.auth.verifyOtp.mockResolvedValue({
+        data: { user: null, session: null },
+        error: { message: 'Invalid token' }
+      })
+
+      await expect(verifyPhoneOTP(credentials)).rejects.toThrow('Invalid OTP')
+      expect(mockLogger.error).toHaveBeenCalledWith(
+        'Phone OTP verification failed',
+        expect.objectContaining({
+          error: 'Invalid token',
+          phone: credentials.phone
+        })
+      )
     })
   })
 })

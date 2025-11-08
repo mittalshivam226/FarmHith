@@ -12,6 +12,7 @@ import Partners from './pages/Partners';
 import Contact from './pages/Contact';
 import Legal from './pages/Legal';
 import Login from './pages/Login';
+import Profile from './pages/Profile';
 
 function AppContent() {
   const { currentPage } = useNavigation();
@@ -38,6 +39,8 @@ function AppContent() {
         return <Contact />;
       case 'login':
         return <Login />;
+      case 'profile':
+        return <Profile />;
       case 'privacy':
         return <Legal type="privacy" />;
       case 'terms':
