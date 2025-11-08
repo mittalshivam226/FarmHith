@@ -1,10 +1,10 @@
-import { Menu, X } from 'lucide-react';
+import { Menu, X, LogIn, LogOut } from 'lucide-react';
 import { useState } from 'react';
 import { useNavigation } from '../context/NavigationContext';
 
 const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const { currentPage, navigateTo } = useNavigation();
+  const { currentPage, navigateTo, isAuthenticated, logout } = useNavigation();
 
   const navItems = [
     { id: 'home', label: 'Home', labelHindi: 'होम' },
@@ -54,6 +54,26 @@ const Header = () => {
             ))}
           </nav>
 
+          <div className="hidden lg:flex items-center gap-4">
+            {isAuthenticated ? (
+              <button
+                onClick={logout}
+                className="flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-xl hover:bg-red-700 transition-all duration-300 hover-lift"
+              >
+                <LogOut size={18} />
+                Logout
+              </button>
+            ) : (
+              <button
+                onClick={() => navigateTo('login')}
+                className="flex items-center gap-2 px-4 py-2 bg-primary-600 text-white rounded-xl hover:bg-primary-700 transition-all duration-300 hover-lift"
+              >
+                <LogIn size={18} />
+                Login
+              </button>
+            )}
+          </div>
+
           <button
             className="lg:hidden p-3 rounded-xl hover:bg-gray-100 hover-lift transition-all duration-300"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -85,6 +105,32 @@ const Header = () => {
                 <div className="text-sm opacity-75 mt-1">{item.labelHindi}</div>
               </button>
             ))}
+
+            <div className="border-t border-gray-200 pt-4 mt-4">
+              {isAuthenticated ? (
+                <button
+                  onClick={() => {
+                    logout();
+                    setMobileMenuOpen(false);
+                  }}
+                  className="w-full flex items-center gap-3 px-6 py-4 rounded-xl text-base font-semibold text-red-600 hover:bg-red-50 transition-all duration-300 hover-lift"
+                >
+                  <LogOut size={20} />
+                  Logout
+                </button>
+              ) : (
+                <button
+                  onClick={() => {
+                    navigateTo('login');
+                    setMobileMenuOpen(false);
+                  }}
+                  className="w-full flex items-center gap-3 px-6 py-4 rounded-xl text-base font-semibold text-primary-600 hover:bg-primary-50 transition-all duration-300 hover-lift"
+                >
+                  <LogIn size={20} />
+                  Login
+                </button>
+              )}
+            </div>
           </nav>
         </div>
       )}

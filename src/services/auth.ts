@@ -2,6 +2,21 @@ import { supabase } from '../lib/supabase'
 import { logger } from '../utils/logger'
 import type { User, Session } from '@supabase/supabase-js'
 
+export interface UserCredentials {
+  phone: string
+  password?: string
+  otp?: string
+}
+
+export interface PhoneSignInData {
+  phone: string
+}
+
+export interface UserSession {
+  user: User
+  session: Session
+}
+
 export interface AdminCredentials {
   email: string
   password: string
@@ -146,6 +161,157 @@ export const refreshAdminSession = async (): Promise<AdminSession> => {
     }
   } catch (error) {
     logger.error('Admin session refresh error', { error: error instanceof Error ? error.message : String(error) })
+    throw error
+  }
+}
+
+/**
+ * Sends OTP to phone number for sign in
+ * @param phoneData - Phone number
+ * @throws Error if OTP sending fails
+ */
+export const sendPhoneOTP = async (phoneData: PhoneSignInData): Promise<void> => {
+  try {
+    const { error } = await supabase.auth.signInWithOtp({
+      phone: phoneData.phone,
+    })
+
+    if (error) {
+      logger.error('Phone OTP sending failed', {
+        error: error.message,
+        phone: phoneData.phone,
+      })
+      throw new Error('Failed to send OTP')
+    }
+
+    logger.info('OTP sent successfully', {
+      phone: phoneData.phone,
+    })
+  } catch (error) {
+    logger.error('Phone OTP sending error', { error: error instanceof Error ? error.message : String(error) })
+    throw error
+  }
+}
+
+/**
+ * Verifies OTP and signs in user
+ * @param credentials - Phone and OTP
+ * @returns User session information
+ * @throws Error if verification fails
+ */
+export const verifyPhoneOTP = async (credentials: UserCredentials): Promise<UserSession> => {
+  try {
+    const { data, error } = await supabase.auth.verifyOtp({
+      phone: credentials.phone,
+      token: credentials.otp!,
+      type: 'sms',
+    })
+
+    if (error) {
+      logger.error('Phone OTP verification failed', {
+        error: error.message,
+        phone: credentials.phone,
+      })
+      throw new Error('Invalid OTP')
+    }
+
+    logger.info('User signed in successfully with phone', {
+      userId: data.user!.id,
+      phone: credentials.phone,
+    })
+
+    return {
+      user: data.user!,
+      session: data.session!,
+    }
+  } catch (error) {
+    logger.error('Phone OTP verification error', { error: error instanceof Error ? error.message : String(error) })
+    throw error
+  }
+}
+
+
+
+/**
+ * Signs out the current user
+ * @throws Error if sign-out fails
+ */
+export const signOutUser = async (): Promise<void> => {
+  try {
+    const { error } = await supabase.auth.signOut()
+
+    if (error) {
+      logger.error('User sign-out failed', { error: error.message })
+      throw new Error('Failed to sign out')
+    }
+
+    logger.info('User signed out successfully')
+  } catch (error) {
+    logger.error('User sign-out error', { error: error instanceof Error ? error.message : String(error) })
+    throw error
+  }
+}
+
+/**
+ * Gets the current user session
+ * @returns Current user session or null if not authenticated
+ */
+export const getCurrentUserSession = async (): Promise<UserSession | null> => {
+  try {
+    const { data: { session }, error } = await supabase.auth.getSession()
+
+    if (error) {
+      logger.error('Failed to get user session', { error: error.message })
+      return null
+    }
+
+    if (!session) {
+      return null
+    }
+
+    return {
+      user: session.user,
+      session,
+    }
+  } catch (error) {
+    logger.error('Error getting current user session', { error: error instanceof Error ? error.message : String(error) })
+    return null
+  }
+}
+
+/**
+ * Checks if the current user is authenticated
+ * @returns True if user is authenticated, false otherwise
+ */
+export const isUserAuthenticated = async (): Promise<boolean> => {
+  const session = await getCurrentUserSession()
+  return session !== null
+}
+
+/**
+ * Refreshes the user session
+ * @returns Refreshed user session
+ * @throws Error if refresh fails
+ */
+export const refreshUserSession = async (): Promise<UserSession> => {
+  try {
+    const { data, error } = await supabase.auth.refreshSession()
+
+    if (error) {
+      logger.error('User session refresh failed', { error: error.message })
+      throw new Error('Failed to refresh session')
+    }
+
+    logger.info('User session refreshed successfully', {
+      userId: data.user!.id,
+    })
+
+    return {
+      user: data.user!,
+      session: data.session!,
+    }
+  } catch (error) {
+    logger.error('User session refresh error', { error: error instanceof Error ? error.message : String(error) })
     throw error
   }
 }

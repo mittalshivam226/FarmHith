@@ -11,6 +11,7 @@ import Blog from './pages/Blog';
 import Partners from './pages/Partners';
 import Contact from './pages/Contact';
 import Legal from './pages/Legal';
+import Login from './pages/Login';
 
 function AppContent() {
   const { currentPage } = useNavigation();
@@ -35,6 +36,8 @@ function AppContent() {
         return <Partners />;
       case 'contact':
         return <Contact />;
+      case 'login':
+        return <Login />;
       case 'privacy':
         return <Legal type="privacy" />;
       case 'terms':
