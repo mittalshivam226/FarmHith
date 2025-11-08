@@ -7,22 +7,22 @@ const Services = () => {
 
   return (
     <div className="min-h-screen">
-      <section className="bg-gradient-to-br from-green-600 to-green-800 text-white py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="bg-gradient-to-br from-green-600 to-green-800 text-white py-24">
+        <div className="w-full px-6 sm:px-8 lg:px-12">
           <div className="text-center max-w-3xl mx-auto">
-            <h1 className="text-5xl font-bold mb-6">Our Services | हमारी सेवाएं</h1>
-            <p className="text-xl text-green-100 leading-relaxed">
+            <h1 className="text-6xl font-bold mb-6">Our Services | हमारी सेवाएं</h1>
+            <p className="text-2xl text-green-100 leading-relaxed">
               Comprehensive soil health solutions for sustainable farming and increased productivity
             </p>
           </div>
         </div>
       </section>
 
-      <section className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="py-24 bg-white">
+        <div className="w-full px-6 sm:px-8 lg:px-12">
           <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">Soil Testing Packages</h2>
-            <p className="text-xl text-gray-600">मिट्टी परीक्षण पैकेज | Choose the right test for your farm</p>
+            <h2 className="text-5xl font-bold text-gray-900 mb-4">Soil Testing Packages</h2>
+            <p className="text-2xl text-gray-600">मिट्टी परीक्षण पैकेज | Choose the right test for your farm</p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-8">
@@ -41,13 +41,13 @@ const Services = () => {
                   </div>
                 )}
                 <div className="bg-gradient-to-br from-green-50 to-yellow-50 p-8">
-                  <h3 className="text-2xl font-bold text-gray-900 mb-2">{pkg.name}</h3>
-                  <p className="text-lg text-gray-600 mb-4">{pkg.nameHindi}</p>
+                  <h3 className="text-3xl font-bold text-gray-900 mb-2">{pkg.name}</h3>
+                  <p className="text-xl text-gray-600 mb-4">{pkg.nameHindi}</p>
                   <div className="flex items-baseline gap-2 mb-6">
-                    <span className="text-5xl font-bold text-green-600">₹{pkg.price}</span>
-                    <span className="text-gray-600">per test</span>
+                    <span className="text-6xl font-bold text-green-600">₹{pkg.price}</span>
+                    <span className="text-lg text-gray-600">per test</span>
                   </div>
-                  <p className="text-gray-700 mb-6">{pkg.description}</p>
+                  <p className="text-gray-700 mb-6 text-lg">{pkg.description}</p>
                   <div className="bg-white rounded-lg p-4 mb-6">
                     <p className="text-sm font-semibold text-gray-600 mb-2">
                       Turnaround Time: <span className="text-green-600">{pkg.turnaroundDays} days</span>
@@ -69,8 +69,8 @@ const Services = () => {
                   <ul className="space-y-3">
                     {pkg.parameters.map((param, index) => (
                       <li key={index} className="flex items-start gap-3">
-                        <Check size={20} className="text-green-600 flex-shrink-0 mt-0.5" />
-                        <span className="text-gray-700">{param}</span>
+                        <Check size={24} className="text-green-600 flex-shrink-0 mt-0.5" />
+                        <span className="text-gray-700 text-lg">{param}</span>
                       </li>
                     ))}
                   </ul>
@@ -81,19 +81,19 @@ const Services = () => {
         </div>
       </section>
 
-      <section className="py-20 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="py-24 bg-gray-50">
+        <div className="w-full px-6 sm:px-8 lg:px-12">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div>
               <div className="inline-block bg-yellow-100 px-4 py-2 rounded-full mb-6">
-                <span className="text-yellow-800 font-semibold">Turn Waste into Wealth</span>
+                <span className="text-yellow-800 font-semibold text-lg">Turn Waste into Wealth</span>
               </div>
-              <h2 className="text-4xl font-bold text-gray-900 mb-6">
+              <h2 className="text-5xl font-bold text-gray-900 mb-6">
                 <Leaf className="inline-block mb-2 text-green-600" size={40} />
                 <br />
                 Residue Sell Portal
               </h2>
-              <p className="text-xl text-gray-700 leading-relaxed mb-6">
+              <p className="text-2xl text-gray-700 leading-relaxed mb-6">
                 फसल अवशेष बेचें और कमाएं | Stop burning crop residue and start earning from it
               </p>
               <div className="space-y-4 mb-8">
@@ -105,8 +105,8 @@ const Services = () => {
                   'Earn ₹2-5 per kg depending on residue type and quantity',
                 ].map((benefit, index) => (
                   <div key={index} className="flex items-start gap-3">
-                    <Check size={24} className="text-green-600 flex-shrink-0 mt-1" />
-                    <p className="text-gray-700 text-lg">{benefit}</p>
+                    <Check size={28} className="text-green-600 flex-shrink-0 mt-1" />
+                    <p className="text-gray-700 text-xl">{benefit}</p>
                   </div>
                 ))}
               </div>
@@ -116,49 +116,49 @@ const Services = () => {
             </div>
             <div className="bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-2xl p-12 text-center shadow-2xl">
               <div className="bg-white/20 backdrop-blur-sm rounded-xl p-8 mb-8">
-                <h3 className="text-4xl font-bold text-white mb-2">₹12,000</h3>
-                <p className="text-white text-lg">Average earnings per acre of paddy stubble</p>
+                <h3 className="text-5xl font-bold text-white mb-2">₹12,000</h3>
+                <p className="text-white text-xl">Average earnings per acre of paddy stubble</p>
               </div>
               <div className="bg-white/20 backdrop-blur-sm rounded-xl p-8">
-                <h3 className="text-4xl font-bold text-white mb-2">Zero</h3>
-                <p className="text-white text-lg">Air pollution from burning when you sell residue</p>
+                <h3 className="text-5xl font-bold text-white mb-2">Zero</h3>
+                <p className="text-white text-xl">Air pollution from burning when you sell residue</p>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      <section className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="py-24 bg-white">
+        <div className="w-full px-6 sm:px-8 lg:px-12">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div className="bg-gradient-to-br from-green-400 to-green-600 rounded-2xl p-12 text-white shadow-2xl">
               <Users size={80} className="mb-6" />
-              <h3 className="text-3xl font-bold mb-4">Expert Agronomist Support</h3>
-              <p className="text-xl text-green-100 mb-6">
+              <h3 className="text-4xl font-bold mb-4">Expert Agronomist Support</h3>
+              <p className="text-2xl text-green-100 mb-6">
                 Get personalized advice from certified agricultural experts
               </p>
               <div className="space-y-4">
                 <div className="bg-white/20 backdrop-blur-sm rounded-lg p-4">
-                  <p className="font-semibold text-lg">📞 Phone Consultation</p>
-                  <p className="text-green-100">30-min call: ₹499</p>
+                  <p className="font-semibold text-xl">📞 Phone Consultation</p>
+                  <p className="text-green-100 text-lg">30-min call: ₹499</p>
                 </div>
                 <div className="bg-white/20 backdrop-blur-sm rounded-lg p-4">
-                  <p className="font-semibold text-lg">🚜 Farm Visit</p>
-                  <p className="text-green-100">On-site inspection: ₹2,999</p>
+                  <p className="font-semibold text-xl">🚜 Farm Visit</p>
+                  <p className="text-green-100 text-lg">On-site inspection: ₹2,999</p>
                 </div>
                 <div className="bg-white/20 backdrop-blur-sm rounded-lg p-4">
-                  <p className="font-semibold text-lg">📋 Annual Plan</p>
-                  <p className="text-green-100">Full-season support: ₹9,999</p>
+                  <p className="font-semibold text-xl">📋 Annual Plan</p>
+                  <p className="text-green-100 text-lg">Full-season support: ₹9,999</p>
                 </div>
               </div>
             </div>
             <div>
-              <h2 className="text-4xl font-bold text-gray-900 mb-6">
+              <h2 className="text-5xl font-bold text-gray-900 mb-6">
                 <Users className="inline-block mb-2 text-green-600" size={40} />
                 <br />
                 Farm Advisory Services
               </h2>
-              <p className="text-xl text-gray-700 leading-relaxed mb-6">
+              <p className="text-2xl text-gray-700 leading-relaxed mb-6">
                 कृषि सलाहकार सेवाएं | Personalized guidance based on your soil report
               </p>
               <div className="space-y-4 mb-8">
@@ -171,8 +171,8 @@ const Services = () => {
                   'Market linkage for quality inputs',
                 ].map((service, index) => (
                   <div key={index} className="flex items-start gap-3">
-                    <Check size={24} className="text-green-600 flex-shrink-0 mt-1" />
-                    <p className="text-gray-700 text-lg">{service}</p>
+                    <Check size={28} className="text-green-600 flex-shrink-0 mt-1" />
+                    <p className="text-gray-700 text-xl">{service}</p>
                   </div>
                 ))}
               </div>
@@ -185,15 +185,15 @@ const Services = () => {
         </div>
       </section>
 
-      <section className="py-20 bg-gradient-to-br from-green-600 to-green-800 text-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="py-24 bg-gradient-to-br from-green-600 to-green-800 text-white">
+        <div className="w-full px-6 sm:px-8 lg:px-12">
           <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold mb-4">Lab Registration Portal</h2>
-            <p className="text-xl text-green-100">Partner with us to serve farmers in your region</p>
+            <h2 className="text-5xl font-bold mb-4">Lab Registration Portal</h2>
+            <p className="text-2xl text-green-100">Partner with us to serve farmers in your region</p>
           </div>
 
           <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 max-w-3xl mx-auto">
-            <h3 className="text-2xl font-bold mb-6">Benefits for Partner Labs</h3>
+            <h3 className="text-3xl font-bold mb-6">Benefits for Partner Labs</h3>
             <div className="grid md:grid-cols-2 gap-6">
               {[
                 'Steady stream of soil samples',
@@ -204,8 +204,8 @@ const Services = () => {
                 'Brand visibility on our platform',
               ].map((benefit, index) => (
                 <div key={index} className="flex items-start gap-3">
-                  <Check size={24} className="text-green-300 flex-shrink-0 mt-1" />
-                  <p className="text-white">{benefit}</p>
+                  <Check size={28} className="text-green-300 flex-shrink-0 mt-1" />
+                  <p className="text-white text-lg">{benefit}</p>
                 </div>
               ))}
             </div>
@@ -218,13 +218,13 @@ const Services = () => {
         </div>
       </section>
 
-      <section className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="py-24 bg-white">
+        <div className="w-full px-6 sm:px-8 lg:px-12">
           <div className="bg-gradient-to-r from-green-100 to-yellow-100 rounded-2xl p-12 text-center border-2 border-green-200">
-            <h2 className="text-4xl font-bold text-gray-900 mb-6">
+            <h2 className="text-5xl font-bold text-gray-900 mb-6">
               Ready to Start Your Soil Health Journey?
             </h2>
-            <p className="text-xl text-gray-700 mb-8">
+            <p className="text-2xl text-gray-700 mb-8">
               Join thousands of farmers who trust Farmहित for accurate testing and expert advice
             </p>
             <button

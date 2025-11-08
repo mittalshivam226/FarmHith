@@ -25,12 +25,12 @@ const About = () => {
   return (
     <div className="min-h-screen">
       <section className="bg-gradient-to-br from-green-600 to-green-800 text-white py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="w-full px-6 sm:px-8 lg:px-12">
           <div className="text-center max-w-3xl mx-auto">
-            <h1 className="text-5xl font-bold mb-6">
+            <h1 className="text-6xl font-bold mb-6">
               About Farm<span className="text-yellow-400">हित</span>
             </h1>
-            <p className="text-xl text-green-100 leading-relaxed">
+            <p className="text-2xl text-green-100 leading-relaxed">
               हमारे बारे में | Empowering farmers through accurate soil testing and sustainable agricultural practices since 2022
             </p>
           </div>
@@ -38,10 +38,10 @@ const About = () => {
       </section>
 
       <section className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="w-full px-6 sm:px-8 lg:px-12">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div>
-              <h2 className="text-4xl font-bold text-gray-900 mb-6">Our Story</h2>
+              <h2 className="text-5xl font-bold text-gray-900 mb-6">Our Story</h2>
               <div className="space-y-4 text-gray-700 leading-relaxed">
                 <p>
                   Farmहित was born from a simple observation: Indian farmers needed affordable, accurate soil testing but faced significant barriers—expensive labs, complicated processes, and lack of actionable advice.
@@ -65,8 +65,8 @@ const About = () => {
                       {item.year}
                     </div>
                     <div>
-                      <h3 className="font-bold text-gray-900 text-xl mb-2">{item.event}</h3>
-                      <p className="text-gray-600">{item.desc}</p>
+                      <h3 className="font-bold text-gray-900 text-2xl mb-2">{item.event}</h3>
+                      <p className="text-gray-600 text-lg">{item.desc}</p>
                     </div>
                   </div>
                 </div>
@@ -77,17 +77,17 @@ const About = () => {
       </section>
 
       <section className="py-20 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="w-full px-6 sm:px-8 lg:px-12">
           <div className="grid md:grid-cols-2 gap-12">
             <div className="bg-white rounded-2xl p-8 shadow-lg">
               <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-6">
                 <Target size={32} className="text-green-600" />
               </div>
-              <h2 className="text-3xl font-bold text-gray-900 mb-4">Our Mission</h2>
-              <p className="text-gray-700 leading-relaxed text-lg">
+              <h2 className="text-4xl font-bold text-gray-900 mb-4">Our Mission</h2>
+              <p className="text-gray-700 leading-relaxed text-xl">
                 To make accurate, affordable soil testing accessible to every Indian farmer, empowering them with data-driven insights for sustainable farming and improved livelihoods.
               </p>
-              <p className="text-gray-700 leading-relaxed text-lg mt-4">
+              <p className="text-gray-700 leading-relaxed text-xl mt-4">
                 <span className="font-semibold text-green-600">हमारा मिशन:</span> हर भारतीय किसान को सटीक और किफायती मिट्टी परीक्षण उपलब्ध कराना।
               </p>
             </div>
@@ -96,11 +96,11 @@ const About = () => {
               <div className="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mb-6">
                 <Heart size={32} className="text-yellow-600" />
               </div>
-              <h2 className="text-3xl font-bold text-gray-900 mb-4">Our Vision</h2>
-              <p className="text-gray-700 leading-relaxed text-lg">
+              <h2 className="text-4xl font-bold text-gray-900 mb-4">Our Vision</h2>
+              <p className="text-gray-700 leading-relaxed text-xl">
                 A future where every farmer has the knowledge and tools to nurture healthy soil, grow abundant crops sustainably, and contribute to environmental conservation while earning better.
               </p>
-              <p className="text-gray-700 leading-relaxed text-lg mt-4">
+              <p className="text-gray-700 leading-relaxed text-xl mt-4">
                 <span className="font-semibold text-yellow-600">हमारा विजन:</span> स्वस्थ मिट्टी, टिकाऊ खेती, और बेहतर आजीविका।
               </p>
             </div>
@@ -109,10 +109,10 @@ const About = () => {
       </section>
 
       <section className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="w-full px-6 sm:px-8 lg:px-12">
           <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">Our Values</h2>
-            <p className="text-xl text-gray-600">The principles that guide everything we do</p>
+            <h2 className="text-5xl font-bold text-gray-900 mb-4">Our Values</h2>
+            <p className="text-2xl text-gray-600">The principles that guide everything we do</p>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -126,8 +126,8 @@ const About = () => {
                 <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
                   <value.icon size={40} className="text-green-600" />
                 </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-3">{value.title}</h3>
-                <p className="text-gray-600">{value.desc}</p>
+                <h3 className="text-2xl font-bold text-gray-900 mb-3">{value.title}</h3>
+                <p className="text-gray-600 text-lg">{value.desc}</p>
               </div>
             ))}
           </div>
@@ -135,10 +135,10 @@ const About = () => {
       </section>
 
       <section className="py-20 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="w-full px-6 sm:px-8 lg:px-12">
           <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">Meet Our Team</h2>
-            <p className="text-xl text-gray-600">Experts dedicated to farmer welfare</p>
+            <h2 className="text-5xl font-bold text-gray-900 mb-4">Meet Our Team</h2>
+            <p className="text-2xl text-gray-600">Experts dedicated to farmer welfare</p>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -148,9 +148,9 @@ const About = () => {
                   <Users size={80} className="text-white opacity-50" />
                 </div>
                 <div className="p-6">
-                  <h3 className="font-bold text-gray-900 text-lg mb-1">{member.name}</h3>
-                  <p className="text-green-600 font-semibold text-sm mb-2">{member.role}</p>
-                  <p className="text-gray-600 text-sm">{member.expertise}</p>
+                  <h3 className="font-bold text-gray-900 text-xl mb-1">{member.name}</h3>
+                  <p className="text-green-600 font-semibold text-base mb-2">{member.role}</p>
+                  <p className="text-gray-600 text-base">{member.expertise}</p>
                 </div>
               </div>
             ))}
@@ -159,12 +159,12 @@ const About = () => {
       </section>
 
       <section className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="w-full px-6 sm:px-8 lg:px-12">
           <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">
+            <h2 className="text-5xl font-bold text-gray-900 mb-4">
               Contributing to UN Sustainable Development Goals
             </h2>
-            <p className="text-xl text-gray-600">Our commitment to global sustainability</p>
+            <p className="text-2xl text-gray-600">Our commitment to global sustainability</p>
           </div>
 
           <div className="grid md:grid-cols-2 gap-8">
@@ -175,8 +175,8 @@ const About = () => {
                     {sdg.number}
                   </div>
                   <div>
-                    <h3 className="text-xl font-bold text-gray-900 mb-2">{sdg.title}</h3>
-                    <p className="text-gray-700">{sdg.desc}</p>
+                    <h3 className="text-2xl font-bold text-gray-900 mb-2">{sdg.title}</h3>
+                    <p className="text-gray-700 text-lg">{sdg.desc}</p>
                   </div>
                 </div>
               </div>
@@ -186,9 +186,9 @@ const About = () => {
       </section>
 
       <section className="py-20 bg-gradient-to-br from-green-600 to-green-800 text-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="w-full px-6 sm:px-8 lg:px-12">
           <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold mb-4">Awards & Recognition</h2>
+            <h2 className="text-5xl font-bold mb-4">Awards & Recognition</h2>
           </div>
 
           <div className="grid md:grid-cols-3 gap-8">
@@ -199,8 +199,8 @@ const About = () => {
             ].map((item, index) => (
               <div key={index} className="bg-white/10 backdrop-blur-sm rounded-xl p-6 text-center">
                 <Award size={48} className="mx-auto mb-4 text-yellow-400" />
-                <h3 className="text-xl font-bold mb-2">{item.award}</h3>
-                <p className="text-green-100">{item.org}</p>
+                <h3 className="text-2xl font-bold mb-2">{item.award}</h3>
+                <p className="text-green-100 text-lg">{item.org}</p>
               </div>
             ))}
           </div>

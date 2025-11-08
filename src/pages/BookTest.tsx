@@ -56,14 +56,14 @@ const BookTest = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 py-12">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="w-full px-6 sm:px-8 lg:px-12">
         {!bookingComplete ? (
           <>
             <div className="text-center mb-8">
-              <h1 className="text-4xl font-bold text-gray-900 mb-2">
+              <h1 className="text-5xl font-bold text-gray-900 mb-2">
                 Book Soil Test | मिट्टी परीक्षण बुक करें
               </h1>
-              <p className="text-lg text-gray-600">Complete the form in 4 simple steps</p>
+              <p className="text-xl text-gray-600">Complete the form in 4 simple steps</p>
             </div>
 
             {renderStepIndicator()}
@@ -73,7 +73,7 @@ const BookTest = () => {
                 <div>
                   <div className="flex items-center gap-4 mb-8">
                     <Package size={40} className="text-primary-600 hover-lift" />
-                    <h2 className="text-3xl font-bold text-gray-900">Choose Package</h2>
+                    <h2 className="text-4xl font-bold text-gray-900">Choose Package</h2>
                   </div>
 
                   <div className="space-y-4">
@@ -97,21 +97,21 @@ const BookTest = () => {
                         <div className="flex justify-between items-start">
                           <div className="flex-1">
                             <div className="flex items-center gap-4 mb-3">
-                              <h3 className="text-2xl font-bold text-gray-900">{pkg.name}</h3>
+                              <h3 className="text-3xl font-bold text-gray-900">{pkg.name}</h3>
                               {pkg.popular && (
-                                <span className="bg-accent-500 text-white px-4 py-2 rounded-xl text-sm font-bold shadow-md hover-lift">
+                                <span className="bg-accent-500 text-white px-4 py-2 rounded-xl text-lg font-bold shadow-md hover-lift">
                                   POPULAR
                                 </span>
                               )}
                             </div>
-                            <p className="text-gray-600 mb-3 text-lg">{pkg.nameHindi}</p>
-                            <p className="text-base text-gray-600 mb-4">{pkg.description}</p>
-                            <p className="text-base text-gray-500">
+                            <p className="text-gray-600 mb-3 text-xl">{pkg.nameHindi}</p>
+                            <p className="text-lg text-gray-600 mb-4">{pkg.description}</p>
+                            <p className="text-lg text-gray-500">
                               Turnaround: {pkg.turnaroundDays} days
                             </p>
                           </div>
                           <div className="text-right ml-6">
-                            <div className="text-4xl font-bold text-primary-600 hover-lift">₹{pkg.price}</div>
+                            <div className="text-5xl font-bold text-primary-600 hover-lift">₹{pkg.price}</div>
                           </div>
                         </div>
                       </label>
@@ -124,7 +124,7 @@ const BookTest = () => {
                 <div>
                   <div className="flex items-center gap-4 mb-8">
                     <User size={40} className="text-primary-600 hover-lift" />
-                    <h2 className="text-3xl font-bold text-gray-900">Farmer Details</h2>
+                    <h2 className="text-4xl font-bold text-gray-900">Farmer Details</h2>
                   </div>
 
                   <div className="space-y-6">
@@ -221,7 +221,7 @@ const BookTest = () => {
                 <div>
                   <div className="flex items-center gap-4 mb-8">
                     <MapPin size={40} className="text-primary-600 hover-lift" />
-                    <h2 className="text-3xl font-bold text-gray-900">Sample Collection</h2>
+                    <h2 className="text-4xl font-bold text-gray-900">Sample Collection</h2>
                   </div>
 
                   <div className="space-y-6">
@@ -241,10 +241,10 @@ const BookTest = () => {
                           onChange={(e) => updateFormData('pickupType', e.target.value)}
                           className="sr-only"
                         />
-                        <h3 className="text-2xl font-bold text-gray-900 mb-3">
+                        <h3 className="text-3xl font-bold text-gray-900 mb-3">
                           Free Pickup | मुफ्त पिकअप
                         </h3>
-                        <p className="text-gray-600 text-lg">
+                        <p className="text-gray-600 text-xl">
                           Our representative will collect soil sample from your farm within 2 working days
                         </p>
                       </label>
@@ -264,10 +264,10 @@ const BookTest = () => {
                           onChange={(e) => updateFormData('pickupType', e.target.value)}
                           className="sr-only"
                         />
-                        <h3 className="text-2xl font-bold text-gray-900 mb-3">
+                        <h3 className="text-3xl font-bold text-gray-900 mb-3">
                           Drop at Center | सेंटर पर जमा करें
                         </h3>
-                        <p className="text-gray-600 text-lg">
+                        <p className="text-gray-600 text-xl">
                           Drop your soil sample at nearest collection center. Find center details after booking.
                         </p>
                       </label>
@@ -295,41 +295,41 @@ const BookTest = () => {
                 <div>
                   <div className="flex items-center gap-4 mb-8">
                     <CreditCard size={40} className="text-primary-600 hover-lift" />
-                    <h2 className="text-3xl font-bold text-gray-900">Payment & Confirmation</h2>
+                    <h2 className="text-4xl font-bold text-gray-900">Payment & Confirmation</h2>
                   </div>
 
                   <div className="bg-gray-50 rounded-2xl p-8 mb-8 shadow-lg">
-                    <h3 className="font-bold text-gray-900 mb-6 text-xl">Booking Summary</h3>
+                    <h3 className="font-bold text-gray-900 mb-6 text-2xl">Booking Summary</h3>
                     <div className="space-y-4">
                       <div className="flex justify-between items-center">
-                        <span className="text-gray-600 text-lg">Package:</span>
-                        <span className="font-semibold text-lg">
+                        <span className="text-gray-600 text-xl">Package:</span>
+                        <span className="font-semibold text-xl">
                           {SERVICE_PACKAGES.find((p) => p.id === formData.packageId)?.name}
                         </span>
                       </div>
                       <div className="flex justify-between items-center">
-                        <span className="text-gray-600 text-lg">Farmer:</span>
-                        <span className="font-semibold text-lg">{formData.farmerName}</span>
+                        <span className="text-gray-600 text-xl">Farmer:</span>
+                        <span className="font-semibold text-xl">{formData.farmerName}</span>
                       </div>
                       <div className="flex justify-between items-center">
-                        <span className="text-gray-600 text-lg">Mobile:</span>
-                        <span className="font-semibold text-lg">{formData.mobile}</span>
+                        <span className="text-gray-600 text-xl">Mobile:</span>
+                        <span className="font-semibold text-xl">{formData.mobile}</span>
                       </div>
                       <div className="flex justify-between items-center">
-                        <span className="text-gray-600 text-lg">Location:</span>
-                        <span className="font-semibold text-lg">
+                        <span className="text-gray-600 text-xl">Location:</span>
+                        <span className="font-semibold text-xl">
                           {formData.village}, {formData.district}
                         </span>
                       </div>
                       <div className="flex justify-between items-center">
-                        <span className="text-gray-600 text-lg">Collection:</span>
-                        <span className="font-semibold text-lg">
+                        <span className="text-gray-600 text-xl">Collection:</span>
+                        <span className="font-semibold text-xl">
                           {formData.pickupType === 'pickup' ? 'Free Pickup' : 'Drop at Center'}
                         </span>
                       </div>
                       <div className="border-t border-gray-300 pt-4 mt-4 flex justify-between items-center text-xl">
-                        <span className="font-bold text-gray-900">Total Amount:</span>
-                        <span className="font-bold text-primary-600 text-3xl">
+                        <span className="font-bold text-gray-900 text-2xl">Total Amount:</span>
+                        <span className="font-bold text-primary-600 text-4xl">
                           ₹{SERVICE_PACKAGES.find((p) => p.id === formData.packageId)?.price}
                         </span>
                       </div>
@@ -355,7 +355,7 @@ const BookTest = () => {
                             onChange={(e) => updateFormData('paymentMethod', e.target.value)}
                             className="w-6 h-6 text-primary-600"
                           />
-                          <span className="font-semibold text-lg">Pay Online (UPI/Card/Wallet)</span>
+                          <span className="font-semibold text-xl">Pay Online (UPI/Card/Wallet)</span>
                         </label>
                         <label className={`flex items-center gap-4 border-2 border-gray-200 rounded-xl p-6 cursor-pointer transition-all duration-300 card-hover ${
                           formData.paymentMethod === 'cod'
@@ -370,7 +370,7 @@ const BookTest = () => {
                             onChange={(e) => updateFormData('paymentMethod', e.target.value)}
                             className="w-6 h-6 text-primary-600"
                           />
-                          <span className="font-semibold text-lg">Cash on Sample Collection</span>
+                          <span className="font-semibold text-xl">Cash on Sample Collection</span>
                         </label>
                       </div>
                     </div>
@@ -382,7 +382,7 @@ const BookTest = () => {
                 {step > 1 && (
                   <button
                     onClick={prevStep}
-                    className="flex items-center gap-3 px-8 py-4 border-2 border-gray-300 text-gray-700 rounded-xl font-semibold hover:bg-gray-50 hover-lift transition-all duration-300 text-lg"
+                    className="flex items-center gap-3 px-8 py-4 border-2 border-gray-300 text-gray-700 rounded-xl font-semibold hover:bg-gray-50 hover-lift transition-all duration-300 text-xl"
                   >
                     <ChevronLeft size={24} />
                     Previous
@@ -395,7 +395,7 @@ const BookTest = () => {
                       (step === 1 && !formData.packageId) ||
                       (step === 2 && (!formData.farmerName || !formData.mobile || !formData.village || !formData.district || !formData.state || !formData.cropType))
                     }
-                    className="flex items-center gap-3 px-8 py-4 bg-primary-600 text-white rounded-xl font-semibold hover:bg-primary-700 hover:shadow-button-hover hover:scale-105 active:scale-95 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 ml-auto text-lg"
+                    className="flex items-center gap-3 px-8 py-4 bg-primary-600 text-white rounded-xl font-semibold hover:bg-primary-700 hover:shadow-button-hover hover:scale-105 active:scale-95 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 ml-auto text-xl"
                   >
                     Next
                     <ChevronRight size={24} />
@@ -403,7 +403,7 @@ const BookTest = () => {
                 ) : (
                   <button
                     onClick={handleSubmit}
-                    className="btn-primary ml-auto animate-pulse-slow"
+                    className="btn-primary ml-auto animate-pulse-slow text-xl"
                   >
                     Confirm Booking
                   </button>
