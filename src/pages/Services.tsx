@@ -7,7 +7,7 @@ const Services = () => {
 
   return (
     <div className="min-h-screen">
-      <section className="bg-gradient-to-br from-green-600 to-green-800 text-white py-24">
+      <section className="bg-gradient-to-br from-green-600 to-green-800 text-white py-16">
         <div className="w-full px-6 sm:px-8 lg:px-12">
           <div className="text-center max-w-3xl mx-auto">
             <h1 className="text-6xl font-bold mb-6">Our Services | हमारी सेवाएं</h1>
@@ -18,7 +18,7 @@ const Services = () => {
         </div>
       </section>
 
-      <section className="py-24 bg-white">
+      <section className="py-16 bg-white">
         <div className="w-full px-6 sm:px-8 lg:px-12">
           <div className="text-center mb-12">
             <h2 className="text-5xl font-bold text-gray-900 mb-4">Soil Testing Packages</h2>
@@ -81,7 +81,7 @@ const Services = () => {
         </div>
       </section>
 
-      <section className="py-24 bg-gray-50">
+      <section className="py-16 bg-gray-50">
         <div className="w-full px-6 sm:px-8 lg:px-12">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div>
@@ -128,7 +128,7 @@ const Services = () => {
         </div>
       </section>
 
-      <section className="py-24 bg-white">
+      <section className="py-16 bg-white">
         <div className="w-full px-6 sm:px-8 lg:px-12">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div className="bg-gradient-to-br from-green-400 to-green-600 rounded-2xl p-12 text-white shadow-2xl">
@@ -185,7 +185,7 @@ const Services = () => {
         </div>
       </section>
 
-      <section className="py-24 bg-gradient-to-br from-green-600 to-green-800 text-white">
+      <section className="py-16 bg-gradient-to-br from-green-600 to-green-800 text-white">
         <div className="w-full px-6 sm:px-8 lg:px-12">
           <div className="text-center mb-12">
             <h2 className="text-5xl font-bold mb-4">Lab Registration Portal</h2>
@@ -218,7 +218,7 @@ const Services = () => {
         </div>
       </section>
 
-      <section className="py-24 bg-white">
+      <section className="py-16 bg-white">
         <div className="w-full px-6 sm:px-8 lg:px-12">
           <div className="bg-gradient-to-r from-green-100 to-yellow-100 rounded-2xl p-12 text-center border-2 border-green-200">
             <h2 className="text-5xl font-bold text-gray-900 mb-6">

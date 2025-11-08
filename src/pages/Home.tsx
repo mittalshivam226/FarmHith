@@ -39,7 +39,7 @@ const Home = () => {
 
   return (
     <div className="min-h-screen">
-      <section className="relative bg-gradient-to-br from-green-50 via-yellow-50 to-green-100 py-20 overflow-hidden">
+      <section className="relative bg-gradient-to-br from-green-50 via-yellow-50 to-green-100 py-16 overflow-hidden">
         <div className="absolute inset-0 opacity-10">
           <div className="absolute top-10 left-10 w-64 h-64 bg-green-500 rounded-full blur-3xl"></div>
           <div className="absolute bottom-10 right-10 w-96 h-96 bg-yellow-500 rounded-full blur-3xl"></div>
@@ -116,7 +116,7 @@ const Home = () => {
         </div>
       </section>
 
-      <section className="py-20 bg-white">
+      <section className="py-16 bg-white">
         <div className="w-full px-6 sm:px-8 lg:px-12">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {STATS.map((stat, index) => (
@@ -131,7 +131,7 @@ const Home = () => {
         </div>
       </section>
 
-      <section className="py-24 bg-gray-50">
+      <section className="py-16 bg-gray-50">
         <div className="w-full px-6 sm:px-8 lg:px-12">
           <div className="text-center mb-12">
             <h2 className="text-5xl font-bold text-gray-900 mb-4">
@@ -179,7 +179,7 @@ const Home = () => {
         </div>
       </section>
 
-      <section className="py-24 bg-white">
+      <section className="py-16 bg-white">
         <div className="w-full px-6 sm:px-8 lg:px-12">
           <div className="text-center mb-12">
             <h2 className="text-5xl font-bold text-gray-900 mb-4">
@@ -233,7 +233,7 @@ const Home = () => {
         </div>
       </section>
 
-      <section className="py-24 bg-gradient-to-br from-green-600 to-green-800 text-white">
+      <section className="py-16 bg-gradient-to-br from-green-600 to-green-800 text-white">
         <div className="w-full px-6 sm:px-8 lg:px-12">
           <div className="text-center mb-12">
             <h2 className="text-5xl font-bold mb-4">
@@ -261,7 +261,7 @@ const Home = () => {
         </div>
       </section>
 
-      <section className="py-24 bg-gray-50">
+      <section className="py-16 bg-gray-50">
         <div className="w-full px-6 sm:px-8 lg:px-12">
           <div className="text-center mb-12">
             <h2 className="text-5xl font-bold text-gray-900 mb-4">
@@ -288,7 +288,7 @@ const Home = () => {
         </div>
       </section>
 
-      <section className="py-24 bg-white">
+      <section className="py-16 bg-white">
         <div className="w-full px-6 sm:px-8 lg:px-12">
           <div className="text-center mb-12">
             <h2 className="text-5xl font-bold text-gray-900 mb-4">Our Partners</h2>
@@ -310,7 +310,7 @@ const Home = () => {
         </div>
       </section>
 
-      <section className="py-24 bg-gradient-to-r from-green-600 to-yellow-500">
+      <section className="py-16 bg-gradient-to-r from-green-600 to-yellow-500">
         <div className="w-full px-6 sm:px-8 lg:px-12 text-center">
           <h2 className="text-5xl font-bold text-white mb-6">
             Ready to Improve Your Soil Health?

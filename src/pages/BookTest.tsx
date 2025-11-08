@@ -55,7 +55,7 @@ const BookTest = () => {
   );
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12">
+    <div className="min-h-screen bg-gray-50 py-8">
       <div className="w-full px-6 sm:px-8 lg:px-12">
         {!bookingComplete ? (
           <>

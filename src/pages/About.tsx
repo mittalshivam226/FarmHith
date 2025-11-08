@@ -24,7 +24,7 @@ const About = () => {
 
   return (
     <div className="min-h-screen">
-      <section className="bg-gradient-to-br from-green-600 to-green-800 text-white py-20">
+      <section className="bg-gradient-to-br from-green-600 to-green-800 text-white py-16">
         <div className="w-full px-6 sm:px-8 lg:px-12">
           <div className="text-center max-w-3xl mx-auto">
             <h1 className="text-6xl font-bold mb-6">
@@ -37,7 +37,7 @@ const About = () => {
         </div>
       </section>
 
-      <section className="py-20 bg-white">
+      <section className="py-16 bg-white">
         <div className="w-full px-6 sm:px-8 lg:px-12">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div>
@@ -76,7 +76,7 @@ const About = () => {
         </div>
       </section>
 
-      <section className="py-20 bg-gray-50">
+      <section className="py-16 bg-gray-50">
         <div className="w-full px-6 sm:px-8 lg:px-12">
           <div className="grid md:grid-cols-2 gap-12">
             <div className="bg-white rounded-2xl p-8 shadow-lg">
@@ -108,7 +108,7 @@ const About = () => {
         </div>
       </section>
 
-      <section className="py-20 bg-white">
+      <section className="py-16 bg-white">
         <div className="w-full px-6 sm:px-8 lg:px-12">
           <div className="text-center mb-12">
             <h2 className="text-5xl font-bold text-gray-900 mb-4">Our Values</h2>
@@ -134,7 +134,7 @@ const About = () => {
         </div>
       </section>
 
-      <section className="py-20 bg-gray-50">
+      <section className="py-16 bg-gray-50">
         <div className="w-full px-6 sm:px-8 lg:px-12">
           <div className="text-center mb-12">
             <h2 className="text-5xl font-bold text-gray-900 mb-4">Meet Our Team</h2>
@@ -158,7 +158,7 @@ const About = () => {
         </div>
       </section>
 
-      <section className="py-20 bg-white">
+      <section className="py-16 bg-white">
         <div className="w-full px-6 sm:px-8 lg:px-12">
           <div className="text-center mb-12">
             <h2 className="text-5xl font-bold text-gray-900 mb-4">
@@ -185,7 +185,7 @@ const About = () => {
         </div>
       </section>
 
-      <section className="py-20 bg-gradient-to-br from-green-600 to-green-800 text-white">
+      <section className="py-16 bg-gradient-to-br from-green-600 to-green-800 text-white">
         <div className="w-full px-6 sm:px-8 lg:px-12">
           <div className="text-center mb-12">
             <h2 className="text-5xl font-bold mb-4">Awards & Recognition</h2>
