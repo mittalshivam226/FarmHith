@@ -1,6 +1,8 @@
 import { Target, Heart, Award, Users, TrendingUp, Leaf } from 'lucide-react';
+import { useNavigation } from '../context/NavigationContext';
 
 const About = () => {
+  const { navigateTo } = useNavigation();
   const timeline = [
     { year: '2022', event: 'Farmहित Founded', desc: 'Started with a vision to make soil testing accessible to every farmer' },
     { year: '2023', event: '10,000 Tests Milestone', desc: 'Reached 10,000 successful soil tests across 5 states' },
@@ -143,7 +145,11 @@ const About = () => {
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             {team.map((member, index) => (
-              <div key={index} className="bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all">
+              <div
+                key={index}
+                onClick={() => navigateTo('contact')}
+                className="bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all cursor-pointer"
+              >
                 <div className="aspect-square bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center">
                   <Users size={80} className="text-white opacity-50" />
                 </div>

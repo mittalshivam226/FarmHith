@@ -1,10 +1,13 @@
 import { useState } from 'react';
 import { Search, Download, Send, Clock, CheckCircle, AlertCircle, TrendingUp } from 'lucide-react';
+import { useNavigation } from '../context/NavigationContext';
 
 const Reports = () => {
+  const { navigateTo } = useNavigation();
   const [trackingId, setTrackingId] = useState('');
   const [mobile, setMobile] = useState('');
   const [authenticated, setAuthenticated] = useState(false);
+  const [actionMessage, setActionMessage] = useState('');
 
   const mockReports = [
     {
@@ -134,7 +137,10 @@ const Reports = () => {
               <div className="mt-6 pt-6 border-t">
                 <p className="text-sm text-gray-600 text-center">
                   Don't have a tracking ID?{' '}
-                  <button className="text-green-600 font-semibold hover:underline">
+                  <button
+                    onClick={() => navigateTo('book-test')}
+                    className="text-green-600 font-semibold hover:underline"
+                  >
                     Book a test now
                   </button>
                 </p>
@@ -159,6 +165,12 @@ const Reports = () => {
                 </button>
               </div>
             </div>
+
+            {actionMessage && (
+              <div className="mb-6 rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-green-800">
+                {actionMessage}
+              </div>
+            )}
 
             <div className="space-y-6">
               {mockReports.map((report) => (
@@ -212,11 +224,23 @@ const Reports = () => {
                         </div>
 
                         <div className="flex gap-3">
-                          <button className="flex items-center gap-2 px-6 py-3 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 transition-all">
+                          <button
+                            onClick={() => {
+                              if (report.pdfUrl && report.pdfUrl !== '#') {
+                                window.open(report.pdfUrl, '_blank', 'noopener,noreferrer');
+                              } else {
+                                setActionMessage('PDF download will be available once the final report file is uploaded.');
+                              }
+                            }}
+                            className="flex items-center gap-2 px-6 py-3 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 transition-all"
+                          >
                             <Download size={20} />
                             Download PDF Report
                           </button>
-                          <button className="flex items-center gap-2 px-6 py-3 border-2 border-green-600 text-green-600 rounded-lg font-semibold hover:bg-green-50 transition-all">
+                          <button
+                            onClick={() => navigateTo('contact')}
+                            className="flex items-center gap-2 px-6 py-3 border-2 border-green-600 text-green-600 rounded-lg font-semibold hover:bg-green-50 transition-all"
+                          >
                             <Send size={20} />
                             Send to Agronomist
                           </button>
@@ -255,7 +279,10 @@ const Reports = () => {
             </div>
 
             <div className="mt-8 text-center">
-              <button className="bg-green-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-green-700 transition-all">
+              <button
+                onClick={() => navigateTo('book-test')}
+                className="bg-green-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-green-700 transition-all"
+              >
                 Book New Soil Test
               </button>
             </div>

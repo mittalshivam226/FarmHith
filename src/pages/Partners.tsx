@@ -1,7 +1,9 @@
 import { Building, Heart, GraduationCap, Zap, CheckCircle } from 'lucide-react';
 import { PARTNERS } from '../utils/constants';
+import { useNavigation } from '../context/NavigationContext';
 
 const Partners = () => {
+  const { navigateTo } = useNavigation();
   const partnerTypes = [
     {
       type: 'lab',
@@ -68,6 +70,7 @@ const Partners = () => {
             {partnerTypes.map((partnerType, index) => (
               <div
                 key={index}
+                onClick={() => navigateTo('contact')}
                 className="bg-gradient-to-br from-green-50 to-yellow-50 rounded-xl p-6 border-2 border-green-200 text-center hover:shadow-lg transition-all"
               >
                 <div className="w-16 h-16 bg-green-600 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -92,6 +95,7 @@ const Partners = () => {
             {[...PARTNERS, ...PARTNERS].map((partner, index) => (
               <div
                 key={index}
+                onClick={() => navigateTo('contact')}
                 className="bg-white rounded-xl p-6 flex items-center justify-center hover:shadow-lg transition-all"
               >
                 <div className="text-center">
@@ -129,7 +133,10 @@ const Partners = () => {
                   </div>
                 ))}
               </div>
-              <button className="bg-green-600 text-white px-8 py-4 rounded-lg font-semibold text-lg hover:bg-green-700 transition-all shadow-lg">
+              <button
+                onClick={() => navigateTo('contact')}
+                className="bg-green-600 text-white px-8 py-4 rounded-lg font-semibold text-lg hover:bg-green-700 transition-all shadow-lg"
+              >
                 Apply for Partnership
               </button>
             </div>

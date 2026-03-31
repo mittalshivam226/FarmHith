@@ -28,6 +28,14 @@ Health endpoint:
 
 `GET /api/v1/health`
 
+Booking endpoint:
+
+`POST /api/v1/bookings`
+
+Contact endpoint:
+
+`POST /api/v1/contact-messages`
+
 ## 3. Payments (Razorpay)
 
 - `POST /api/v1/payments/create-order`

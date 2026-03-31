@@ -195,7 +195,10 @@ const Profile = () => {
                 </div>
               </div>
 
-              <button className="w-full mt-6 bg-primary-600 text-white py-3 px-6 rounded-xl hover:bg-primary-700 transition-all duration-300 flex items-center justify-center gap-2 hover-lift">
+              <button
+                onClick={() => navigateTo('login')}
+                className="w-full mt-6 bg-primary-600 text-white py-3 px-6 rounded-xl hover:bg-primary-700 transition-all duration-300 flex items-center justify-center gap-2 hover-lift"
+              >
                 <Settings size={20} />
                 Edit Profile
               </button>
@@ -215,6 +218,7 @@ const Profile = () => {
                   {recentBookings.map((booking: BookingItem) => (
                     <div
                       key={booking.id}
+                      onClick={() => navigateTo('reports')}
                       className="border border-gray-200 rounded-xl p-6 hover:shadow-md transition-all duration-300 hover-lift"
                     >
                       <div className="flex justify-between items-start mb-4">

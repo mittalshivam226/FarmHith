@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { Check, ChevronLeft, ChevronRight, Package, User, MapPin, CreditCard } from 'lucide-react';
 import { SERVICE_PACKAGES, INDIAN_STATES, CROP_TYPES } from '../utils/constants';
 import { BookingFormData } from '../types';
+import { createBooking } from '../services/bookings';
+import { createPaymentOrder, verifyPaymentSignature } from '../services/payments';
 
 const BookTest = () => {
   const [step, setStep] = useState(1);
@@ -10,7 +12,9 @@ const BookTest = () => {
     paymentMethod: 'online',
   });
   const [bookingComplete, setBookingComplete] = useState(false);
-  const [trackingId] = useState(`FH${Date.now().toString().slice(-8)}`);
+  const [trackingId, setTrackingId] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState('');
 
   const updateFormData = (field: string, value: string) => {
     setFormData({ ...formData, [field]: value });
@@ -24,9 +28,113 @@ const BookTest = () => {
     if (step > 1) setStep(step - 1);
   };
 
-  const handleSubmit = () => {
-    setBookingComplete(true);
-    setStep(5);
+  const loadRazorpayScript = () =>
+    new Promise<boolean>((resolve) => {
+      if ((window as Window & { Razorpay?: unknown }).Razorpay) {
+        resolve(true);
+        return;
+      }
+
+      const script = document.createElement('script');
+      script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+      script.onload = () => resolve(true);
+      script.onerror = () => resolve(false);
+      document.body.appendChild(script);
+    });
+
+  const handleSubmit = async () => {
+    const selectedPackage = SERVICE_PACKAGES.find((p) => p.id === formData.packageId);
+    if (!selectedPackage) return;
+
+    setIsSubmitting(true);
+    setSubmitError('');
+
+    try {
+      const generatedTrackingId = `FH${Date.now().toString().slice(-8)}`;
+      const booking = await createBooking({
+        package_id: formData.packageId!,
+        tracking_id: generatedTrackingId,
+        farmer_name: formData.farmerName!,
+        mobile: formData.mobile!,
+        village: formData.village!,
+        district: formData.district!,
+        state: formData.state!,
+        crop_type: formData.cropType!,
+        pickup_type: formData.pickupType as 'pickup' | 'drop',
+        address: formData.address,
+        payment_method: formData.paymentMethod!,
+        payment_status: formData.paymentMethod === 'online' ? 'created' : 'pending',
+        status: 'pending',
+      });
+
+      if (formData.paymentMethod === 'online') {
+        const sdkLoaded = await loadRazorpayScript();
+        if (!sdkLoaded) {
+          throw new Error('Unable to load Razorpay SDK');
+        }
+
+        const paymentOrder = await createPaymentOrder({
+          user_id: null,
+          purpose: 'soil_test',
+          purpose_ref_id: booking.id,
+          amount_inr: selectedPackage.price,
+          currency: 'INR',
+        });
+
+        await new Promise<void>((resolve, reject) => {
+          const RazorpayCtor = (
+            window as unknown as {
+              Razorpay: new (options: Record<string, unknown>) => {
+                open: () => void;
+              };
+            }
+          ).Razorpay;
+          const razorpay = new RazorpayCtor({
+            key: paymentOrder.key_id,
+            amount: paymentOrder.amount_paise,
+            currency: paymentOrder.currency,
+            name: 'FarmHith',
+            description: `Soil Test Booking (${generatedTrackingId})`,
+            order_id: paymentOrder.razorpay_order_id,
+            prefill: {
+              name: formData.farmerName,
+              contact: formData.mobile,
+            },
+            notes: {
+              tracking_id: generatedTrackingId,
+              booking_id: booking.id,
+            },
+            handler: async (response: {
+              razorpay_order_id: string;
+              razorpay_payment_id: string;
+              razorpay_signature: string;
+            }) => {
+              try {
+                await verifyPaymentSignature(response);
+                resolve();
+              } catch (error) {
+                reject(error);
+              }
+            },
+            modal: {
+              ondismiss: () => reject(new Error('Payment cancelled by user')),
+            },
+            theme: {
+              color: '#16a34a',
+            },
+          });
+          razorpay.open();
+        });
+      }
+
+      setTrackingId(generatedTrackingId);
+      setBookingComplete(true);
+      setStep(5);
+    } catch (error) {
+      setSubmitError(error instanceof Error ? error.message : 'Booking failed. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const renderStepIndicator = () => (
@@ -378,6 +486,12 @@ const BookTest = () => {
                 </div>
               )}
 
+              {submitError && (
+                <div className="mt-6 rounded-xl border border-red-200 bg-red-50 p-4 text-red-700">
+                  {submitError}
+                </div>
+              )}
+
               <div className="flex justify-between mt-12 pt-8 border-t border-gray-200">
                 {step > 1 && (
                   <button
@@ -403,9 +517,10 @@ const BookTest = () => {
                 ) : (
                   <button
                     onClick={handleSubmit}
-                    className="btn-primary ml-auto animate-pulse-slow text-xl"
+                    disabled={isSubmitting}
+                    className="btn-primary ml-auto animate-pulse-slow text-xl disabled:opacity-60 disabled:cursor-not-allowed"
                   >
-                    Confirm Booking
+                    {isSubmitting ? 'Processing...' : 'Confirm Booking'}
                   </button>
                 )}
               </div>

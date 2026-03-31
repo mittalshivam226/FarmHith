@@ -2,7 +2,7 @@ from pydantic import BaseModel, Field
 
 
 class CreatePaymentOrderRequest(BaseModel):
-    user_id: str = Field(min_length=1)
+    user_id: str | None = None
     purpose: str = Field(min_length=1, description="soil_test or residue_order")
     purpose_ref_id: str = Field(min_length=1)
     amount_inr: float = Field(gt=0)
@@ -26,4 +26,3 @@ class VerifyPaymentSignatureRequest(BaseModel):
 class VerifyPaymentSignatureResponse(BaseModel):
     valid: bool
     message: str
-

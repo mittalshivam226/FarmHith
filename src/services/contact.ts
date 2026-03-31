@@ -2,6 +2,7 @@ import { z } from 'zod'
 import { supabase } from '../lib/supabase'
 import { ContactMessage } from '../types'
 import { logger } from '../utils/logger'
+import { backendPost } from './backendApi'
 
 export interface ContactMessageData {
   name: string
@@ -31,18 +32,38 @@ export const submitContactMessage = async (data: ContactMessageData): Promise<Co
     // Validate input data
     const validatedData = contactMessageSchema.parse(data)
 
-    const { data: message, error } = await supabase
-      .from('contact_messages')
-      .insert([validatedData])
-      .select()
-      .single()
+    let message: ContactMessage | null = null
+    try {
+      const backendResponse = await backendPost<ContactMessageData, { id: string; status: string }>(
+        '/contact-messages',
+        validatedData
+      )
 
-    if (error) {
-      logger.error('Database error submitting contact message', {
-        error: error.message,
-        email: data.email,
+      message = {
+        id: backendResponse.id,
+        status: backendResponse.status,
+        created_at: new Date().toISOString(),
+        ...validatedData,
+      }
+    } catch (backendError) {
+      logger.warn('Backend contact API unavailable, falling back to Supabase', {
+        error: backendError instanceof Error ? backendError.message : String(backendError),
       })
-      throw new Error('Failed to send message. Please try again.')
+      const { data: supabaseMessage, error } = await supabase
+        .from('contact_messages')
+        .insert([validatedData])
+        .select()
+        .single()
+
+      if (error) {
+        logger.error('Database error submitting contact message', {
+          error: error.message,
+          email: data.email,
+        })
+        throw new Error('Failed to send message. Please try again.')
+      }
+
+      message = supabaseMessage as ContactMessage
     }
 
     logger.info('Contact message submitted successfully', {
@@ -50,7 +71,7 @@ export const submitContactMessage = async (data: ContactMessageData): Promise<Co
       email: data.email,
     })
 
-    return message as ContactMessage
+    return message
   } catch (error) {
     if (error instanceof z.ZodError) {
       logger.error('Contact message validation failed', {

@@ -29,11 +29,12 @@ const Services = () => {
             {SERVICE_PACKAGES.map((pkg) => (
               <div
                 key={pkg.id}
+                onClick={() => navigateTo('book-test')}
                 className={`rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all transform hover:-translate-y-2 ${
                   pkg.popular
                     ? 'border-4 border-yellow-400 relative'
                     : 'border-2 border-gray-200'
-                }`}
+                } cursor-pointer`}
               >
                 {pkg.popular && (
                   <div className="bg-yellow-400 text-gray-900 text-center py-2 font-bold text-sm">
@@ -110,7 +111,10 @@ const Services = () => {
                   </div>
                 ))}
               </div>
-              <button className="bg-yellow-400 text-gray-900 px-8 py-4 rounded-lg font-semibold text-lg hover:bg-yellow-500 transition-all shadow-lg">
+              <button
+                onClick={() => navigateTo('contact')}
+                className="bg-yellow-400 text-gray-900 px-8 py-4 rounded-lg font-semibold text-lg hover:bg-yellow-500 transition-all shadow-lg"
+              >
                 Register to Sell Residue
               </button>
             </div>
@@ -176,7 +180,10 @@ const Services = () => {
                   </div>
                 ))}
               </div>
-              <button className="bg-green-600 text-white px-8 py-4 rounded-lg font-semibold text-lg hover:bg-green-700 transition-all shadow-lg flex items-center gap-2">
+              <button
+                onClick={() => navigateTo('contact')}
+                className="bg-green-600 text-white px-8 py-4 rounded-lg font-semibold text-lg hover:bg-green-700 transition-all shadow-lg flex items-center gap-2"
+              >
                 <Phone size={24} />
                 Book Consultation
               </button>
@@ -210,7 +217,10 @@ const Services = () => {
               ))}
             </div>
             <div className="mt-8 text-center">
-              <button className="bg-yellow-400 text-gray-900 px-8 py-4 rounded-lg font-semibold text-lg hover:bg-yellow-500 transition-all">
+              <button
+                onClick={() => navigateTo('contact')}
+                className="bg-yellow-400 text-gray-900 px-8 py-4 rounded-lg font-semibold text-lg hover:bg-yellow-500 transition-all"
+              >
                 Apply as Partner Lab
               </button>
             </div>

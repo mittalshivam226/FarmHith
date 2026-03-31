@@ -143,7 +143,10 @@ const Home = () => {
           </div>
 
           <div className="grid md:grid-cols-3 gap-8">
-            <div className="bg-white rounded-3xl p-10 shadow-lg card-hover hover-glow">
+            <div
+              onClick={() => navigateTo('book-test')}
+              className="bg-white rounded-3xl p-10 shadow-lg card-hover hover-glow cursor-pointer"
+            >
               <div className="w-20 h-20 bg-primary-100 rounded-2xl flex items-center justify-center mb-8 hover-lift">
                 <Beaker size={40} className="text-primary-600" />
               </div>
@@ -154,7 +157,10 @@ const Home = () => {
               </p>
             </div>
 
-            <div className="bg-white rounded-3xl p-10 shadow-lg card-hover hover-glow">
+            <div
+              onClick={() => navigateTo('reports')}
+              className="bg-white rounded-3xl p-10 shadow-lg card-hover hover-glow cursor-pointer"
+            >
               <div className="w-20 h-20 bg-accent-100 rounded-2xl flex items-center justify-center mb-8 hover-lift">
                 <TrendingUp size={40} className="text-accent-600" />
               </div>
@@ -165,7 +171,10 @@ const Home = () => {
               </p>
             </div>
 
-            <div className="bg-white rounded-3xl p-10 shadow-lg card-hover hover-glow">
+            <div
+              onClick={() => navigateTo('services')}
+              className="bg-white rounded-3xl p-10 shadow-lg card-hover hover-glow cursor-pointer"
+            >
               <div className="w-20 h-20 bg-primary-100 rounded-2xl flex items-center justify-center mb-8 hover-lift">
                 <Leaf size={40} className="text-primary-600" />
               </div>
@@ -188,7 +197,10 @@ const Home = () => {
           </div>
 
           <div className="grid md:grid-cols-3 gap-8">
-            <div className="bg-gradient-to-br from-primary-50 to-primary-100 rounded-3xl p-10 border-2 border-primary-200 card-hover">
+            <div
+              onClick={() => navigateTo('services')}
+              className="bg-gradient-to-br from-primary-50 to-primary-100 rounded-3xl p-10 border-2 border-primary-200 card-hover cursor-pointer"
+            >
               <Beaker size={56} className="text-primary-600 mb-6 hover-lift" />
               <h3 className="text-4xl font-bold text-gray-900 mb-4">Soil Testing</h3>
               <p className="text-gray-700 mb-8 text-xl leading-relaxed">
@@ -202,7 +214,10 @@ const Home = () => {
               </button>
             </div>
 
-            <div className="bg-gradient-to-br from-accent-50 to-accent-100 rounded-3xl p-10 border-2 border-accent-200 card-hover">
+            <div
+              onClick={() => navigateTo('services')}
+              className="bg-gradient-to-br from-accent-50 to-accent-100 rounded-3xl p-10 border-2 border-accent-200 card-hover cursor-pointer"
+            >
               <Leaf size={56} className="text-accent-600 mb-6 hover-lift" />
               <h3 className="text-4xl font-bold text-gray-900 mb-4">Residue Sell Portal</h3>
               <p className="text-gray-700 mb-8 text-xl leading-relaxed">
@@ -216,7 +231,10 @@ const Home = () => {
               </button>
             </div>
 
-            <div className="bg-gradient-to-br from-primary-50 to-primary-100 rounded-3xl p-10 border-2 border-primary-200 card-hover">
+            <div
+              onClick={() => navigateTo('services')}
+              className="bg-gradient-to-br from-primary-50 to-primary-100 rounded-3xl p-10 border-2 border-primary-200 card-hover cursor-pointer"
+            >
               <Users size={56} className="text-primary-600 mb-6 hover-lift" />
               <h3 className="text-4xl font-bold text-gray-900 mb-4">Farm Advisory</h3>
               <p className="text-gray-700 mb-8 text-xl leading-relaxed">
@@ -271,7 +289,11 @@ const Home = () => {
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             {TESTIMONIALS.map((testimonial) => (
-              <div key={testimonial.id} className="bg-white rounded-2xl p-8 shadow-lg card-hover hover-glow">
+              <div
+                key={testimonial.id}
+                onClick={() => navigateTo('blog')}
+                className="bg-white rounded-2xl p-8 shadow-lg card-hover hover-glow cursor-pointer"
+              >
                 <div className="flex gap-1 mb-6">
                   {[...Array(testimonial.rating)].map((_, i) => (
                     <span key={i} className="text-accent-400 text-2xl hover-lift">★</span>
@@ -297,7 +319,11 @@ const Home = () => {
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {PARTNERS.map((partner) => (
-              <div key={partner.id} className="bg-gray-50 rounded-xl p-6 flex items-center justify-center hover:bg-gray-100 transition-all">
+              <div
+                key={partner.id}
+                onClick={() => navigateTo('partners')}
+                className="bg-gray-50 rounded-xl p-6 flex items-center justify-center hover:bg-gray-100 transition-all cursor-pointer"
+              >
                 <div className="text-center">
                   <div className="w-20 h-20 bg-gray-200 rounded-full mx-auto mb-3 flex items-center justify-center">
                     <span className="text-2xl font-bold text-gray-600">{partner.name.charAt(0)}</span>
