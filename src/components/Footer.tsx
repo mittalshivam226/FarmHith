@@ -5,25 +5,25 @@ const Footer = () => {
   const { navigateTo } = useNavigation();
 
   return (
-    <footer className="mt-14 bg-[#1f2b20] text-[#d8dfd1]">
+    <footer className="mt-14 bg-gradient-to-br from-primary-900 to-primary-950 text-[#d8efdc]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           <div>
             <h3 className="font-display text-2xl text-white mb-3">FarmHith</h3>
-            <p className="text-sm leading-relaxed text-[#b7c0af]">
+            <p className="text-sm leading-relaxed text-[#b5d8bf]">
               A simple digital bridge between farmers, soil labs, and biomass buyers.
             </p>
             <div className="flex gap-2 mt-5">
-              <a href="https://facebook.com/farmhith" target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors">
+              <a href="https://facebook.com/farmhith" target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-full bg-white/10 hover:bg-accent-500 flex items-center justify-center transition-colors">
                 <Facebook size={15} />
               </a>
-              <a href="https://x.com/farmhith" target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors">
+              <a href="https://x.com/farmhith" target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-full bg-white/10 hover:bg-accent-500 flex items-center justify-center transition-colors">
                 <Twitter size={15} />
               </a>
-              <a href="https://instagram.com/farmhith" target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors">
+              <a href="https://instagram.com/farmhith" target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-full bg-white/10 hover:bg-accent-500 flex items-center justify-center transition-colors">
                 <Instagram size={15} />
               </a>
-              <a href="https://youtube.com/@farmhith" target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors">
+              <a href="https://youtube.com/@farmhith" target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-full bg-white/10 hover:bg-accent-500 flex items-center justify-center transition-colors">
                 <Youtube size={15} />
               </a>
             </div>
@@ -60,7 +60,7 @@ const Footer = () => {
           </div>
         </div>
 
-        <div className="border-t border-white/10 mt-10 pt-5 text-xs text-[#aab3a2] flex flex-col sm:flex-row gap-2 sm:items-center sm:justify-between">
+        <div className="border-t border-white/10 mt-10 pt-5 text-xs text-[#9cc7a6] flex flex-col sm:flex-row gap-2 sm:items-center sm:justify-between">
           <p>© 2026 FarmHith. All rights reserved.</p>
           <p>Built for farmer-first, sustainable agriculture.</p>
         </div>
@@ -70,4 +70,3 @@ const Footer = () => {
 };
 
 export default Footer;
-

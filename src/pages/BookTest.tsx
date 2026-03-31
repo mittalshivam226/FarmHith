@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { Check, ChevronLeft, ChevronRight, Package, User, MapPin, CreditCard } from 'lucide-react';
+import { Check, ChevronLeft, ChevronRight, CreditCard, MapPin, Package, User } from 'lucide-react';
 import { SERVICE_PACKAGES, INDIAN_STATES, CROP_TYPES } from '../utils/constants';
-import { BookingFormData } from '../types';
+import type { BookingFormData } from '../types';
 import { createBooking } from '../services/bookings';
 import { createPaymentOrder, verifyPaymentSignature } from '../services/payments';
 
@@ -16,16 +16,41 @@ const BookTest = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState('');
 
-  const updateFormData = (field: string, value: string) => {
-    setFormData({ ...formData, [field]: value });
+  const selectedPackage = SERVICE_PACKAGES.find((p) => p.id === formData.packageId);
+
+  const updateFormData = (field: keyof BookingFormData, value: string) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-  const nextStep = () => {
-    if (step < 4) setStep(step + 1);
+  const resetFlow = () => {
+    setStep(1);
+    setFormData({ pickupType: 'pickup', paymentMethod: 'online' });
+    setBookingComplete(false);
+    setTrackingId('');
+    setSubmitError('');
   };
 
-  const prevStep = () => {
-    if (step > 1) setStep(step - 1);
+  const canProceed = () => {
+    if (step === 1) {
+      return Boolean(formData.packageId);
+    }
+    if (step === 2) {
+      return Boolean(
+        formData.farmerName &&
+          formData.mobile &&
+          formData.village &&
+          formData.district &&
+          formData.state &&
+          formData.cropType
+      );
+    }
+    if (step === 3) {
+      if (formData.pickupType === 'pickup') {
+        return Boolean(formData.address?.trim());
+      }
+      return true;
+    }
+    return true;
   };
 
   const loadRazorpayScript = () =>
@@ -43,7 +68,6 @@ const BookTest = () => {
     });
 
   const handleSubmit = async () => {
-    const selectedPackage = SERVICE_PACKAGES.find((p) => p.id === formData.packageId);
     if (!selectedPackage) return;
 
     setIsSubmitting(true);
@@ -84,11 +108,10 @@ const BookTest = () => {
         await new Promise<void>((resolve, reject) => {
           const RazorpayCtor = (
             window as unknown as {
-              Razorpay: new (options: Record<string, unknown>) => {
-                open: () => void;
-              };
+              Razorpay: new (options: Record<string, unknown>) => { open: () => void };
             }
           ).Razorpay;
+
           const razorpay = new RazorpayCtor({
             key: paymentOrder.key_id,
             amount: paymentOrder.amount_paise,
@@ -120,9 +143,10 @@ const BookTest = () => {
               ondismiss: () => reject(new Error('Payment cancelled by user')),
             },
             theme: {
-              color: '#16a34a',
+              color: '#2f814d',
             },
           });
+
           razorpay.open();
         });
       }
@@ -138,60 +162,63 @@ const BookTest = () => {
   };
 
   const renderStepIndicator = () => (
-    <div className="flex items-center justify-center mb-16">
+    <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8">
       {[1, 2, 3, 4].map((num) => (
-        <div key={num} className="flex items-center">
-          <div
-            className={`w-16 h-16 rounded-2xl flex items-center justify-center font-bold text-xl transition-all duration-300 hover-lift ${
-              step >= num
-                ? 'bg-primary-600 text-white shadow-lg hover:shadow-glow-green'
-                : 'bg-gray-200 text-gray-400 hover:bg-gray-300'
-            }`}
-          >
-            {step > num ? <Check size={32} /> : num}
-          </div>
-          {num < 4 && (
-            <div
-              className={`w-20 h-2 mx-4 rounded-full transition-all duration-500 ${
-                step > num ? 'bg-primary-600' : 'bg-gray-200'
-              }`}
-            />
-          )}
+        <div
+          key={num}
+          className={`rounded-2xl border p-3 text-center transition-all duration-300 ${
+            step >= num
+              ? 'border-primary-300 bg-primary-50 text-primary-800'
+              : 'border-primary-100 bg-white text-slate-500'
+          }`}
+        >
+          <p className="text-xs font-semibold">Step {num}</p>
+          <p className="text-sm mt-1">{step > num ? 'Completed' : step === num ? 'Current' : 'Pending'}</p>
         </div>
       ))}
     </div>
   );
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="w-full px-6 sm:px-8 lg:px-12">
+    <div className="min-h-screen relative overflow-hidden py-10">
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="ambient-orb top-[-8%] left-[-8%] h-72 w-72 bg-primary-300/60" />
+        <div className="ambient-orb right-[-8%] bottom-[-20%] h-80 w-80 bg-accent-200/70" />
+      </div>
+
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {!bookingComplete ? (
           <>
-            <div className="text-center mb-8">
-              <h1 className="text-5xl font-bold text-gray-900 mb-2">
-                Book Soil Test | मिट्टी परीक्षण बुक करें
+            <div className="text-center max-w-3xl mx-auto mb-8">
+              <span className="inline-flex rounded-full border border-primary-200 bg-white/90 px-4 py-1.5 text-xs font-semibold text-primary-700">
+                Fast booking and Razorpay checkout
+              </span>
+              <h1 className="mt-5 text-4xl sm:text-5xl font-display text-slate-900">
+                Book your soil test in four steps
               </h1>
-              <p className="text-xl text-gray-600">Complete the form in 4 simple steps</p>
+              <p className="mt-3 text-slate-600">
+                Select package, add farm details, choose collection mode, and confirm payment.
+              </p>
             </div>
 
             {renderStepIndicator()}
 
-            <div className="bg-white rounded-3xl shadow-xl p-12 card-hover">
+            <div className="card-hover surface-3d p-6 md:p-8">
               {step === 1 && (
                 <div>
-                  <div className="flex items-center gap-4 mb-8">
-                    <Package size={40} className="text-primary-600 hover-lift" />
-                    <h2 className="text-4xl font-bold text-gray-900">Choose Package</h2>
+                  <div className="flex items-center gap-3 mb-6">
+                    <Package size={24} className="text-primary-700" />
+                    <h2 className="text-2xl md:text-3xl">Choose Package</h2>
                   </div>
 
-                  <div className="space-y-4">
+                  <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-4">
                     {SERVICE_PACKAGES.map((pkg) => (
                       <label
                         key={pkg.id}
-                        className={`block border-2 rounded-2xl p-8 cursor-pointer transition-all duration-300 card-hover ${
+                        className={`rounded-2xl border p-5 cursor-pointer transition-all duration-300 ${
                           formData.packageId === pkg.id
-                            ? 'border-primary-600 bg-primary-50 shadow-lg hover:shadow-glow-green'
-                            : 'border-gray-200 hover:border-primary-300 hover:bg-primary-25'
+                            ? 'border-primary-500 bg-primary-50 shadow-glow-green'
+                            : 'border-primary-100 bg-white hover:border-primary-300'
                         }`}
                       >
                         <input
@@ -202,26 +229,15 @@ const BookTest = () => {
                           onChange={(e) => updateFormData('packageId', e.target.value)}
                           className="sr-only"
                         />
-                        <div className="flex justify-between items-start">
-                          <div className="flex-1">
-                            <div className="flex items-center gap-4 mb-3">
-                              <h3 className="text-3xl font-bold text-gray-900">{pkg.name}</h3>
-                              {pkg.popular && (
-                                <span className="bg-accent-500 text-white px-4 py-2 rounded-xl text-lg font-bold shadow-md hover-lift">
-                                  POPULAR
-                                </span>
-                              )}
-                            </div>
-                            <p className="text-gray-600 mb-3 text-xl">{pkg.nameHindi}</p>
-                            <p className="text-lg text-gray-600 mb-4">{pkg.description}</p>
-                            <p className="text-lg text-gray-500">
-                              Turnaround: {pkg.turnaroundDays} days
-                            </p>
-                          </div>
-                          <div className="text-right ml-6">
-                            <div className="text-5xl font-bold text-primary-600 hover-lift">₹{pkg.price}</div>
-                          </div>
-                        </div>
+                        <p className="text-sm text-primary-700 font-semibold">{pkg.turnaroundDays} days turnaround</p>
+                        <h3 className="text-xl mt-1 font-semibold text-slate-900">{pkg.name}</h3>
+                        <p className="text-sm text-slate-600 mt-2 min-h-[38px]">{pkg.description}</p>
+                        <p className="text-3xl font-display text-primary-700 mt-4">Rs {pkg.price}</p>
+                        {pkg.popular && (
+                          <span className="inline-flex mt-3 rounded-full bg-accent-500 px-3 py-1 text-xs text-white font-semibold">
+                            Most Popular
+                          </span>
+                        )}
                       </label>
                     ))}
                   </div>
@@ -230,16 +246,14 @@ const BookTest = () => {
 
               {step === 2 && (
                 <div>
-                  <div className="flex items-center gap-4 mb-8">
-                    <User size={40} className="text-primary-600 hover-lift" />
-                    <h2 className="text-4xl font-bold text-gray-900">Farmer Details</h2>
+                  <div className="flex items-center gap-3 mb-6">
+                    <User size={24} className="text-primary-700" />
+                    <h2 className="text-2xl md:text-3xl">Farmer Details</h2>
                   </div>
 
-                  <div className="space-y-6">
+                  <div className="space-y-4">
                     <div>
-                      <label className="form-label">
-                        Full Name | किसान का नाम *
-                      </label>
+                      <label className="form-label">Full Name *</label>
                       <input
                         type="text"
                         value={formData.farmerName || ''}
@@ -250,23 +264,19 @@ const BookTest = () => {
                     </div>
 
                     <div>
-                      <label className="form-label">
-                        Mobile Number | मोबाइल नंबर *
-                      </label>
+                      <label className="form-label">Mobile Number *</label>
                       <input
                         type="tel"
                         value={formData.mobile || ''}
                         onChange={(e) => updateFormData('mobile', e.target.value)}
                         className="form-input"
-                        placeholder="+91"
+                        placeholder="+91 9876543210"
                       />
                     </div>
 
-                    <div className="grid md:grid-cols-3 gap-6">
+                    <div className="grid md:grid-cols-3 gap-4">
                       <div>
-                        <label className="form-label">
-                          Village | गांव *
-                        </label>
+                        <label className="form-label">Village *</label>
                         <input
                           type="text"
                           value={formData.village || ''}
@@ -275,9 +285,7 @@ const BookTest = () => {
                         />
                       </div>
                       <div>
-                        <label className="form-label">
-                          District | जिला *
-                        </label>
+                        <label className="form-label">District *</label>
                         <input
                           type="text"
                           value={formData.district || ''}
@@ -286,15 +294,13 @@ const BookTest = () => {
                         />
                       </div>
                       <div>
-                        <label className="form-label">
-                          State | राज्य *
-                        </label>
+                        <label className="form-label">State *</label>
                         <select
                           value={formData.state || ''}
                           onChange={(e) => updateFormData('state', e.target.value)}
                           className="form-input"
                         >
-                          <option value="">Select State</option>
+                          <option value="">Select state</option>
                           {INDIAN_STATES.map((state) => (
                             <option key={state} value={state}>
                               {state}
@@ -305,15 +311,13 @@ const BookTest = () => {
                     </div>
 
                     <div>
-                      <label className="form-label">
-                        Crop Type | फसल का प्रकार *
-                      </label>
+                      <label className="form-label">Crop Type *</label>
                       <select
                         value={formData.cropType || ''}
                         onChange={(e) => updateFormData('cropType', e.target.value)}
                         className="form-input"
                       >
-                        <option value="">Select Crop</option>
+                        <option value="">Select crop</option>
                         {CROP_TYPES.map((crop) => (
                           <option key={crop} value={crop}>
                             {crop}
@@ -327,198 +331,179 @@ const BookTest = () => {
 
               {step === 3 && (
                 <div>
-                  <div className="flex items-center gap-4 mb-8">
-                    <MapPin size={40} className="text-primary-600 hover-lift" />
-                    <h2 className="text-4xl font-bold text-gray-900">Sample Collection</h2>
+                  <div className="flex items-center gap-3 mb-6">
+                    <MapPin size={24} className="text-primary-700" />
+                    <h2 className="text-2xl md:text-3xl">Sample Collection</h2>
                   </div>
 
-                  <div className="space-y-6">
-                    <div className="grid md:grid-cols-2 gap-6">
-                      <label
-                        className={`border-2 rounded-2xl p-8 cursor-pointer transition-all duration-300 card-hover ${
-                          formData.pickupType === 'pickup'
-                            ? 'border-primary-600 bg-primary-50 shadow-lg hover:shadow-glow-green'
-                            : 'border-gray-200 hover:border-primary-300 hover:bg-primary-25'
-                        }`}
-                      >
-                        <input
-                          type="radio"
-                          name="pickupType"
-                          value="pickup"
-                          checked={formData.pickupType === 'pickup'}
-                          onChange={(e) => updateFormData('pickupType', e.target.value)}
-                          className="sr-only"
-                        />
-                        <h3 className="text-3xl font-bold text-gray-900 mb-3">
-                          Free Pickup | मुफ्त पिकअप
-                        </h3>
-                        <p className="text-gray-600 text-xl">
-                          Our representative will collect soil sample from your farm within 2 working days
-                        </p>
-                      </label>
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <label
+                      className={`rounded-2xl border p-5 cursor-pointer transition-all duration-300 ${
+                        formData.pickupType === 'pickup'
+                          ? 'border-primary-500 bg-primary-50'
+                          : 'border-primary-100 bg-white hover:border-primary-300'
+                      }`}
+                    >
+                      <input
+                        type="radio"
+                        name="pickupType"
+                        value="pickup"
+                        checked={formData.pickupType === 'pickup'}
+                        onChange={(e) => updateFormData('pickupType', e.target.value)}
+                        className="sr-only"
+                      />
+                      <h3 className="text-xl font-semibold text-slate-900">Free Pickup</h3>
+                      <p className="text-sm text-slate-600 mt-2">
+                        Our representative collects the sample from your farm.
+                      </p>
+                    </label>
 
-                      <label
-                        className={`border-2 rounded-2xl p-8 cursor-pointer transition-all duration-300 card-hover ${
-                          formData.pickupType === 'drop'
-                            ? 'border-primary-600 bg-primary-50 shadow-lg hover:shadow-glow-green'
-                            : 'border-gray-200 hover:border-primary-300 hover:bg-primary-25'
-                        }`}
-                      >
-                        <input
-                          type="radio"
-                          name="pickupType"
-                          value="drop"
-                          checked={formData.pickupType === 'drop'}
-                          onChange={(e) => updateFormData('pickupType', e.target.value)}
-                          className="sr-only"
-                        />
-                        <h3 className="text-3xl font-bold text-gray-900 mb-3">
-                          Drop at Center | सेंटर पर जमा करें
-                        </h3>
-                        <p className="text-gray-600 text-xl">
-                          Drop your soil sample at nearest collection center. Find center details after booking.
-                        </p>
-                      </label>
+                    <label
+                      className={`rounded-2xl border p-5 cursor-pointer transition-all duration-300 ${
+                        formData.pickupType === 'drop'
+                          ? 'border-primary-500 bg-primary-50'
+                          : 'border-primary-100 bg-white hover:border-primary-300'
+                      }`}
+                    >
+                      <input
+                        type="radio"
+                        name="pickupType"
+                        value="drop"
+                        checked={formData.pickupType === 'drop'}
+                        onChange={(e) => updateFormData('pickupType', e.target.value)}
+                        className="sr-only"
+                      />
+                      <h3 className="text-xl font-semibold text-slate-900">Drop at Center</h3>
+                      <p className="text-sm text-slate-600 mt-2">
+                        You can submit the sample at the nearest collection center.
+                      </p>
+                    </label>
+                  </div>
+
+                  {formData.pickupType === 'pickup' && (
+                    <div className="mt-4">
+                      <label className="form-label">Pickup Address *</label>
+                      <textarea
+                        value={formData.address || ''}
+                        onChange={(e) => updateFormData('address', e.target.value)}
+                        rows={4}
+                        className="form-input resize-none"
+                        placeholder="Enter complete farm address with landmarks"
+                      />
                     </div>
-
-                    {formData.pickupType === 'pickup' && (
-                      <div>
-                        <label className="form-label">
-                          Complete Farm Address for Pickup *
-                        </label>
-                        <textarea
-                          value={formData.address || ''}
-                          onChange={(e) => updateFormData('address', e.target.value)}
-                          rows={4}
-                          className="form-input resize-none"
-                          placeholder="Enter complete farm address with landmarks"
-                        />
-                      </div>
-                    )}
-                  </div>
+                  )}
                 </div>
               )}
 
               {step === 4 && (
                 <div>
-                  <div className="flex items-center gap-4 mb-8">
-                    <CreditCard size={40} className="text-primary-600 hover-lift" />
-                    <h2 className="text-4xl font-bold text-gray-900">Payment & Confirmation</h2>
+                  <div className="flex items-center gap-3 mb-6">
+                    <CreditCard size={24} className="text-primary-700" />
+                    <h2 className="text-2xl md:text-3xl">Payment and Confirmation</h2>
                   </div>
 
-                  <div className="bg-gray-50 rounded-2xl p-8 mb-8 shadow-lg">
-                    <h3 className="font-bold text-gray-900 mb-6 text-2xl">Booking Summary</h3>
-                    <div className="space-y-4">
-                      <div className="flex justify-between items-center">
-                        <span className="text-gray-600 text-xl">Package:</span>
-                        <span className="font-semibold text-xl">
-                          {SERVICE_PACKAGES.find((p) => p.id === formData.packageId)?.name}
+                  <div className="rounded-2xl border border-primary-100 bg-[#f8fdf9] p-5 mb-5">
+                    <h3 className="font-semibold text-slate-900 mb-4">Booking Summary</h3>
+                    <div className="space-y-3 text-sm">
+                      <div className="flex items-center justify-between">
+                        <span className="text-slate-600">Package</span>
+                        <span className="font-semibold text-slate-900">{selectedPackage?.name}</span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-slate-600">Farmer</span>
+                        <span className="font-semibold text-slate-900">{formData.farmerName}</span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-slate-600">Mobile</span>
+                        <span className="font-semibold text-slate-900">{formData.mobile}</span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-slate-600">Collection</span>
+                        <span className="font-semibold text-slate-900">
+                          {formData.pickupType === 'pickup' ? 'Free pickup' : 'Drop at center'}
                         </span>
                       </div>
-                      <div className="flex justify-between items-center">
-                        <span className="text-gray-600 text-xl">Farmer:</span>
-                        <span className="font-semibold text-xl">{formData.farmerName}</span>
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <span className="text-gray-600 text-xl">Mobile:</span>
-                        <span className="font-semibold text-xl">{formData.mobile}</span>
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <span className="text-gray-600 text-xl">Location:</span>
-                        <span className="font-semibold text-xl">
-                          {formData.village}, {formData.district}
-                        </span>
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <span className="text-gray-600 text-xl">Collection:</span>
-                        <span className="font-semibold text-xl">
-                          {formData.pickupType === 'pickup' ? 'Free Pickup' : 'Drop at Center'}
-                        </span>
-                      </div>
-                      <div className="border-t border-gray-300 pt-4 mt-4 flex justify-between items-center text-xl">
-                        <span className="font-bold text-gray-900 text-2xl">Total Amount:</span>
-                        <span className="font-bold text-primary-600 text-4xl">
-                          ₹{SERVICE_PACKAGES.find((p) => p.id === formData.packageId)?.price}
-                        </span>
+                      <div className="pt-3 border-t border-primary-100 flex items-center justify-between">
+                        <span className="font-semibold text-slate-900">Total Amount</span>
+                        <span className="text-2xl font-display text-primary-700">Rs {selectedPackage?.price}</span>
                       </div>
                     </div>
                   </div>
 
-                  <div className="space-y-6">
-                    <div>
-                      <label className="form-label">
-                        Payment Method
-                      </label>
-                      <div className="space-y-4">
-                        <label className={`flex items-center gap-4 border-2 border-gray-200 rounded-xl p-6 cursor-pointer transition-all duration-300 card-hover ${
+                  <div>
+                    <label className="form-label">Payment Method</label>
+                    <div className="space-y-3">
+                      <label
+                        className={`flex items-center gap-3 rounded-xl border p-4 cursor-pointer transition-all duration-300 ${
                           formData.paymentMethod === 'online'
-                            ? 'border-primary-600 bg-primary-50 shadow-lg'
-                            : 'hover:border-primary-300'
-                        }`}>
-                          <input
-                            type="radio"
-                            name="payment"
-                            value="online"
-                            checked={formData.paymentMethod === 'online'}
-                            onChange={(e) => updateFormData('paymentMethod', e.target.value)}
-                            className="w-6 h-6 text-primary-600"
-                          />
-                          <span className="font-semibold text-xl">Pay Online (UPI/Card/Wallet)</span>
-                        </label>
-                        <label className={`flex items-center gap-4 border-2 border-gray-200 rounded-xl p-6 cursor-pointer transition-all duration-300 card-hover ${
+                            ? 'border-primary-500 bg-primary-50'
+                            : 'border-primary-100 hover:border-primary-300'
+                        }`}
+                      >
+                        <input
+                          type="radio"
+                          name="payment"
+                          value="online"
+                          checked={formData.paymentMethod === 'online'}
+                          onChange={(e) => updateFormData('paymentMethod', e.target.value)}
+                        />
+                        <span className="text-sm font-semibold text-slate-800">Pay online (UPI / Card / Wallet)</span>
+                      </label>
+                      <label
+                        className={`flex items-center gap-3 rounded-xl border p-4 cursor-pointer transition-all duration-300 ${
                           formData.paymentMethod === 'cod'
-                            ? 'border-primary-600 bg-primary-50 shadow-lg'
-                            : 'hover:border-primary-300'
-                        }`}>
-                          <input
-                            type="radio"
-                            name="payment"
-                            value="cod"
-                            checked={formData.paymentMethod === 'cod'}
-                            onChange={(e) => updateFormData('paymentMethod', e.target.value)}
-                            className="w-6 h-6 text-primary-600"
-                          />
-                          <span className="font-semibold text-xl">Cash on Sample Collection</span>
-                        </label>
-                      </div>
+                            ? 'border-primary-500 bg-primary-50'
+                            : 'border-primary-100 hover:border-primary-300'
+                        }`}
+                      >
+                        <input
+                          type="radio"
+                          name="payment"
+                          value="cod"
+                          checked={formData.paymentMethod === 'cod'}
+                          onChange={(e) => updateFormData('paymentMethod', e.target.value)}
+                        />
+                        <span className="text-sm font-semibold text-slate-800">Cash on sample collection</span>
+                      </label>
                     </div>
                   </div>
                 </div>
               )}
 
               {submitError && (
-                <div className="mt-6 rounded-xl border border-red-200 bg-red-50 p-4 text-red-700">
+                <div className="mt-5 rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-700">
                   {submitError}
                 </div>
               )}
 
-              <div className="flex justify-between mt-12 pt-8 border-t border-gray-200">
-                {step > 1 && (
+              <div className="mt-8 pt-6 border-t border-primary-100 flex items-center justify-between gap-3">
+                {step > 1 ? (
                   <button
-                    onClick={prevStep}
-                    className="flex items-center gap-3 px-8 py-4 border-2 border-gray-300 text-gray-700 rounded-xl font-semibold hover:bg-gray-50 hover-lift transition-all duration-300 text-xl"
+                    onClick={() => setStep((prev) => prev - 1)}
+                    className="btn-secondary"
+                    disabled={isSubmitting}
                   >
-                    <ChevronLeft size={24} />
+                    <ChevronLeft size={16} />
                     Previous
                   </button>
+                ) : (
+                  <span />
                 )}
+
                 {step < 4 ? (
                   <button
-                    onClick={nextStep}
-                    disabled={
-                      (step === 1 && !formData.packageId) ||
-                      (step === 2 && (!formData.farmerName || !formData.mobile || !formData.village || !formData.district || !formData.state || !formData.cropType))
-                    }
-                    className="flex items-center gap-3 px-8 py-4 bg-primary-600 text-white rounded-xl font-semibold hover:bg-primary-700 hover:shadow-button-hover hover:scale-105 active:scale-95 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 ml-auto text-xl"
+                    onClick={() => setStep((prev) => prev + 1)}
+                    disabled={!canProceed() || isSubmitting}
+                    className="btn-primary disabled:opacity-60"
                   >
                     Next
-                    <ChevronRight size={24} />
+                    <ChevronRight size={16} />
                   </button>
                 ) : (
                   <button
                     onClick={handleSubmit}
-                    disabled={isSubmitting}
-                    className="btn-primary ml-auto animate-pulse-slow text-xl disabled:opacity-60 disabled:cursor-not-allowed"
+                    disabled={!canProceed() || isSubmitting}
+                    className="btn-primary disabled:opacity-60"
                   >
                     {isSubmitting ? 'Processing...' : 'Confirm Booking'}
                   </button>
@@ -527,46 +512,30 @@ const BookTest = () => {
             </div>
           </>
         ) : (
-          <div className="bg-white rounded-3xl shadow-xl p-16 text-center card-hover">
-            <div className="w-24 h-24 bg-primary-100 rounded-2xl flex items-center justify-center mx-auto mb-8 hover-lift">
-              <Check size={56} className="text-primary-600" />
+          <div className="max-w-3xl mx-auto card-hover surface-3d p-8 md:p-10 text-center">
+            <div className="w-16 h-16 rounded-2xl bg-primary-100 text-primary-700 flex items-center justify-center mx-auto">
+              <Check size={28} />
             </div>
-            <h2 className="text-4xl font-bold text-gray-900 mb-6">Booking Confirmed!</h2>
-            <p className="text-2xl text-gray-600 mb-10">
-              Your soil test has been successfully booked
-            </p>
-            <div className="bg-primary-50 border-2 border-primary-200 rounded-2xl p-8 mb-10 shadow-lg">
-              <p className="text-lg text-gray-600 mb-3">Your Tracking ID</p>
-              <p className="text-4xl font-bold text-primary-600 mb-3 hover-lift">{trackingId}</p>
-              <p className="text-lg text-gray-600">
-                Save this ID to check your report status
+            <h2 className="text-3xl md:text-4xl mt-5">Booking Confirmed</h2>
+            <p className="text-slate-600 mt-3">Your soil test request is successfully created.</p>
+
+            <div className="mt-6 rounded-2xl border border-primary-100 bg-[#f8fdf9] p-5">
+              <p className="text-sm text-slate-600">Tracking ID</p>
+              <p className="text-3xl font-display text-primary-700 mt-2">{trackingId}</p>
+              <p className="text-sm text-slate-600 mt-2">Save this ID to view your report timeline.</p>
+            </div>
+
+            <div className="mt-6 text-left max-w-lg mx-auto space-y-2 text-sm text-slate-700">
+              <p>- Confirmation has been sent to {formData.mobile}.</p>
+              <p>
+                - {formData.pickupType === 'pickup'
+                  ? 'Sample pickup is expected within 2 working days.'
+                  : 'Collection center details will be shared shortly.'}
               </p>
+              <p>- Estimated report time: {selectedPackage?.turnaroundDays} days.</p>
             </div>
-            <div className="space-y-4 text-left max-w-lg mx-auto mb-10">
-              <div className="flex items-start gap-4">
-                <Check size={24} className="text-primary-600 mt-1 flex-shrink-0 hover-lift" />
-                <p className="text-gray-700 text-lg">SMS confirmation sent to {formData.mobile}</p>
-              </div>
-              <div className="flex items-start gap-4">
-                <Check size={24} className="text-primary-600 mt-1 flex-shrink-0 hover-lift" />
-                <p className="text-gray-700 text-lg">
-                  {formData.pickupType === 'pickup'
-                    ? 'Sample pickup scheduled within 2 working days'
-                    : 'Collection center details sent via SMS'}
-                </p>
-              </div>
-              <div className="flex items-start gap-4">
-                <Check size={24} className="text-primary-600 mt-1 flex-shrink-0 hover-lift" />
-                <p className="text-gray-700 text-lg">
-                  Report will be available in{' '}
-                  {SERVICE_PACKAGES.find((p) => p.id === formData.packageId)?.turnaroundDays} days
-                </p>
-              </div>
-            </div>
-            <button
-              onClick={() => window.location.reload()}
-              className="btn-primary animate-bounce-subtle"
-            >
+
+            <button onClick={resetFlow} className="btn-primary mt-7">
               Book Another Test
             </button>
           </div>

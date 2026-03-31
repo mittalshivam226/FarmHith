@@ -15,7 +15,7 @@ const Blog = () => {
     { id: 'smart_farming', label: 'Smart Farming', count: 2 },
     { id: 'sustainability', label: 'Sustainability', count: 1 },
     { id: 'energy', label: 'Clean Energy', count: 0 },
-    { id: 'policy', label: 'Policy & Schemes', count: 1 },
+    { id: 'policy', label: 'Policy and Schemes', count: 1 },
   ];
 
   const visiblePosts = useMemo(
@@ -25,28 +25,34 @@ const Blog = () => {
 
   return (
     <div className="min-h-screen">
-      <section className="bg-gradient-to-br from-green-600 to-green-800 text-white py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-3xl mx-auto">
-            <h1 className="text-5xl font-bold mb-6">Blog</h1>
-            <p className="text-xl text-green-100 leading-relaxed">
-              Latest insights on sustainable agriculture, soil health, and farming innovations
-            </p>
-          </div>
+      <section className="relative overflow-hidden py-16 md:py-20">
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="ambient-orb top-[-8%] left-[-8%] h-72 w-72 bg-primary-300/60" />
+          <div className="ambient-orb right-[-9%] bottom-[-20%] h-80 w-80 bg-accent-200/70" />
+        </div>
+
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <span className="inline-flex rounded-full border border-primary-200 bg-white/90 px-4 py-1.5 text-xs font-semibold text-primary-700">
+            Knowledge and field insights
+          </span>
+          <h1 className="mt-5 text-4xl sm:text-5xl md:text-6xl font-display text-slate-900">FarmHith Blog</h1>
+          <p className="mt-4 text-lg text-slate-600 max-w-3xl mx-auto">
+            Practical content on soil health, sustainable agriculture, and farmer-focused innovation.
+          </p>
         </div>
       </section>
 
-      <section className="py-12 bg-white border-b">
+      <section className="py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-wrap gap-3 justify-center">
+          <div className="flex flex-wrap gap-2 justify-center">
             {categories.map((category) => (
               <button
                 key={category.id}
                 onClick={() => setActiveCategory(category.id)}
-                className={`px-6 py-2 rounded-full border-2 transition-all font-semibold ${
+                className={`rounded-full border px-4 py-2 text-sm font-semibold transition-all duration-300 ${
                   activeCategory === category.id
-                    ? 'bg-green-600 text-white border-green-600'
-                    : 'border-green-600 text-green-600 hover:bg-green-600 hover:text-white'
+                    ? 'border-primary-600 bg-primary-600 text-white'
+                    : 'border-primary-200 bg-white text-primary-700 hover:border-primary-400'
                 }`}
               >
                 {category.label} ({category.count})
@@ -56,61 +62,42 @@ const Blog = () => {
         </div>
       </section>
 
-      <section className="py-20 bg-gray-50">
+      <section className="py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-2 lg:grid-cols-2 gap-8">
+          <div className="grid md:grid-cols-2 gap-5">
             {visiblePosts.map((post) => (
               <article
                 key={post.id}
                 onClick={() => navigateTo('education')}
-                className="bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-all cursor-pointer group"
+                className="card-hover surface-3d cursor-pointer overflow-hidden"
               >
-                <div className="aspect-video bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center relative overflow-hidden">
-                  <div className="absolute inset-0 bg-black/10 group-hover:bg-black/20 transition-all"></div>
-                  <span className="text-white text-6xl font-bold opacity-30">
-                    {post.category === 'smart_farming'
-                      ? 'SF'
-                      : post.category === 'sustainability'
-                      ? 'SU'
-                      : post.category === 'policy'
-                      ? 'PO'
-                      : 'EN'}
+                <div className="h-44 bg-gradient-to-br from-primary-500 to-primary-700 px-6 py-5 flex items-end">
+                  <span className="rounded-full bg-white/20 px-3 py-1 text-xs font-semibold text-white">
+                    {post.category.split('_').join(' ')}
                   </span>
                 </div>
-                <div className="p-6">
-                  <div className="flex items-center gap-2 mb-3">
-                    <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-xs font-semibold">
-                      {post.category
-                        .split('_')
-                        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-                        .join(' ')}
+                <div className="p-5">
+                  <h2 className="text-2xl font-semibold text-slate-900">{post.title}</h2>
+                  <p className="text-sm text-slate-600 mt-3 leading-relaxed">{post.excerpt}</p>
+                  <div className="mt-4 flex flex-wrap items-center gap-4 text-xs text-slate-500">
+                    <span className="inline-flex items-center gap-1">
+                      <Calendar size={14} />
+                      {new Date(post.date).toLocaleDateString('en-IN', {
+                        month: 'short',
+                        day: 'numeric',
+                        year: 'numeric',
+                      })}
+                    </span>
+                    <span className="inline-flex items-center gap-1">
+                      <Clock size={14} />
+                      {post.readTime} min read
                     </span>
                   </div>
-                  <h2 className="text-2xl font-bold text-gray-900 mb-3 group-hover:text-green-600 transition-colors">
-                    {post.title}
-                  </h2>
-                  <p className="text-gray-600 leading-relaxed mb-4">{post.excerpt}</p>
-                  <div className="flex items-center justify-between text-sm text-gray-500 mb-4">
-                    <div className="flex items-center gap-4">
-                      <span className="flex items-center gap-1">
-                        <Calendar size={16} />
-                        {new Date(post.date).toLocaleDateString('en-IN', {
-                          month: 'short',
-                          day: 'numeric',
-                          year: 'numeric',
-                        })}
-                      </span>
-                      <span className="flex items-center gap-1">
-                        <Clock size={16} />
-                        {post.readTime} min read
-                      </span>
-                    </div>
-                  </div>
-                  <div className="flex flex-wrap gap-2 mb-4">
-                    {post.tags.map((tag, index) => (
+                  <div className="mt-4 flex flex-wrap gap-2">
+                    {post.tags.map((tag) => (
                       <span
-                        key={index}
-                        className="flex items-center gap-1 bg-gray-100 text-gray-700 px-2 py-1 rounded text-xs"
+                        key={tag}
+                        className="inline-flex items-center gap-1 rounded-full border border-primary-100 bg-primary-50 px-2.5 py-1 text-xs text-primary-700"
                       >
                         <Tag size={12} />
                         {tag}
@@ -118,10 +105,13 @@ const Blog = () => {
                     ))}
                   </div>
                   <button
-                    onClick={() => navigateTo('education')}
-                    className="text-green-600 font-semibold hover:underline"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      navigateTo('education');
+                    }}
+                    className="mt-5 text-primary-700 font-semibold hover:underline"
                   >
-                    Read Full Article -
+                    Read full article
                   </button>
                 </div>
               </article>
@@ -129,17 +119,15 @@ const Blog = () => {
           </div>
 
           {actionMessage && (
-            <div className="mt-8 rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-center text-green-800">
+            <div className="mt-6 rounded-xl border border-primary-200 bg-primary-50 px-4 py-3 text-sm text-center text-primary-800">
               {actionMessage}
             </div>
           )}
 
-          <div className="mt-12 text-center">
+          <div className="mt-8 text-center">
             <button
-              onClick={() =>
-                setActionMessage('You are viewing all currently published articles. More posts will be added soon.')
-              }
-              className="bg-green-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-green-700 transition-all"
+              onClick={() => setActionMessage('You are viewing all currently published articles. More posts are coming soon.')}
+              className="btn-primary"
             >
               Load More Articles
             </button>
@@ -147,35 +135,37 @@ const Blog = () => {
         </div>
       </section>
 
-      <section className="py-20 bg-white">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">Subscribe to Our Newsletter</h2>
-          <p className="text-lg text-gray-600 mb-8">
-            Get the latest articles and farming tips delivered to your inbox
-          </p>
-          <div className="flex gap-3 max-w-md mx-auto">
-            <input
-              type="email"
-              placeholder="Enter your email"
-              value={newsletterEmail}
-              onChange={(e) => setNewsletterEmail(e.target.value)}
-              className="flex-1 px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-green-600 focus:outline-none"
-            />
-            <button
-              onClick={() => {
-                if (!newsletterEmail.trim()) {
-                  setNewsletterMessage('Please enter your email before subscribing.');
-                  return;
-                }
-                setNewsletterMessage('Thanks for subscribing. We will share updates with you soon.');
-                setNewsletterEmail('');
-              }}
-              className="bg-green-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-700 transition-all"
-            >
-              Subscribe
-            </button>
+      <section className="pb-16 pt-8">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="card-hover surface-3d p-6 md:p-8 text-center">
+            <h3 className="text-2xl md:text-3xl">Subscribe to Newsletter</h3>
+            <p className="text-slate-600 mt-2">
+              Receive new farming insights and practical soil health updates.
+            </p>
+            <div className="mt-5 flex flex-col sm:flex-row gap-3">
+              <input
+                type="email"
+                placeholder="Enter your email"
+                value={newsletterEmail}
+                onChange={(e) => setNewsletterEmail(e.target.value)}
+                className="form-input flex-1"
+              />
+              <button
+                onClick={() => {
+                  if (!newsletterEmail.trim()) {
+                    setNewsletterMessage('Please enter your email before subscribing.');
+                    return;
+                  }
+                  setNewsletterMessage('Thanks for subscribing. We will share updates with you soon.');
+                  setNewsletterEmail('');
+                }}
+                className="btn-primary"
+              >
+                Subscribe
+              </button>
+            </div>
+            {newsletterMessage && <p className="text-sm text-primary-700 mt-4">{newsletterMessage}</p>}
           </div>
-          {newsletterMessage && <p className="mt-4 text-sm text-green-700">{newsletterMessage}</p>}
         </div>
       </section>
     </div>

@@ -1,5 +1,5 @@
-import { Mail, Phone, MapPin, Clock, MessageSquare, Send } from 'lucide-react';
 import { useState } from 'react';
+import { ArrowRight, Clock3, Mail, MapPin, MessageSquare, Phone, Send } from 'lucide-react';
 import { submitContactMessage } from '../services/contact';
 import { useNavigation } from '../context/NavigationContext';
 
@@ -21,12 +21,13 @@ const Contact = () => {
     setIsSubmitting(true);
     setSuccessMessage('');
     setErrorMessage('');
+
     try {
       await submitContactMessage(formData);
-      setSuccessMessage('Thank you for contacting us. We will get back to you within 24 hours.');
+      setSuccessMessage('Thank you for reaching out. Our team will contact you within 24 hours.');
       setFormData({ name: '', email: '', phone: '', subject: '', message: '' });
     } catch (error) {
-      setErrorMessage(error instanceof Error ? error.message : 'Unable to submit message right now.');
+      setErrorMessage(error instanceof Error ? error.message : 'Unable to submit your message right now.');
     } finally {
       setIsSubmitting(false);
     }
@@ -34,190 +35,225 @@ const Contact = () => {
 
   return (
     <div className="min-h-screen">
-      <section className="bg-gradient-to-br from-green-600 to-green-800 text-white py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-3xl mx-auto">
-            <h1 className="text-5xl font-bold mb-6">Contact Us</h1>
-            <p className="text-xl text-green-100 leading-relaxed">
-              We are here to help. Reach out with any questions or feedback.
+      <section className="relative overflow-hidden py-16 md:py-20">
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="ambient-orb top-[-5%] left-[-6%] h-72 w-72 bg-primary-300/60" />
+          <div className="ambient-orb right-[-7%] bottom-[-18%] h-80 w-80 bg-accent-200/70" />
+        </div>
+
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-3xl">
+            <span className="inline-flex rounded-full border border-primary-200 bg-white/90 px-4 py-1.5 text-xs font-semibold text-primary-700">
+              We are here to help your farming journey
+            </span>
+            <h1 className="mt-5 text-4xl sm:text-5xl md:text-6xl font-display text-slate-900 leading-tight">
+              Reach the FarmHith
+              <span className="text-primary-700"> support team</span>
+            </h1>
+            <p className="mt-4 text-lg text-slate-600 max-w-2xl">
+              Questions about soil tests, residue selling, partner onboarding, or payment issues. We respond fast and keep guidance practical.
             </p>
+            <div className="mt-8 flex flex-wrap gap-3">
+              <a href="tel:+911234567890" className="btn-primary">
+                Call Support
+              </a>
+              <a
+                href="https://wa.me/911234567890"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn-secondary"
+              >
+                WhatsApp Chat
+              </a>
+            </div>
           </div>
         </div>
       </section>
 
-      <section className="py-20 bg-gray-50">
+      <section className="pb-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid lg:grid-cols-3 gap-8 mb-12">
-            <div className="bg-white rounded-xl p-8 shadow-lg text-center">
-              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Phone size={32} className="text-green-600" />
+          <div className="grid lg:grid-cols-5 gap-6">
+            <div className="lg:col-span-2 space-y-4">
+              {[
+                {
+                  icon: Phone,
+                  title: 'Phone',
+                  value: '+91 1234567890',
+                  hint: 'Mon-Sat, 9:00 AM to 6:00 PM',
+                  href: 'tel:+911234567890',
+                },
+                {
+                  icon: Mail,
+                  title: 'Email',
+                  value: 'support@farmhith.in',
+                  hint: 'Usually replies within 24 hours',
+                  href: 'mailto:support@farmhith.in',
+                },
+                {
+                  icon: MapPin,
+                  title: 'Office',
+                  value: 'Panipat, Haryana, India',
+                  hint: 'Remote and in-person support available',
+                  href: '#',
+                },
+              ].map((item) => (
+                <a
+                  key={item.title}
+                  href={item.href}
+                  onClick={(e) => {
+                    if (item.href === '#') {
+                      e.preventDefault();
+                    }
+                  }}
+                  className="card-hover surface-3d p-5 block"
+                >
+                  <div className="w-10 h-10 rounded-xl bg-primary-100 text-primary-700 flex items-center justify-center">
+                    <item.icon size={18} />
+                  </div>
+                  <p className="mt-3 text-sm text-slate-500">{item.title}</p>
+                  <p className="text-lg font-semibold text-slate-900">{item.value}</p>
+                  <p className="text-sm text-slate-600 mt-1">{item.hint}</p>
+                </a>
+              ))}
+
+              <div className="card-hover surface-3d p-5">
+                <p className="inline-flex items-center gap-2 text-primary-700 font-semibold">
+                  <Clock3 size={18} />
+                  Operating Hours
+                </p>
+                <div className="mt-4 space-y-3 text-sm">
+                  <div className="flex items-center justify-between border-b border-primary-100 pb-2">
+                    <span className="text-slate-700">Monday to Friday</span>
+                    <span className="font-semibold text-slate-900">9:00 AM - 6:00 PM</span>
+                  </div>
+                  <div className="flex items-center justify-between border-b border-primary-100 pb-2">
+                    <span className="text-slate-700">Saturday</span>
+                    <span className="font-semibold text-slate-900">9:00 AM - 4:00 PM</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-slate-700">Sunday</span>
+                    <span className="font-semibold text-slate-900">Closed</span>
+                  </div>
+                </div>
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">Call Us</h3>
-              <a href="tel:+911234567890" className="text-green-600 font-semibold text-lg hover:underline">
-                +91 1234567890
-              </a>
-              <p className="text-sm text-gray-500 mt-2">Mon-Sat, 9:00 AM - 6:00 PM</p>
             </div>
 
-            <div className="bg-white rounded-xl p-8 shadow-lg text-center">
-              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Mail size={32} className="text-green-600" />
-              </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">Email Us</h3>
-              <a href="mailto:support@farmhith.in" className="text-green-600 font-semibold text-lg hover:underline">
-                support@farmhith.in
-              </a>
-              <p className="text-sm text-gray-500 mt-2">24-hour response time</p>
-            </div>
-
-            <div className="bg-white rounded-xl p-8 shadow-lg text-center">
-              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <MapPin size={32} className="text-green-600" />
-              </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">Visit Us</h3>
-              <p className="text-gray-700 font-semibold">Panipat, Haryana, India - 132103</p>
-            </div>
-          </div>
-
-          <div className="grid lg:grid-cols-2 gap-12">
-            <div className="bg-white rounded-2xl p-8 shadow-lg">
-              <h2 className="text-3xl font-bold text-gray-900 mb-6 flex items-center gap-3">
-                <MessageSquare size={32} className="text-green-600" />
-                Send Us a Message
+            <div className="lg:col-span-3 card-hover surface-3d p-6 md:p-8">
+              <h2 className="text-2xl md:text-3xl font-display flex items-center gap-2">
+                <MessageSquare size={24} className="text-primary-700" />
+                Send a Message
               </h2>
-              <form onSubmit={handleSubmit} className="space-y-4">
+              <p className="text-slate-600 mt-2">
+                Share your question and we will route it to the right team.
+              </p>
+
+              <form onSubmit={handleSubmit} className="mt-6 space-y-4">
                 {successMessage && (
-                  <div className="rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-green-700">
+                  <div className="rounded-xl border border-primary-200 bg-primary-50 px-4 py-3 text-primary-800 text-sm">
                     {successMessage}
                   </div>
                 )}
                 {errorMessage && (
-                  <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-red-700">
+                  <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-red-700 text-sm">
                     {errorMessage}
                   </div>
                 )}
-                <input
-                  type="text"
-                  required
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-green-600 focus:outline-none"
-                  placeholder="Full Name"
-                />
-                <div className="grid md:grid-cols-2 gap-4">
+
+                <div>
+                  <label className="form-label">Full Name</label>
                   <input
-                    type="email"
+                    type="text"
                     required
-                    value={formData.email}
-                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-green-600 focus:outline-none"
-                    placeholder="Email"
-                  />
-                  <input
-                    type="tel"
-                    required
-                    value={formData.phone}
-                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-green-600 focus:outline-none"
-                    placeholder="Phone"
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    className="form-input"
+                    placeholder="Enter your name"
                   />
                 </div>
-                <select
-                  required
-                  value={formData.subject}
-                  onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
-                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-green-600 focus:outline-none"
-                >
-                  <option value="">Select a subject</option>
-                  <option value="soil_test">Soil Testing Query</option>
-                  <option value="residue">Residue Selling</option>
-                  <option value="partnership">Partnership Inquiry</option>
-                  <option value="technical">Technical Support</option>
-                  <option value="feedback">Feedback</option>
-                </select>
-                <textarea
-                  required
-                  rows={5}
-                  value={formData.message}
-                  onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-green-600 focus:outline-none"
-                  placeholder="Message"
-                />
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="w-full bg-green-600 text-white py-4 rounded-lg font-semibold text-lg hover:bg-green-700 transition-all flex items-center justify-center gap-2 disabled:opacity-60"
-                >
-                  <Send size={20} />
-                  {isSubmitting ? 'Sending...' : 'Send Message'}
+
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="form-label">Email</label>
+                    <input
+                      type="email"
+                      required
+                      value={formData.email}
+                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                      className="form-input"
+                      placeholder="Enter your email"
+                    />
+                  </div>
+                  <div>
+                    <label className="form-label">Phone</label>
+                    <input
+                      type="tel"
+                      required
+                      value={formData.phone}
+                      onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                      className="form-input"
+                      placeholder="+91 9876543210"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="form-label">Subject</label>
+                  <select
+                    required
+                    value={formData.subject}
+                    onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
+                    className="form-input"
+                  >
+                    <option value="">Select a subject</option>
+                    <option value="soil_test">Soil testing query</option>
+                    <option value="residue">Residue selling support</option>
+                    <option value="partnership">Partnership inquiry</option>
+                    <option value="technical">Technical issue</option>
+                    <option value="payment">Payment issue</option>
+                    <option value="feedback">Feedback</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="form-label">Message</label>
+                  <textarea
+                    required
+                    rows={5}
+                    value={formData.message}
+                    onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                    className="form-input"
+                    placeholder="Write your message"
+                  />
+                </div>
+
+                <button type="submit" disabled={isSubmitting} className="btn-primary w-full disabled:opacity-70">
+                  <Send size={18} />
+                  {isSubmitting ? 'Sending message...' : 'Send Message'}
                 </button>
               </form>
             </div>
-
-            <div>
-              <div className="bg-white rounded-2xl p-8 shadow-lg mb-8">
-                <h3 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-3">
-                  <Clock size={28} className="text-green-600" />
-                  Operating Hours
-                </h3>
-                <div className="space-y-4">
-                  {[
-                    { day: 'Monday - Friday', hours: '9:00 AM - 6:00 PM' },
-                    { day: 'Saturday', hours: '9:00 AM - 4:00 PM' },
-                    { day: 'Sunday', hours: 'Closed' },
-                  ].map((schedule, index) => (
-                    <div key={index} className="flex justify-between items-center py-3 border-b border-gray-100 last:border-0">
-                      <span className="font-semibold text-gray-900">{schedule.day}</span>
-                      <span className="text-gray-600">{schedule.hours}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="bg-gradient-to-br from-green-400 to-green-600 rounded-2xl p-8 text-white">
-                <h3 className="text-2xl font-bold mb-4">Quick Links</h3>
-                <div className="space-y-3">
-                  {[
-                    { label: 'Book a Soil Test', page: 'book-test' },
-                    { label: 'Check Report Status', page: 'reports' },
-                    { label: 'Sell Crop Residue', page: 'services' },
-                    { label: 'Partner with Us', page: 'partners' },
-                    { label: 'Educational Resources', page: 'education' },
-                  ].map((link, index) => (
-                    <button
-                      key={index}
-                      onClick={() => navigateTo(link.page)}
-                      className="block w-full text-left py-2 hover:pl-2 transition-all text-white hover:text-yellow-300"
-                    >
-                      {'->'} {link.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </div>
           </div>
-        </div>
-      </section>
 
-      <section className="py-20 bg-gradient-to-r from-green-600 to-yellow-500">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-4xl font-bold text-white mb-6">Have Questions About Soil Testing?</h2>
-          <p className="text-xl text-white mb-8">Our expert team is ready to guide you through the process.</p>
-          <div className="flex flex-wrap gap-4 justify-center">
-            <a
-              href="https://wa.me/911234567890"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="bg-white text-green-600 px-8 py-4 rounded-lg font-bold text-lg hover:bg-gray-100 transition-all shadow-lg"
-            >
-              WhatsApp Us
-            </a>
-            <a
-              href="tel:+911234567890"
-              className="bg-green-900 text-white px-8 py-4 rounded-lg font-bold text-lg hover:bg-green-800 transition-all shadow-lg"
-            >
-              Call Now
-            </a>
+          <div className="mt-8 card-hover surface-3d p-6">
+            <h3 className="text-xl font-display">Quick Actions</h3>
+            <div className="mt-4 grid sm:grid-cols-2 lg:grid-cols-5 gap-3">
+              {[
+                { label: 'Book Soil Test', page: 'book-test' },
+                { label: 'Track Reports', page: 'reports' },
+                { label: 'Sell Residue', page: 'services' },
+                { label: 'Partner With Us', page: 'partners' },
+                { label: 'Learn & Guides', page: 'education' },
+              ].map((link) => (
+                <button
+                  key={link.page}
+                  onClick={() => navigateTo(link.page)}
+                  className="rounded-xl border border-primary-200 bg-white px-4 py-3 text-left text-sm font-semibold text-slate-700 hover:border-primary-400 hover:text-primary-700 transition-all duration-300 flex items-center justify-between"
+                >
+                  {link.label}
+                  <ArrowRight size={16} />
+                </button>
+              ))}
+            </div>
           </div>
         </div>
       </section>

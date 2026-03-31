@@ -1,76 +1,133 @@
-import { Target, Heart, Award, Users, TrendingUp, Leaf } from 'lucide-react';
+import { Award, Heart, Leaf, Sprout, Target, TrendingUp, Users } from 'lucide-react';
 import { useNavigation } from '../context/NavigationContext';
 
 const About = () => {
   const { navigateTo } = useNavigation();
-  const timeline = [
-    { year: '2022', event: 'Farmहित Founded', desc: 'Started with a vision to make soil testing accessible to every farmer' },
-    { year: '2023', event: '10,000 Tests Milestone', desc: 'Reached 10,000 successful soil tests across 5 states' },
-    { year: '2024', event: 'Residue Portal Launch', desc: 'Introduced crop residue trading platform connecting farmers with biopellet plants' },
-    { year: '2025', event: '500+ Villages', desc: 'Expanded to 500+ villages with 45+ partner labs nationwide' },
+
+  const milestones = [
+    {
+      year: '2022',
+      title: 'FarmHith founded',
+      description: 'Started with one goal: make soil testing practical and accessible for every farmer.',
+    },
+    {
+      year: '2023',
+      title: '10,000 tests completed',
+      description: 'Built trust through accurate reports and field-friendly recommendations.',
+    },
+    {
+      year: '2024',
+      title: 'Residue marketplace launched',
+      description: 'Enabled farmers to monetize crop residue instead of burning it.',
+    },
+    {
+      year: '2025',
+      title: '500+ villages reached',
+      description: 'Expanded partner network of labs and buyers across multiple regions.',
+    },
+  ];
+
+  const values = [
+    {
+      icon: Target,
+      title: 'Farmer First',
+      description: 'Every workflow is designed to save time, reduce confusion, and improve outcomes in the field.',
+    },
+    {
+      icon: Leaf,
+      title: 'Sustainability',
+      description: 'We focus on long-term soil health and climate-positive residue management.',
+    },
+    {
+      icon: TrendingUp,
+      title: 'Actionable Data',
+      description: 'Reports are translated into clear next steps, not just lab numbers.',
+    },
+    {
+      icon: Heart,
+      title: 'Trust & Care',
+      description: 'Transparent pricing, reliable support, and accountable partnerships.',
+    },
   ];
 
   const team = [
-    { name: 'Dr. Rajesh Kumar', role: 'Founder & Chief Agronomist', expertise: 'Soil Science, 20+ years' },
-    { name: 'Priya Sharma', role: 'Head of Operations', expertise: 'Agricultural Technology' },
-    { name: 'Amandeep Singh', role: 'Technical Director', expertise: 'Lab Management & Quality' },
-    { name: 'Neha Patel', role: 'Farmer Relations', expertise: 'Community Outreach' },
-  ];
-
-  const sdgs = [
-    { number: 2, title: 'Zero Hunger', desc: 'Improving crop yields through better soil management' },
-    { number: 12, title: 'Responsible Consumption', desc: 'Reducing fertilizer waste and promoting precision farming' },
-    { number: 13, title: 'Climate Action', desc: 'Converting crop residue to clean energy instead of burning' },
-    { number: 15, title: 'Life on Land', desc: 'Restoring soil health and promoting sustainable agriculture' },
+    { name: 'Dr. Rajesh Kumar', role: 'Founder & Chief Agronomist', focus: 'Soil science and advisory models' },
+    { name: 'Priya Sharma', role: 'Head of Operations', focus: 'Lab network and service quality' },
+    { name: 'Amandeep Singh', role: 'Technology Director', focus: 'Platform and data systems' },
+    { name: 'Neha Patel', role: 'Farmer Relations', focus: 'Field onboarding and support' },
   ];
 
   return (
     <div className="min-h-screen">
-      <section className="bg-gradient-to-br from-green-600 to-green-800 text-white py-16">
-        <div className="w-full px-6 sm:px-8 lg:px-12">
-          <div className="text-center max-w-3xl mx-auto">
-            <h1 className="text-6xl font-bold mb-6">
-              About Farm<span className="text-yellow-400">हित</span>
-            </h1>
-            <p className="text-2xl text-green-100 leading-relaxed">
-              हमारे बारे में | Empowering farmers through accurate soil testing and sustainable agricultural practices since 2022
-            </p>
+      <section className="relative overflow-hidden py-16 md:py-20">
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="ambient-orb top-[-10%] left-[-6%] h-72 w-72 bg-primary-300/60" />
+          <div className="ambient-orb right-[-8%] bottom-[-18%] h-80 w-80 bg-accent-200/70" />
+        </div>
+
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <span className="inline-flex rounded-full border border-primary-200 bg-white/90 px-4 py-1.5 text-xs font-semibold text-primary-700">
+            Why FarmHith exists
+          </span>
+          <h1 className="mt-5 text-4xl sm:text-5xl md:text-6xl font-display text-slate-900 leading-tight max-w-4xl">
+            Building a cleaner, smarter
+            <span className="text-primary-700"> agri ecosystem</span>
+            for farmers and partners.
+          </h1>
+          <p className="mt-4 text-lg text-slate-600 max-w-3xl">
+            FarmHith bridges farmers, soil labs, and biomass buyers to improve farm decisions, unlock new income, and reduce stubble burning.
+          </p>
+          <div className="mt-8 flex flex-wrap gap-3">
+            <button onClick={() => navigateTo('services')} className="btn-primary">
+              Explore Services
+            </button>
+            <button onClick={() => navigateTo('contact')} className="btn-secondary">
+              Talk to Team
+            </button>
           </div>
         </div>
       </section>
 
-      <section className="py-16 bg-white">
-        <div className="w-full px-6 sm:px-8 lg:px-12">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <div>
-              <h2 className="text-5xl font-bold text-gray-900 mb-6">Our Story</h2>
-              <div className="space-y-4 text-gray-700 leading-relaxed">
-                <p>
-                  Farmहित was born from a simple observation: Indian farmers needed affordable, accurate soil testing but faced significant barriers—expensive labs, complicated processes, and lack of actionable advice.
-                </p>
-                <p>
-                  Founded in 2022 by agricultural scientists and technology enthusiasts, we set out to democratize soil health testing. Starting in Panipat, Haryana, we partnered with local labs to create a streamlined, farmer-friendly testing process.
-                </p>
-                <p>
-                  Today, we've grown to serve 15,000+ farmers across multiple states, partnering with 45+ certified laboratories and educational institutions. Our platform has analyzed over 25,000 soil samples, helping farmers save on fertilizer costs while improving yields.
-                </p>
-                <p>
-                  Beyond testing, we've pioneered a crop residue trading platform that converts agricultural waste into income, addressing both environmental concerns and farmer economics.
-                </p>
-              </div>
+      <section className="py-6">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid md:grid-cols-3 gap-4">
+          {[
+            { value: '25,000+', label: 'Soil reports delivered' },
+            { value: '45+', label: 'Partner labs' },
+            { value: '15,000+', label: 'Farmers served' },
+          ].map((stat) => (
+            <div key={stat.label} className="card-hover surface-3d p-6 text-center">
+              <p className="text-4xl font-display text-primary-700">{stat.value}</p>
+              <p className="text-slate-600 mt-1">{stat.label}</p>
             </div>
-            <div className="space-y-4">
-              {timeline.map((item, index) => (
-                <div key={index} className="bg-gradient-to-r from-green-50 to-yellow-50 rounded-xl p-6 border-l-4 border-green-600">
-                  <div className="flex items-start gap-4">
-                    <div className="bg-green-600 text-white font-bold px-4 py-2 rounded-lg text-lg flex-shrink-0">
-                      {item.year}
-                    </div>
-                    <div>
-                      <h3 className="font-bold text-gray-900 text-2xl mb-2">{item.event}</h3>
-                      <p className="text-gray-600 text-lg">{item.desc}</p>
-                    </div>
-                  </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="py-14">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid lg:grid-cols-2 gap-6">
+          <div className="card-hover surface-3d p-6 md:p-8">
+            <h2 className="text-3xl md:text-4xl">Our Story</h2>
+            <div className="mt-4 space-y-4 text-slate-600 leading-relaxed">
+              <p>
+                FarmHith started after seeing a repeated pattern. Farmers wanted better yields, but reliable soil insights were difficult to access and often too hard to act on.
+              </p>
+              <p>
+                We built a platform where test booking, lab processing, and recommendations happen in one simple flow. Then we extended that flow to residue commerce, turning waste into income.
+              </p>
+              <p>
+                Today, we continue to focus on practical outcomes: lower input waste, healthier soil, cleaner air, and stronger farm economics.
+              </p>
+            </div>
+          </div>
+
+          <div className="card-hover surface-3d p-6 md:p-8">
+            <h2 className="text-3xl md:text-4xl">Milestones</h2>
+            <div className="mt-5 space-y-4">
+              {milestones.map((item) => (
+                <div key={item.year} className="rounded-2xl border border-primary-100 bg-[#f8fdf9] p-4">
+                  <p className="text-sm font-semibold text-primary-700">{item.year}</p>
+                  <p className="text-lg font-semibold text-slate-900 mt-0.5">{item.title}</p>
+                  <p className="text-sm text-slate-600 mt-1">{item.description}</p>
                 </div>
               ))}
             </div>
@@ -78,137 +135,73 @@ const About = () => {
         </div>
       </section>
 
-      <section className="py-16 bg-gray-50">
-        <div className="w-full px-6 sm:px-8 lg:px-12">
-          <div className="grid md:grid-cols-2 gap-12">
-            <div className="bg-white rounded-2xl p-8 shadow-lg">
-              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-6">
-                <Target size={32} className="text-green-600" />
+      <section className="py-14">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center max-w-2xl mx-auto">
+            <h2 className="text-3xl md:text-4xl">What We Stand For</h2>
+            <p className="text-slate-600 mt-2">The values guiding product, support, and field execution.</p>
+          </div>
+          <div className="mt-8 grid md:grid-cols-2 xl:grid-cols-4 gap-4">
+            {values.map((value) => (
+              <div key={value.title} className="card-hover surface-3d p-5">
+                <div className="w-10 h-10 rounded-xl bg-primary-100 text-primary-700 flex items-center justify-center">
+                  <value.icon size={18} />
+                </div>
+                <h3 className="text-xl mt-4">{value.title}</h3>
+                <p className="text-sm text-slate-600 mt-2">{value.description}</p>
               </div>
-              <h2 className="text-4xl font-bold text-gray-900 mb-4">Our Mission</h2>
-              <p className="text-gray-700 leading-relaxed text-xl">
-                To make accurate, affordable soil testing accessible to every Indian farmer, empowering them with data-driven insights for sustainable farming and improved livelihoods.
-              </p>
-              <p className="text-gray-700 leading-relaxed text-xl mt-4">
-                <span className="font-semibold text-green-600">हमारा मिशन:</span> हर भारतीय किसान को सटीक और किफायती मिट्टी परीक्षण उपलब्ध कराना।
-              </p>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="py-14">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="card-hover surface-3d p-6 md:p-8">
+            <div className="flex items-center gap-2 text-primary-700 font-semibold">
+              <Users size={18} />
+              Team
             </div>
-
-            <div className="bg-white rounded-2xl p-8 shadow-lg">
-              <div className="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mb-6">
-                <Heart size={32} className="text-yellow-600" />
-              </div>
-              <h2 className="text-4xl font-bold text-gray-900 mb-4">Our Vision</h2>
-              <p className="text-gray-700 leading-relaxed text-xl">
-                A future where every farmer has the knowledge and tools to nurture healthy soil, grow abundant crops sustainably, and contribute to environmental conservation while earning better.
-              </p>
-              <p className="text-gray-700 leading-relaxed text-xl mt-4">
-                <span className="font-semibold text-yellow-600">हमारा विजन:</span> स्वस्थ मिट्टी, टिकाऊ खेती, और बेहतर आजीविका।
-              </p>
+            <h2 className="text-3xl md:text-4xl mt-2">People behind FarmHith</h2>
+            <div className="mt-6 grid md:grid-cols-2 xl:grid-cols-4 gap-4">
+              {team.map((member) => (
+                <button
+                  key={member.name}
+                  onClick={() => navigateTo('contact')}
+                  className="text-left rounded-2xl border border-primary-100 bg-white p-4 hover:border-primary-300 transition-all duration-300"
+                >
+                  <div className="w-10 h-10 rounded-xl bg-primary-100 text-primary-700 flex items-center justify-center">
+                    <Sprout size={18} />
+                  </div>
+                  <p className="mt-3 font-semibold text-slate-900">{member.name}</p>
+                  <p className="text-sm text-primary-700 mt-0.5">{member.role}</p>
+                  <p className="text-xs text-slate-600 mt-2">{member.focus}</p>
+                </button>
+              ))}
             </div>
           </div>
         </div>
       </section>
 
-      <section className="py-16 bg-white">
-        <div className="w-full px-6 sm:px-8 lg:px-12">
-          <div className="text-center mb-12">
-            <h2 className="text-5xl font-bold text-gray-900 mb-4">Our Values</h2>
-            <p className="text-2xl text-gray-600">The principles that guide everything we do</p>
-          </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {[
-              { icon: Award, title: 'Accuracy', desc: 'Certified labs, precise results, no compromise on quality' },
-              { icon: Leaf, title: 'Sustainability', desc: 'Promoting eco-friendly farming and circular economy' },
-              { icon: Users, title: 'Accessibility', desc: 'Affordable pricing, simple process, farmer-first approach' },
-              { icon: TrendingUp, title: 'Trust', desc: 'Transparent pricing, reliable service, proven results' },
-            ].map((value, index) => (
-              <div key={index} className="text-center">
-                <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <value.icon size={40} className="text-green-600" />
-                </div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-3">{value.title}</h3>
-                <p className="text-gray-600 text-lg">{value.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="py-16 bg-gray-50">
-        <div className="w-full px-6 sm:px-8 lg:px-12">
-          <div className="text-center mb-12">
-            <h2 className="text-5xl font-bold text-gray-900 mb-4">Meet Our Team</h2>
-            <p className="text-2xl text-gray-600">Experts dedicated to farmer welfare</p>
-          </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {team.map((member, index) => (
-              <div
-                key={index}
-                onClick={() => navigateTo('contact')}
-                className="bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all cursor-pointer"
-              >
-                <div className="aspect-square bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center">
-                  <Users size={80} className="text-white opacity-50" />
-                </div>
-                <div className="p-6">
-                  <h3 className="font-bold text-gray-900 text-xl mb-1">{member.name}</h3>
-                  <p className="text-green-600 font-semibold text-base mb-2">{member.role}</p>
-                  <p className="text-gray-600 text-base">{member.expertise}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="py-16 bg-white">
-        <div className="w-full px-6 sm:px-8 lg:px-12">
-          <div className="text-center mb-12">
-            <h2 className="text-5xl font-bold text-gray-900 mb-4">
-              Contributing to UN Sustainable Development Goals
-            </h2>
-            <p className="text-2xl text-gray-600">Our commitment to global sustainability</p>
-          </div>
-
-          <div className="grid md:grid-cols-2 gap-8">
-            {sdgs.map((sdg, index) => (
-              <div key={index} className="bg-gradient-to-br from-green-50 to-yellow-50 rounded-xl p-8 border-2 border-green-200">
-                <div className="flex items-start gap-4">
-                  <div className="bg-green-600 text-white font-bold text-2xl w-16 h-16 rounded-full flex items-center justify-center flex-shrink-0">
-                    {sdg.number}
-                  </div>
-                  <div>
-                    <h3 className="text-2xl font-bold text-gray-900 mb-2">{sdg.title}</h3>
-                    <p className="text-gray-700 text-lg">{sdg.desc}</p>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="py-16 bg-gradient-to-br from-green-600 to-green-800 text-white">
-        <div className="w-full px-6 sm:px-8 lg:px-12">
-          <div className="text-center mb-12">
-            <h2 className="text-5xl font-bold mb-4">Awards & Recognition</h2>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-8">
-            {[
-              { award: 'Best AgriTech Startup 2023', org: 'National Farmers Association' },
-              { award: 'Sustainability Excellence Award', org: 'Green India Initiative' },
-              { award: 'Top 10 Rural Innovation', org: 'Ministry of Agriculture' },
-            ].map((item, index) => (
-              <div key={index} className="bg-white/10 backdrop-blur-sm rounded-xl p-6 text-center">
-                <Award size={48} className="mx-auto mb-4 text-yellow-400" />
-                <h3 className="text-2xl font-bold mb-2">{item.award}</h3>
-                <p className="text-green-100 text-lg">{item.org}</p>
-              </div>
-            ))}
+      <section className="pb-16">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="card-hover surface-3d p-8 md:p-10 text-center">
+            <p className="inline-flex items-center gap-2 text-primary-700 font-semibold">
+              <Award size={18} />
+              Ready to collaborate
+            </p>
+            <h2 className="text-3xl md:text-4xl mt-3">Let us improve outcomes together</h2>
+            <p className="mt-3 text-slate-600">
+              Whether you are a farmer, a lab, or a biomass buyer, FarmHith is built to make your workflow simpler.
+            </p>
+            <div className="mt-7 flex flex-wrap justify-center gap-3">
+              <button onClick={() => navigateTo('book-test')} className="btn-primary">
+                Book Soil Test
+              </button>
+              <button onClick={() => navigateTo('partners')} className="btn-secondary">
+                Become a Partner
+              </button>
+            </div>
           </div>
         </div>
       </section>

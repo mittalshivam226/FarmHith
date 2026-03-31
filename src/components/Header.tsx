@@ -20,12 +20,12 @@ const Header = () => {
   ];
 
   return (
-    <header className="sticky top-0 z-50 border-b border-[#e8dcc5] bg-[#f8f4ea]/95 backdrop-blur-md">
+    <header className="sticky top-0 z-50 border-b border-primary-200/60 bg-[#eef7ef]/92 backdrop-blur-xl">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="h-20 flex items-center justify-between gap-4">
           <button
             onClick={() => navigateTo('home')}
-            className="flex items-center gap-3 rounded-2xl px-2 py-1 hover:bg-white/70 transition-colors"
+            className="flex items-center gap-3 rounded-2xl px-2 py-1 hover:bg-white/70 transition-colors surface-3d"
           >
             <span className="w-11 h-11 rounded-xl bg-gradient-to-br from-primary-600 to-accent-500 text-white flex items-center justify-center shadow-md">
               <Sprout size={20} />
@@ -43,12 +43,12 @@ const Header = () => {
                 <button
                   key={item.id}
                   onClick={() => navigateTo(item.id)}
-                  className={`px-3.5 py-2 rounded-full text-sm font-semibold transition-all ${
+                  className={`px-3.5 py-2 rounded-full text-sm font-semibold transition-all duration-300 ${
                     currentPage === item.id
-                      ? 'bg-slate-900 text-white'
+                      ? 'bg-primary-700 text-white shadow-md'
                       : item.highlight
-                      ? 'bg-accent-500 text-white hover:bg-accent-600'
-                      : 'text-slate-700 hover:bg-white'
+                      ? 'bg-accent-500 text-white hover:bg-accent-600 shadow-sm'
+                      : 'text-slate-700 hover:bg-white hover:text-primary-700'
                   }`}
                 >
                   {item.label}
@@ -60,7 +60,7 @@ const Header = () => {
             {isAuthenticated ? (
               <button
                 onClick={logout}
-                className="inline-flex items-center gap-2 rounded-full border border-red-200 bg-red-50 text-red-700 px-4 py-2 text-sm font-semibold hover:bg-red-100 transition-colors"
+                className="inline-flex items-center gap-2 rounded-full border border-primary-200 bg-primary-50 text-primary-700 px-4 py-2 text-sm font-semibold hover:bg-primary-100 transition-colors"
               >
                 <LogOut size={16} />
                 Logout
@@ -78,7 +78,7 @@ const Header = () => {
 
           <button
             onClick={() => setMobileMenuOpen((prev) => !prev)}
-            className="lg:hidden inline-flex items-center justify-center w-11 h-11 rounded-xl border border-[#dbcfae] bg-white text-slate-700"
+            className="lg:hidden inline-flex items-center justify-center w-11 h-11 rounded-xl border border-primary-200 bg-white text-slate-700"
           >
             {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
@@ -86,7 +86,7 @@ const Header = () => {
       </div>
 
       {mobileMenuOpen && (
-        <div className="lg:hidden border-t border-[#e8dcc5] bg-[#f8f4ea] animate-slide-down">
+        <div className="lg:hidden border-t border-primary-200 bg-[#eef7ef] animate-slide-down">
           <nav className="px-4 py-4 grid grid-cols-2 gap-2">
             {navItems
               .filter((item) => !item.authenticated || isAuthenticated)
@@ -99,7 +99,7 @@ const Header = () => {
                   }}
                   className={`px-3 py-2.5 rounded-xl text-sm font-semibold ${
                     currentPage === item.id
-                      ? 'bg-slate-900 text-white'
+                      ? 'bg-primary-700 text-white'
                       : item.highlight
                       ? 'bg-accent-500 text-white'
                       : 'bg-white text-slate-700'
@@ -137,4 +137,3 @@ const Header = () => {
 };
 
 export default Header;
-

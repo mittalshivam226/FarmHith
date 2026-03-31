@@ -1,6 +1,6 @@
-import { User, Phone, Calendar, MapPin, FileText, Settings, Mail } from 'lucide-react';
-import { useNavigation } from '../context/NavigationContext';
+import { Calendar, FileText, Mail, MapPin, Phone, Settings, User } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { useNavigation } from '../context/NavigationContext';
 import { getCurrentUserProfile } from '../services/auth';
 import type { UserProfile } from '../types';
 
@@ -37,8 +37,6 @@ const Profile = () => {
 
     fetchProfile();
 
-    // TODO: Fetch user's recent bookings from API
-    // For now, showing placeholder data
     setRecentBookings([
       {
         id: '1',
@@ -63,10 +61,10 @@ const Profile = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <div className="w-16 h-16 border-4 border-primary-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading profile...</p>
+          <div className="w-12 h-12 border-4 border-primary-300 border-t-primary-700 rounded-full animate-spin mx-auto mb-3" />
+          <p className="text-sm text-slate-600">Loading profile...</p>
         </div>
       </div>
     );
@@ -75,13 +73,13 @@ const Profile = () => {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'completed':
-        return 'text-green-600 bg-green-100';
+        return 'bg-primary-100 text-primary-800';
       case 'in_process':
-        return 'text-yellow-600 bg-yellow-100';
+        return 'bg-accent-100 text-accent-800';
       case 'pending':
-        return 'text-gray-600 bg-gray-100';
+        return 'bg-slate-100 text-slate-700';
       default:
-        return 'text-gray-600 bg-gray-100';
+        return 'bg-slate-100 text-slate-700';
     }
   };
 
@@ -99,84 +97,73 @@ const Profile = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="w-full px-6 sm:px-8 lg:px-12">
-        {/* Profile Header */}
-        <div className="bg-white rounded-3xl shadow-lg p-8 mb-8">
-          <div className="flex items-center gap-6">
-            <div className="w-24 h-24 bg-gradient-to-br from-primary-600 to-primary-700 rounded-full flex items-center justify-center shadow-lg">
-              <User size={40} className="text-white" />
+    <div className="min-h-screen relative overflow-hidden py-10">
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="ambient-orb top-[-8%] left-[-8%] h-72 w-72 bg-primary-300/60" />
+        <div className="ambient-orb right-[-9%] bottom-[-20%] h-80 w-80 bg-accent-200/70" />
+      </div>
+
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="card-hover surface-3d p-6 md:p-8 mb-6">
+          <div className="flex items-center gap-4">
+            <div className="w-16 h-16 rounded-2xl bg-primary-100 text-primary-700 flex items-center justify-center">
+              <User size={28} />
             </div>
-            <div className="flex-1">
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">
-                Welcome back, {profile?.name || 'User'}!
-              </h1>
-              <p className="text-lg text-gray-600">
-                Manage your account and view your soil testing history
-              </p>
+            <div>
+              <h1 className="text-3xl md:text-4xl">Welcome, {profile?.name || 'User'}</h1>
+              <p className="text-slate-600 mt-1">Manage your account and review recent activity.</p>
             </div>
           </div>
         </div>
 
-        <div className="grid lg:grid-cols-3 gap-8">
-          {/* Profile Information */}
+        <div className="grid lg:grid-cols-3 gap-6">
           <div className="lg:col-span-1">
-            <div className="bg-white rounded-3xl shadow-lg p-6">
-              <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
-                <User size={24} className="text-primary-600" />
-                Profile Information
-              </h2>
-
-              <div className="space-y-4">
-                <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-xl">
-                  <User size={20} className="text-primary-600" />
+            <div className="card-hover surface-3d p-5">
+              <h2 className="text-2xl">Profile Information</h2>
+              <div className="mt-4 space-y-3">
+                <div className="rounded-xl border border-primary-100 bg-white p-3 flex items-start gap-3">
+                  <User size={16} className="text-primary-700 mt-0.5" />
                   <div>
-                    <p className="text-sm text-gray-600">Full Name</p>
-                    <p className="font-semibold text-gray-900">
-                      {profile?.name || 'Not provided'}
-                    </p>
+                    <p className="text-xs text-slate-500">Full Name</p>
+                    <p className="text-sm font-semibold text-slate-900">{profile?.name || 'Not provided'}</p>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-xl">
-                  <Phone size={20} className="text-primary-600" />
+                <div className="rounded-xl border border-primary-100 bg-white p-3 flex items-start gap-3">
+                  <Phone size={16} className="text-primary-700 mt-0.5" />
                   <div>
-                    <p className="text-sm text-gray-600">Phone Number</p>
-                    <p className="font-semibold text-gray-900">
-                      {profile?.phone || user.phone || 'Not provided'}
-                    </p>
+                    <p className="text-xs text-slate-500">Phone Number</p>
+                    <p className="text-sm font-semibold text-slate-900">{profile?.phone || user.phone || 'Not provided'}</p>
                   </div>
                 </div>
 
                 {profile?.email && (
-                  <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-xl">
-                    <Mail size={20} className="text-primary-600" />
+                  <div className="rounded-xl border border-primary-100 bg-white p-3 flex items-start gap-3">
+                    <Mail size={16} className="text-primary-700 mt-0.5" />
                     <div>
-                      <p className="text-sm text-gray-600">Email Address</p>
-                      <p className="font-semibold text-gray-900">
-                        {profile.email}
-                      </p>
+                      <p className="text-xs text-slate-500">Email</p>
+                      <p className="text-sm font-semibold text-slate-900">{profile.email}</p>
                     </div>
                   </div>
                 )}
 
                 {(profile?.village || profile?.district || profile?.state) && (
-                  <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-xl">
-                    <MapPin size={20} className="text-primary-600" />
+                  <div className="rounded-xl border border-primary-100 bg-white p-3 flex items-start gap-3">
+                    <MapPin size={16} className="text-primary-700 mt-0.5" />
                     <div>
-                      <p className="text-sm text-gray-600">Location</p>
-                      <p className="font-semibold text-gray-900">
+                      <p className="text-xs text-slate-500">Location</p>
+                      <p className="text-sm font-semibold text-slate-900">
                         {[profile.village, profile.district, profile.state].filter(Boolean).join(', ')}
                       </p>
                     </div>
                   </div>
                 )}
 
-                <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-xl">
-                  <Calendar size={20} className="text-primary-600" />
+                <div className="rounded-xl border border-primary-100 bg-white p-3 flex items-start gap-3">
+                  <Calendar size={16} className="text-primary-700 mt-0.5" />
                   <div>
-                    <p className="text-sm text-gray-600">Member Since</p>
-                    <p className="font-semibold text-gray-900">
+                    <p className="text-xs text-slate-500">Member Since</p>
+                    <p className="text-sm font-semibold text-slate-900">
                       {new Date(user.created_at).toLocaleDateString('en-IN', {
                         year: 'numeric',
                         month: 'long',
@@ -185,86 +172,62 @@ const Profile = () => {
                     </p>
                   </div>
                 </div>
-
-                <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-xl">
-                  <MapPin size={20} className="text-primary-600" />
-                  <div>
-                    <p className="text-sm text-gray-600">Account Status</p>
-                    <p className="font-semibold text-green-600">Active</p>
-                  </div>
-                </div>
               </div>
 
-              <button
-                onClick={() => navigateTo('login')}
-                className="w-full mt-6 bg-primary-600 text-white py-3 px-6 rounded-xl hover:bg-primary-700 transition-all duration-300 flex items-center justify-center gap-2 hover-lift"
-              >
-                <Settings size={20} />
+              <button onClick={() => navigateTo('login')} className="btn-primary w-full mt-5">
+                <Settings size={16} />
                 Edit Profile
               </button>
             </div>
           </div>
 
-          {/* Recent Activity */}
           <div className="lg:col-span-2">
-            <div className="bg-white rounded-3xl shadow-lg p-6">
-              <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
-                <FileText size={24} className="text-primary-600" />
+            <div className="card-hover surface-3d p-5">
+              <h2 className="text-2xl inline-flex items-center gap-2">
+                <FileText size={20} className="text-primary-700" />
                 Recent Bookings
               </h2>
 
               {recentBookings.length > 0 ? (
-                <div className="space-y-4">
-                  {recentBookings.map((booking: BookingItem) => (
+                <div className="mt-4 space-y-3">
+                  {recentBookings.map((booking) => (
                     <div
                       key={booking.id}
                       onClick={() => navigateTo('reports')}
-                      className="border border-gray-200 rounded-xl p-6 hover:shadow-md transition-all duration-300 hover-lift"
+                      className="rounded-xl border border-primary-100 bg-white p-4 cursor-pointer hover:border-primary-300 transition-all duration-300"
                     >
-                      <div className="flex justify-between items-start mb-4">
+                      <div className="flex items-start justify-between gap-3">
                         <div>
-                          <h3 className="font-semibold text-gray-900 text-lg">
-                            {booking.packageName}
-                          </h3>
-                          <p className="text-gray-600">Tracking ID: {booking.trackingId}</p>
+                          <h3 className="font-semibold text-slate-900">{booking.packageName}</h3>
+                          <p className="text-sm text-slate-600 mt-1">Tracking ID: {booking.trackingId}</p>
                         </div>
-                        <span
-                          className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(
-                            booking.status
-                          )}`}
-                        >
+                        <span className={`rounded-full px-3 py-1 text-xs font-semibold ${getStatusColor(booking.status)}`}>
                           {getStatusText(booking.status)}
                         </span>
                       </div>
-
-                      <div className="flex justify-between items-center">
-                        <p className="text-gray-600">
-                          Booked on: {new Date(booking.date).toLocaleDateString('en-IN')}
+                      <div className="mt-3 flex items-center justify-between">
+                        <p className="text-xs text-slate-500">
+                          Booked on {new Date(booking.date).toLocaleDateString('en-IN')}
                         </p>
                         <button
-                          onClick={() => navigateTo('reports')}
-                          className="text-primary-600 hover:text-primary-700 font-medium hover-lift"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            navigateTo('reports');
+                          }}
+                          className="text-sm font-semibold text-primary-700 hover:underline"
                         >
-                          View Details →
+                          View details
                         </button>
                       </div>
                     </div>
                   ))}
                 </div>
               ) : (
-                <div className="text-center py-12">
-                  <FileText size={48} className="text-gray-400 mx-auto mb-4" />
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                    No bookings yet
-                  </h3>
-                  <p className="text-gray-600 mb-6">
-                    Start your first soil test to see your booking history here.
-                  </p>
-                  <button
-                    onClick={() => navigateTo('book-test')}
-                    className="bg-primary-600 text-white py-3 px-6 rounded-xl hover:bg-primary-700 transition-all duration-300 hover-lift"
-                  >
-                    Book Your First Test
+                <div className="mt-5 rounded-xl border border-primary-100 bg-white p-5 text-center">
+                  <p className="text-slate-700 font-semibold">No bookings yet</p>
+                  <p className="text-sm text-slate-600 mt-1">Start your first soil test to see booking history here.</p>
+                  <button onClick={() => navigateTo('book-test')} className="btn-primary mt-4">
+                    Book First Test
                   </button>
                 </div>
               )}

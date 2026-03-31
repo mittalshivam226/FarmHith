@@ -1,6 +1,8 @@
 import { useState } from 'react';
-import { Search, Download, Send, Clock, CheckCircle, AlertCircle, TrendingUp } from 'lucide-react';
+import { CheckCircle, Clock, Download, Search, Send, TrendingUp } from 'lucide-react';
 import { useNavigation } from '../context/NavigationContext';
+
+type ReportStatus = 'completed' | 'in_process' | 'pending';
 
 const Reports = () => {
   const { navigateTo } = useNavigation();
@@ -14,7 +16,7 @@ const Reports = () => {
       id: '1',
       trackingId: 'FH12345678',
       farmerName: 'Rajesh Kumar',
-      status: 'completed' as const,
+      status: 'completed' as ReportStatus,
       submittedDate: '2025-10-25',
       completedDate: '2025-11-01',
       packageName: 'Advanced Soil Test',
@@ -31,7 +33,7 @@ const Reports = () => {
       id: '2',
       trackingId: 'FH12345679',
       farmerName: 'Rajesh Kumar',
-      status: 'in_process' as const,
+      status: 'in_process' as ReportStatus,
       submittedDate: '2025-11-02',
       packageName: 'Basic Soil Test',
     },
@@ -43,187 +45,156 @@ const Reports = () => {
     }
   };
 
-  const getStatusBadge = (status: string) => {
-    switch (status) {
-      case 'completed':
-        return (
-          <span className="flex items-center gap-2 bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-semibold">
-            <CheckCircle size={16} />
-            Completed
-          </span>
-        );
-      case 'in_process':
-        return (
-          <span className="flex items-center gap-2 bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-sm font-semibold">
-            <Clock size={16} />
-            In Process
-          </span>
-        );
-      default:
-        return (
-          <span className="flex items-center gap-2 bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm font-semibold">
-            <AlertCircle size={16} />
-            Pending
-          </span>
-        );
+  const getStatusBadgeClasses = (status: ReportStatus) => {
+    if (status === 'completed') {
+      return 'bg-primary-100 text-primary-800';
     }
+    if (status === 'in_process') {
+      return 'bg-accent-100 text-accent-800';
+    }
+    return 'bg-slate-100 text-slate-700';
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <section className="bg-gradient-to-br from-green-600 to-green-800 text-white py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-3xl mx-auto">
-            <h1 className="text-5xl font-bold mb-6">
-              My Reports | मेरी रिपोर्ट
-            </h1>
-            <p className="text-xl text-green-100 leading-relaxed">
-              Access your soil test reports and track analysis progress
-            </p>
-          </div>
+    <div className="min-h-screen">
+      <section className="relative overflow-hidden py-16 md:py-20">
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="ambient-orb top-[-8%] left-[-7%] h-72 w-72 bg-primary-300/60" />
+          <div className="ambient-orb right-[-8%] bottom-[-20%] h-80 w-80 bg-accent-200/70" />
+        </div>
+
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <span className="inline-flex rounded-full border border-primary-200 bg-white/90 px-4 py-1.5 text-xs font-semibold text-primary-700">
+            Report tracking portal
+          </span>
+          <h1 className="mt-5 text-4xl sm:text-5xl md:text-6xl font-display text-slate-900 leading-tight">
+            Soil report access,
+            <span className="text-primary-700"> simplified</span>
+          </h1>
+          <p className="mt-4 text-lg text-slate-600 max-w-3xl">
+            Track test progress, review parameter summaries, and download completed reports from one place.
+          </p>
         </div>
       </section>
 
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        {!authenticated ? (
-          <div className="max-w-md mx-auto">
-            <div className="bg-white rounded-2xl shadow-lg p-8">
-              <div className="text-center mb-6">
-                <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Search size={32} className="text-green-600" />
-                </div>
-                <h2 className="text-2xl font-bold text-gray-900 mb-2">Access Your Reports</h2>
-                <p className="text-gray-600">
-                  Enter your tracking ID and mobile number
-                </p>
+      <section className="pb-16">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          {!authenticated ? (
+            <div className="max-w-xl mx-auto card-hover surface-3d p-6 md:p-8">
+              <div className="w-12 h-12 rounded-xl bg-primary-100 text-primary-700 flex items-center justify-center">
+                <Search size={20} />
               </div>
+              <h2 className="text-2xl md:text-3xl mt-4">Access your reports</h2>
+              <p className="text-slate-600 mt-2">Use your tracking ID and mobile number to view your report timeline.</p>
 
-              <div className="space-y-4">
+              <div className="mt-6 space-y-4">
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    Tracking ID | ट्रैकिंग आईडी
-                  </label>
+                  <label className="form-label">Tracking ID</label>
                   <input
                     type="text"
                     value={trackingId}
                     onChange={(e) => setTrackingId(e.target.value)}
-                    placeholder="e.g., FH12345678"
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-green-600 focus:outline-none"
+                    placeholder="For example FH12345678"
+                    className="form-input"
                   />
                 </div>
-
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    Mobile Number | मोबाइल नंबर
-                  </label>
+                  <label className="form-label">Mobile Number</label>
                   <input
                     type="tel"
                     value={mobile}
                     onChange={(e) => setMobile(e.target.value)}
-                    placeholder="+91"
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-green-600 focus:outline-none"
+                    placeholder="+91 9876543210"
+                    className="form-input"
                   />
                 </div>
-
                 <button
                   onClick={handleLogin}
                   disabled={!trackingId || !mobile}
-                  className="w-full bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="btn-primary w-full disabled:opacity-60"
                 >
                   View Reports
                 </button>
               </div>
 
-              <div className="mt-6 pt-6 border-t">
-                <p className="text-sm text-gray-600 text-center">
-                  Don't have a tracking ID?{' '}
-                  <button
-                    onClick={() => navigateTo('book-test')}
-                    className="text-green-600 font-semibold hover:underline"
-                  >
-                    Book a test now
-                  </button>
-                </p>
-              </div>
+              <p className="mt-5 text-sm text-slate-600">
+                Do not have a tracking ID yet?{' '}
+                <button onClick={() => navigateTo('book-test')} className="text-primary-700 font-semibold hover:underline">
+                  Book a soil test
+                </button>
+              </p>
             </div>
-          </div>
-        ) : (
-          <div>
-            <div className="bg-white rounded-xl shadow-md p-6 mb-8">
-              <div className="flex items-center justify-between">
+          ) : (
+            <div className="space-y-6">
+              <div className="card-hover surface-3d p-5 md:p-6 flex flex-wrap items-start justify-between gap-4">
                 <div>
-                  <h2 className="text-2xl font-bold text-gray-900 mb-1">
-                    Welcome back, {mockReports[0].farmerName}!
-                  </h2>
-                  <p className="text-gray-600">You have {mockReports.length} soil test reports</p>
+                  <h2 className="text-2xl md:text-3xl">Welcome back, {mockReports[0].farmerName}</h2>
+                  <p className="text-slate-600 mt-1">{mockReports.length} report entries available in your dashboard.</p>
                 </div>
                 <button
-                  onClick={() => setAuthenticated(false)}
-                  className="text-gray-600 hover:text-gray-900 font-semibold"
+                  onClick={() => {
+                    setAuthenticated(false);
+                    setActionMessage('');
+                  }}
+                  className="btn-secondary"
                 >
                   Logout
                 </button>
               </div>
-            </div>
 
-            {actionMessage && (
-              <div className="mb-6 rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-green-800">
-                {actionMessage}
-              </div>
-            )}
+              {actionMessage && (
+                <div className="rounded-xl border border-primary-200 bg-primary-50 px-4 py-3 text-primary-800 text-sm">
+                  {actionMessage}
+                </div>
+              )}
 
-            <div className="space-y-6">
               {mockReports.map((report) => (
-                <div key={report.id} className="bg-white rounded-xl shadow-md overflow-hidden">
-                  <div className="p-6">
-                    <div className="flex items-start justify-between mb-4">
+                <div key={report.id} className="card-hover surface-3d overflow-hidden">
+                  <div className="p-5 md:p-6">
+                    <div className="flex flex-wrap items-start justify-between gap-3">
                       <div>
-                        <div className="flex items-center gap-3 mb-2">
-                          <h3 className="text-xl font-bold text-gray-900">
-                            {report.packageName}
-                          </h3>
-                          {getStatusBadge(report.status)}
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <h3 className="text-xl font-semibold text-slate-900">{report.packageName}</h3>
+                          <span className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold ${getStatusBadgeClasses(report.status)}`}>
+                            {report.status === 'completed' ? <CheckCircle size={14} /> : <Clock size={14} />}
+                            {report.status === 'completed' ? 'Completed' : report.status === 'in_process' ? 'In process' : 'Pending'}
+                          </span>
                         </div>
-                        <p className="text-gray-600">
-                          Tracking ID: <span className="font-semibold">{report.trackingId}</span>
+                        <p className="text-sm text-slate-600 mt-2">
+                          Tracking ID: <span className="font-semibold text-slate-800">{report.trackingId}</span>
                         </p>
                       </div>
-                      <div className="text-right">
-                        <p className="text-sm text-gray-600">Submitted</p>
-                        <p className="font-semibold text-gray-900">{report.submittedDate}</p>
+
+                      <div className="text-sm text-right text-slate-600">
+                        <p>Submitted: <span className="font-semibold text-slate-800">{report.submittedDate}</span></p>
                         {report.completedDate && (
-                          <>
-                            <p className="text-sm text-gray-600 mt-2">Completed</p>
-                            <p className="font-semibold text-green-600">{report.completedDate}</p>
-                          </>
+                          <p className="mt-1">Completed: <span className="font-semibold text-primary-700">{report.completedDate}</span></p>
                         )}
                       </div>
                     </div>
 
                     {report.status === 'completed' && report.results && (
                       <>
-                        <div className="bg-gray-50 rounded-lg p-6 mb-4">
-                          <h4 className="font-bold text-gray-900 mb-4">Test Results Summary</h4>
-                          <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+                        <div className="mt-5 rounded-2xl border border-primary-100 bg-[#f8fdf9] p-5">
+                          <h4 className="font-semibold text-slate-900">Test Results Summary</h4>
+                          <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mt-4">
                             {[
-                              { label: 'pH Level', value: report.results.pH, unit: '', ideal: '6.5-7.5' },
-                              { label: 'Nitrogen (N)', value: report.results.nitrogen, unit: 'kg/ha', ideal: '200-250' },
-                              { label: 'Phosphorus (P)', value: report.results.phosphorus, unit: 'kg/ha', ideal: '15-25' },
-                              { label: 'Potassium (K)', value: report.results.potassium, unit: 'kg/ha', ideal: '150-250' },
-                              { label: 'Organic Carbon', value: report.results.organicCarbon, unit: '%', ideal: '0.5-0.75' },
-                            ].map((param, index) => (
-                              <div key={index} className="text-center">
-                                <p className="text-sm text-gray-600 mb-1">{param.label}</p>
-                                <p className="text-2xl font-bold text-green-600 mb-1">
-                                  {param.value}{param.unit}
-                                </p>
-                                <p className="text-xs text-gray-500">Ideal: {param.ideal}</p>
+                              { label: 'pH', value: report.results.pH, ideal: '6.5-7.5' },
+                              { label: 'Nitrogen', value: `${report.results.nitrogen} kg/ha`, ideal: '200-250' },
+                              { label: 'Phosphorus', value: `${report.results.phosphorus} kg/ha`, ideal: '15-25' },
+                              { label: 'Potassium', value: `${report.results.potassium} kg/ha`, ideal: '150-250' },
+                              { label: 'Organic Carbon', value: `${report.results.organicCarbon}%`, ideal: '0.5-0.75' },
+                            ].map((item) => (
+                              <div key={item.label} className="rounded-xl border border-primary-100 bg-white p-3 text-center">
+                                <p className="text-xs text-slate-500">{item.label}</p>
+                                <p className="text-lg font-semibold text-primary-700 mt-1">{item.value}</p>
+                                <p className="text-xs text-slate-500 mt-1">Ideal: {item.ideal}</p>
                               </div>
                             ))}
                           </div>
                         </div>
 
-                        <div className="flex gap-3">
+                        <div className="mt-4 flex flex-wrap gap-3">
                           <button
                             onClick={() => {
                               if (report.pdfUrl && report.pdfUrl !== '#') {
@@ -232,16 +203,13 @@ const Reports = () => {
                                 setActionMessage('PDF download will be available once the final report file is uploaded.');
                               }
                             }}
-                            className="flex items-center gap-2 px-6 py-3 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 transition-all"
+                            className="btn-primary"
                           >
-                            <Download size={20} />
-                            Download PDF Report
+                            <Download size={16} />
+                            Download PDF
                           </button>
-                          <button
-                            onClick={() => navigateTo('contact')}
-                            className="flex items-center gap-2 px-6 py-3 border-2 border-green-600 text-green-600 rounded-lg font-semibold hover:bg-green-50 transition-all"
-                          >
-                            <Send size={20} />
+                          <button onClick={() => navigateTo('contact')} className="btn-secondary">
+                            <Send size={16} />
                             Send to Agronomist
                           </button>
                         </div>
@@ -249,46 +217,39 @@ const Reports = () => {
                     )}
 
                     {report.status === 'in_process' && (
-                      <div className="bg-yellow-50 border-2 border-yellow-200 rounded-lg p-4">
-                        <p className="text-yellow-800">
-                          <strong>Analysis in Progress:</strong> Your soil sample is being analyzed at our partner lab. Report will be available soon.
-                        </p>
+                      <div className="mt-5 rounded-2xl border border-accent-200 bg-accent-50 px-4 py-3 text-accent-800 text-sm">
+                        Your sample is currently being analyzed at a partner lab. The report will appear here once processing is complete.
                       </div>
                     )}
                   </div>
 
                   {report.status === 'completed' && (
-                    <div className="bg-green-50 border-t-2 border-green-100 p-6">
-                      <div className="flex items-start gap-3">
-                        <TrendingUp size={24} className="text-green-600 flex-shrink-0" />
-                        <div>
-                          <h4 className="font-bold text-gray-900 mb-2">Key Recommendations</h4>
-                          <ul className="space-y-2 text-sm text-gray-700">
-                            <li>• Your soil pH is optimal for most crops</li>
-                            <li>• Nitrogen levels are good, maintain with organic manure</li>
-                            <li>• Phosphorus is slightly low - consider DAP application @ 50 kg/acre</li>
-                            <li>• Add 20 kg/acre potash for better fruit/grain quality</li>
-                            <li>• Organic carbon is healthy - continue composting practices</li>
-                          </ul>
-                        </div>
-                      </div>
+                    <div className="border-t border-primary-100 bg-[#f5fbf6] p-5 md:p-6">
+                      <p className="inline-flex items-center gap-2 text-primary-700 font-semibold text-sm">
+                        <TrendingUp size={16} />
+                        Key Recommendations
+                      </p>
+                      <ul className="mt-3 space-y-2 text-sm text-slate-700">
+                        <li>- Soil pH is in a suitable range for most crops.</li>
+                        <li>- Nitrogen levels are adequate; maintain with compost and manure.</li>
+                        <li>- Phosphorus is slightly lower; consider DAP around 50 kg/acre.</li>
+                        <li>- Add potash for improved grain and fruit quality.</li>
+                        <li>- Organic carbon is healthy; continue residue composting where possible.</li>
+                      </ul>
                     </div>
                   )}
                 </div>
               ))}
-            </div>
 
-            <div className="mt-8 text-center">
-              <button
-                onClick={() => navigateTo('book-test')}
-                className="bg-green-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-green-700 transition-all"
-              >
-                Book New Soil Test
-              </button>
+              <div className="text-center pt-2">
+                <button onClick={() => navigateTo('book-test')} className="btn-primary">
+                  Book New Soil Test
+                </button>
+              </div>
             </div>
-          </div>
-        )}
-      </div>
+          )}
+        </div>
+      </section>
     </div>
   );
 };

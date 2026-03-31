@@ -5,10 +5,10 @@
 @tailwind utilities;
 
 :root {
-  --bg-cream: #f6f2e8;
-  --bg-paper: #fffdf7;
-  --ink: #1f2b20;
-  --muted: #5d6657;
+  --bg-cream: #edf6ee;
+  --bg-paper: #fbfefb;
+  --ink: #133621;
+  --muted: #456050;
 }
 
 @layer base {
@@ -19,9 +19,9 @@
   body {
     @apply font-body antialiased text-slate-800;
     background:
-      radial-gradient(circle at 12% 10%, rgba(230, 116, 45, 0.08), transparent 30%),
-      radial-gradient(circle at 88% 20%, rgba(117, 153, 70, 0.12), transparent 34%),
-      linear-gradient(180deg, #f8f4ea 0%, #f3efe4 100%);
+      radial-gradient(circle at 12% 10%, rgba(62, 159, 95, 0.12), transparent 30%),
+      radial-gradient(circle at 88% 20%, rgba(143, 211, 163, 0.22), transparent 34%),
+      linear-gradient(180deg, #f4faf4 0%, #edf5ee 100%);
     min-height: 100vh;
   }
 
@@ -35,7 +35,7 @@
   }
 
   *:focus-visible {
-    @apply outline-none ring-2 ring-primary-500 ring-offset-2 ring-offset-[#f8f4ea];
+    @apply outline-none ring-2 ring-primary-500 ring-offset-2 ring-offset-[#f4faf4];
   }
 
   ::-webkit-scrollbar {
@@ -43,47 +43,60 @@
   }
 
   ::-webkit-scrollbar-track {
-    background: #e9e2d0;
+    background: #deecdf;
   }
 
   ::-webkit-scrollbar-thumb {
-    background: #9f451b;
+    background: #3e9f5f;
     border-radius: 999px;
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    background: #7f391a;
+    background: #28663f;
   }
 }
 
 @layer components {
   .btn-primary {
-    @apply inline-flex items-center justify-center bg-accent-500 text-white px-7 py-3.5 rounded-full font-semibold text-base;
-    @apply hover:bg-accent-600 hover:shadow-button-hover hover:-translate-y-0.5 active:translate-y-0;
-    @apply transition-all duration-200;
+    @apply inline-flex items-center justify-center bg-primary-600 text-white px-7 py-3.5 rounded-full font-semibold text-base;
+    @apply hover:bg-primary-700 hover:shadow-button-hover hover:-translate-y-0.5 active:translate-y-0;
+    @apply transition-all duration-300;
+    box-shadow: 0 8px 0 0 rgba(31, 67, 45, 0.25);
   }
 
   .btn-secondary {
     @apply inline-flex items-center justify-center bg-white/90 text-primary-700 px-7 py-3.5 rounded-full font-semibold text-base border border-primary-200;
     @apply hover:bg-white hover:border-primary-400 hover:-translate-y-0.5;
-    @apply transition-all duration-200;
+    @apply transition-all duration-300;
   }
 
   .btn-accent {
-    @apply inline-flex items-center justify-center bg-primary-600 text-white px-7 py-3.5 rounded-full font-semibold text-base;
-    @apply hover:bg-primary-700 hover:shadow-button-hover hover:-translate-y-0.5;
-    @apply transition-all duration-200;
+    @apply inline-flex items-center justify-center bg-accent-500 text-white px-7 py-3.5 rounded-full font-semibold text-base;
+    @apply hover:bg-accent-600 hover:shadow-button-hover hover:-translate-y-0.5;
+    @apply transition-all duration-300;
+    box-shadow: 0 8px 0 0 rgba(33, 66, 43, 0.22);
   }
 
   .card-hover {
-    @apply bg-[var(--bg-paper)] border border-[#eadfca] rounded-2xl;
-    @apply hover:-translate-y-1.5 hover:shadow-card-hover transition-all duration-300;
+    @apply bg-[var(--bg-paper)] border border-[#d4e8d8] rounded-2xl;
+    @apply hover:shadow-card-hover transition-all duration-500;
+    transform-style: preserve-3d;
+    perspective: 900px;
+    will-change: transform, box-shadow;
+  }
+
+  .card-hover:hover {
+    transform: translateY(-7px) rotateX(5deg) rotateY(-3deg);
+  }
+
+  .card-hover > * {
+    transform: translateZ(8px);
   }
 
   .form-input {
-    @apply w-full px-4 py-3 border border-[#d9cfbd] rounded-xl bg-white text-slate-800;
+    @apply w-full px-4 py-3 border border-[#c8dfcd] rounded-xl bg-white text-slate-800;
     @apply focus:border-primary-500 focus:ring-2 focus:ring-primary-200 focus:outline-none;
-    @apply transition-all duration-200;
+    @apply transition-all duration-300;
   }
 
   .form-label {
@@ -91,7 +104,7 @@
   }
 
   .loading-spinner {
-    @apply animate-spin rounded-full border-4 border-primary-200 border-t-accent-500;
+    @apply animate-spin rounded-full border-4 border-primary-200 border-t-primary-600;
   }
 
   .hover-lift {
@@ -101,5 +114,18 @@
   .hover-glow {
     @apply hover:shadow-glow-green transition-shadow duration-300;
   }
-}
 
+  .surface-3d {
+    transform-style: preserve-3d;
+    perspective: 1000px;
+  }
+
+  .surface-3d:hover {
+    transform: rotateX(4deg) rotateY(-4deg) translateY(-6px);
+    transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .ambient-orb {
+    @apply absolute rounded-full blur-3xl opacity-60 pointer-events-none animate-ambient-shift;
+  }
+}
