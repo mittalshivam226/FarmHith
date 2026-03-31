@@ -1,4 +1,4 @@
-import { Menu, X, LogIn, LogOut } from 'lucide-react';
+import { Menu, X, LogIn, LogOut, Sprout } from 'lucide-react';
 import { useState } from 'react';
 import { useNavigation } from '../context/NavigationContext';
 
@@ -7,135 +7,128 @@ const Header = () => {
   const { currentPage, navigateTo, isAuthenticated, logout } = useNavigation();
 
   const navItems = [
-    { id: 'home', label: 'Home', labelHindi: 'होम' },
-    { id: 'about', label: 'About Us', labelHindi: 'हमारे बारे में' },
-    { id: 'services', label: 'Services', labelHindi: 'सेवाएं' },
-    { id: 'book-test', label: 'Book Test', labelHindi: 'टेस्ट बुक करें', highlight: true },
-    { id: 'reports', label: 'My Reports', labelHindi: 'मेरी रिपोर्ट' },
-    { id: 'profile', label: 'Profile', labelHindi: 'प्रोफ़ाइल', authenticated: true },
-    { id: 'education', label: 'Learn', labelHindi: 'सीखें' },
-    { id: 'blog', label: 'Blog', labelHindi: 'ब्लॉग' },
-    { id: 'contact', label: 'Contact', labelHindi: 'संपर्क' },
+    { id: 'home', label: 'Home' },
+    { id: 'about', label: 'About' },
+    { id: 'services', label: 'Services' },
+    { id: 'book-test', label: 'Book Test', highlight: true },
+    { id: 'reports', label: 'Reports' },
+    { id: 'education', label: 'Learn' },
+    { id: 'blog', label: 'Blog' },
+    { id: 'partners', label: 'Partners' },
+    { id: 'contact', label: 'Contact' },
+    { id: 'profile', label: 'Profile', authenticated: true },
   ];
 
   return (
-    <header className="bg-white/95 backdrop-blur-md shadow-lg sticky top-0 z-50 border-b border-gray-100">
+    <header className="sticky top-0 z-50 border-b border-[#e8dcc5] bg-[#f8f4ea]/95 backdrop-blur-md">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center py-6">
-          <div
-            className="flex items-center gap-4 cursor-pointer hover-lift transition-all duration-300"
+        <div className="h-20 flex items-center justify-between gap-4">
+          <button
             onClick={() => navigateTo('home')}
+            className="flex items-center gap-3 rounded-2xl px-2 py-1 hover:bg-white/70 transition-colors"
           >
-            <div className="w-16 h-16 bg-gradient-to-br from-primary-600 to-primary-700 rounded-2xl flex items-center justify-center shadow-lg hover:shadow-glow-green transition-all duration-300">
-              <span className="text-white font-bold text-2xl">F</span>
+            <span className="w-11 h-11 rounded-xl bg-gradient-to-br from-primary-600 to-accent-500 text-white flex items-center justify-center shadow-md">
+              <Sprout size={20} />
+            </span>
+            <div className="text-left">
+              <p className="font-display text-xl leading-none text-slate-900">FarmHith</p>
+              <p className="text-xs text-slate-500 mt-1">Soil. Value. Sustainability.</p>
             </div>
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900">
-                Farm<span className="text-primary-600">हित</span>
-              </h1>
-              <p className="text-sm text-gray-600">Empowering Farmers</p>
-            </div>
-          </div>
+          </button>
 
-          <nav className="hidden lg:flex items-center gap-2">
+          <nav className="hidden lg:flex items-center gap-1.5">
             {navItems
               .filter((item) => !item.authenticated || isAuthenticated)
               .map((item) => (
-              <button
-                key={item.id}
-                onClick={() => navigateTo(item.id)}
-                className={`px-6 py-3 rounded-xl text-base font-semibold transition-all duration-300 hover-lift ${
-                  currentPage === item.id
-                    ? 'bg-primary-600 text-white shadow-lg hover:shadow-glow-green'
-                    : item.highlight
-                    ? 'bg-accent-500 text-white hover:bg-accent-600 hover:shadow-glow-yellow shadow-md'
-                    : 'text-gray-700 hover:bg-gray-100 hover:text-primary-600'
-                }`}
-              >
-                {item.label}
-              </button>
-            ))}
+                <button
+                  key={item.id}
+                  onClick={() => navigateTo(item.id)}
+                  className={`px-3.5 py-2 rounded-full text-sm font-semibold transition-all ${
+                    currentPage === item.id
+                      ? 'bg-slate-900 text-white'
+                      : item.highlight
+                      ? 'bg-accent-500 text-white hover:bg-accent-600'
+                      : 'text-slate-700 hover:bg-white'
+                  }`}
+                >
+                  {item.label}
+                </button>
+              ))}
           </nav>
 
-          <div className="hidden lg:flex items-center gap-4">
+          <div className="hidden lg:flex items-center gap-2">
             {isAuthenticated ? (
               <button
                 onClick={logout}
-                className="flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-xl hover:bg-red-700 transition-all duration-300 hover-lift"
+                className="inline-flex items-center gap-2 rounded-full border border-red-200 bg-red-50 text-red-700 px-4 py-2 text-sm font-semibold hover:bg-red-100 transition-colors"
               >
-                <LogOut size={18} />
+                <LogOut size={16} />
                 Logout
               </button>
             ) : (
               <button
                 onClick={() => navigateTo('login')}
-                className="flex items-center gap-2 px-4 py-2 bg-primary-600 text-white rounded-xl hover:bg-primary-700 transition-all duration-300 hover-lift"
+                className="inline-flex items-center gap-2 rounded-full border border-primary-200 bg-white text-primary-700 px-4 py-2 text-sm font-semibold hover:bg-primary-50 transition-colors"
               >
-                <LogIn size={18} />
+                <LogIn size={16} />
                 Login
               </button>
             )}
           </div>
 
           <button
-            className="lg:hidden p-3 rounded-xl hover:bg-gray-100 hover-lift transition-all duration-300"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            onClick={() => setMobileMenuOpen((prev) => !prev)}
+            className="lg:hidden inline-flex items-center justify-center w-11 h-11 rounded-xl border border-[#dbcfae] bg-white text-slate-700"
           >
-            {mobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
+            {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
         </div>
       </div>
 
       {mobileMenuOpen && (
-        <div className="lg:hidden bg-white/95 backdrop-blur-md border-t border-gray-200 animate-slide-down shadow-lg">
-          <nav className="px-6 py-6 space-y-3">
+        <div className="lg:hidden border-t border-[#e8dcc5] bg-[#f8f4ea] animate-slide-down">
+          <nav className="px-4 py-4 grid grid-cols-2 gap-2">
             {navItems
               .filter((item) => !item.authenticated || isAuthenticated)
               .map((item) => (
+                <button
+                  key={item.id}
+                  onClick={() => {
+                    navigateTo(item.id);
+                    setMobileMenuOpen(false);
+                  }}
+                  className={`px-3 py-2.5 rounded-xl text-sm font-semibold ${
+                    currentPage === item.id
+                      ? 'bg-slate-900 text-white'
+                      : item.highlight
+                      ? 'bg-accent-500 text-white'
+                      : 'bg-white text-slate-700'
+                  }`}
+                >
+                  {item.label}
+                </button>
+              ))}
+            {isAuthenticated ? (
               <button
-                key={item.id}
                 onClick={() => {
-                  navigateTo(item.id);
+                  logout();
                   setMobileMenuOpen(false);
                 }}
-                className={`w-full text-left px-6 py-4 rounded-xl text-base font-semibold transition-all duration-300 hover-lift ${
-                  currentPage === item.id
-                    ? 'bg-primary-600 text-white shadow-lg'
-                    : item.highlight
-                    ? 'bg-accent-500 text-white hover:bg-accent-600 shadow-md'
-                    : 'text-gray-700 hover:bg-gray-100 hover:text-primary-600'
-                }`}
+                className="col-span-2 mt-1 px-3 py-2.5 rounded-xl bg-red-50 text-red-700 font-semibold"
               >
-                <div>{item.label}</div>
-                <div className="text-sm opacity-75 mt-1">{item.labelHindi}</div>
+                Logout
               </button>
-            ))}
-
-            <div className="border-t border-gray-200 pt-4 mt-4">
-              {isAuthenticated ? (
-                <button
-                  onClick={() => {
-                    logout();
-                    setMobileMenuOpen(false);
-                  }}
-                  className="w-full flex items-center gap-3 px-6 py-4 rounded-xl text-base font-semibold text-red-600 hover:bg-red-50 transition-all duration-300 hover-lift"
-                >
-                  <LogOut size={20} />
-                  Logout
-                </button>
-              ) : (
-                <button
-                  onClick={() => {
-                    navigateTo('login');
-                    setMobileMenuOpen(false);
-                  }}
-                  className="w-full flex items-center gap-3 px-6 py-4 rounded-xl text-base font-semibold text-primary-600 hover:bg-primary-50 transition-all duration-300 hover-lift"
-                >
-                  <LogIn size={20} />
-                  Login
-                </button>
-              )}
-            </div>
+            ) : (
+              <button
+                onClick={() => {
+                  navigateTo('login');
+                  setMobileMenuOpen(false);
+                }}
+                className="col-span-2 mt-1 px-3 py-2.5 rounded-xl bg-white text-primary-700 font-semibold border border-primary-200"
+              >
+                Login
+              </button>
+            )}
           </nav>
         </div>
       )}
@@ -144,3 +137,4 @@ const Header = () => {
 };
 
 export default Header;
+

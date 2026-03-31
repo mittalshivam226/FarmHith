@@ -1,91 +1,105 @@
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=Sora:wght@500;600;700;800&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Global enhancements for better UX */
+:root {
+  --bg-cream: #f6f2e8;
+  --bg-paper: #fffdf7;
+  --ink: #1f2b20;
+  --muted: #5d6657;
+}
+
 @layer base {
   html {
     scroll-behavior: smooth;
   }
 
-  * {
-    @apply transition-colors duration-200;
-  }
-
   body {
-    @apply antialiased;
+    @apply font-body antialiased text-slate-800;
+    background:
+      radial-gradient(circle at 12% 10%, rgba(230, 116, 45, 0.08), transparent 30%),
+      radial-gradient(circle at 88% 20%, rgba(117, 153, 70, 0.12), transparent 34%),
+      linear-gradient(180deg, #f8f4ea 0%, #f3efe4 100%);
+    min-height: 100vh;
   }
 
-  /* Focus states for accessibility */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-display tracking-tight text-slate-900;
+  }
+
   *:focus-visible {
-    @apply outline-none ring-2 ring-primary-500 ring-offset-2;
+    @apply outline-none ring-2 ring-primary-500 ring-offset-2 ring-offset-[#f8f4ea];
   }
 
-  /* Custom scrollbar */
   ::-webkit-scrollbar {
-    width: 8px;
+    width: 10px;
   }
 
   ::-webkit-scrollbar-track {
-    @apply bg-gray-100;
+    background: #e9e2d0;
   }
 
   ::-webkit-scrollbar-thumb {
-    @apply bg-primary-300 rounded-full;
+    background: #9f451b;
+    border-radius: 999px;
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    @apply bg-primary-400;
+    background: #7f391a;
   }
 }
 
 @layer components {
-  /* Enhanced button styles */
   .btn-primary {
-    @apply bg-primary-600 text-white px-8 py-4 rounded-xl font-semibold text-lg;
-    @apply hover:bg-primary-700 hover:shadow-button-hover hover:scale-105;
-    @apply active:scale-95 transition-all duration-200;
+    @apply inline-flex items-center justify-center bg-accent-500 text-white px-7 py-3.5 rounded-full font-semibold text-base;
+    @apply hover:bg-accent-600 hover:shadow-button-hover hover:-translate-y-0.5 active:translate-y-0;
+    @apply transition-all duration-200;
   }
 
   .btn-secondary {
-    @apply bg-white text-primary-600 px-8 py-4 rounded-xl font-semibold text-lg;
-    @apply hover:bg-gray-50 hover:shadow-card-hover border-2 border-primary-600;
-    @apply active:scale-95 transition-all duration-200;
+    @apply inline-flex items-center justify-center bg-white/90 text-primary-700 px-7 py-3.5 rounded-full font-semibold text-base border border-primary-200;
+    @apply hover:bg-white hover:border-primary-400 hover:-translate-y-0.5;
+    @apply transition-all duration-200;
   }
 
   .btn-accent {
-    @apply bg-accent-500 text-white px-8 py-4 rounded-xl font-semibold text-lg;
-    @apply hover:bg-accent-600 hover:shadow-glow-yellow hover:scale-105;
-    @apply active:scale-95 transition-all duration-200;
+    @apply inline-flex items-center justify-center bg-primary-600 text-white px-7 py-3.5 rounded-full font-semibold text-base;
+    @apply hover:bg-primary-700 hover:shadow-button-hover hover:-translate-y-0.5;
+    @apply transition-all duration-200;
   }
 
-  /* Card hover effects */
   .card-hover {
-    @apply hover:shadow-card-hover hover:scale-105 transition-all duration-300;
+    @apply bg-[var(--bg-paper)] border border-[#eadfca] rounded-2xl;
+    @apply hover:-translate-y-1.5 hover:shadow-card-hover transition-all duration-300;
   }
 
-  /* Form enhancements */
   .form-input {
-    @apply w-full px-6 py-4 border-2 border-gray-200 rounded-xl;
-    @apply focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-200;
-    @apply transition-all duration-200 text-lg;
+    @apply w-full px-4 py-3 border border-[#d9cfbd] rounded-xl bg-white text-slate-800;
+    @apply focus:border-primary-500 focus:ring-2 focus:ring-primary-200 focus:outline-none;
+    @apply transition-all duration-200;
   }
 
   .form-label {
-    @apply block text-lg font-semibold text-gray-700 mb-3;
+    @apply block text-sm font-semibold text-slate-700 mb-2;
   }
 
-  /* Loading states */
   .loading-spinner {
-    @apply animate-spin rounded-full border-4 border-primary-200 border-t-primary-600;
+    @apply animate-spin rounded-full border-4 border-primary-200 border-t-accent-500;
   }
 
-  /* Micro-interactions */
   .hover-lift {
-    @apply hover:-translate-y-2 transition-transform duration-300;
+    @apply hover:-translate-y-1 transition-transform duration-300;
   }
 
   .hover-glow {
     @apply hover:shadow-glow-green transition-shadow duration-300;
   }
 }
+

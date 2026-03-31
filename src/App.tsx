@@ -1,6 +1,8 @@
+import { useEffect, useState } from 'react';
 import { NavigationProvider, useNavigation } from './context/NavigationContext';
 import Header from './components/Header';
 import Footer from './components/Footer';
+import LoadingScreen from './components/LoadingScreen';
 import Home from './pages/Home';
 import About from './pages/About';
 import Services from './pages/Services';
@@ -15,7 +17,13 @@ import Login from './pages/Login';
 import Profile from './pages/Profile';
 
 function AppContent() {
-  const { currentPage } = useNavigation();
+  const { currentPage, isPageLoading } = useNavigation();
+  const [isBootLoading, setIsBootLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => setIsBootLoading(false), 1200);
+    return () => window.clearTimeout(timer);
+  }, []);
 
   const renderPage = () => {
     switch (currentPage) {
@@ -53,9 +61,10 @@ function AppContent() {
   };
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen text-slate-900">
+      <LoadingScreen visible={isBootLoading || isPageLoading} />
       <Header />
-      <main>{renderPage()}</main>
+      <main className="animate-fade-in">{renderPage()}</main>
       <Footer />
     </div>
   );

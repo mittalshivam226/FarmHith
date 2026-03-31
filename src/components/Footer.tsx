@@ -5,86 +5,64 @@ const Footer = () => {
   const { navigateTo } = useNavigation();
 
   return (
-    <footer className="bg-gray-900 text-gray-300">
+    <footer className="mt-14 bg-[#1f2b20] text-[#d8dfd1]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           <div>
-            <div className="flex items-center gap-2 mb-4">
-              <div className="w-10 h-10 bg-gradient-to-br from-green-600 to-green-700 rounded-full flex items-center justify-center">
-                <span className="text-white font-bold">F</span>
-              </div>
-              <h3 className="text-xl font-bold text-white">
-                Farm<span className="text-green-400">हित</span>
-              </h3>
-            </div>
-            <p className="text-sm mb-4">
-              Empowering farmers through smart soil testing and sustainable practices.
+            <h3 className="font-display text-2xl text-white mb-3">FarmHith</h3>
+            <p className="text-sm leading-relaxed text-[#b7c0af]">
+              A simple digital bridge between farmers, soil labs, and biomass buyers.
             </p>
-            <div className="flex gap-3">
-              <a href="https://facebook.com/farmhith" target="_blank" rel="noopener noreferrer" className="w-8 h-8 bg-gray-800 rounded-full flex items-center justify-center hover:bg-green-600 transition-colors">
-                <Facebook size={16} />
+            <div className="flex gap-2 mt-5">
+              <a href="https://facebook.com/farmhith" target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors">
+                <Facebook size={15} />
               </a>
-              <a href="https://x.com/farmhith" target="_blank" rel="noopener noreferrer" className="w-8 h-8 bg-gray-800 rounded-full flex items-center justify-center hover:bg-green-600 transition-colors">
-                <Twitter size={16} />
+              <a href="https://x.com/farmhith" target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors">
+                <Twitter size={15} />
               </a>
-              <a href="https://instagram.com/farmhith" target="_blank" rel="noopener noreferrer" className="w-8 h-8 bg-gray-800 rounded-full flex items-center justify-center hover:bg-green-600 transition-colors">
-                <Instagram size={16} />
+              <a href="https://instagram.com/farmhith" target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors">
+                <Instagram size={15} />
               </a>
-              <a href="https://youtube.com/@farmhith" target="_blank" rel="noopener noreferrer" className="w-8 h-8 bg-gray-800 rounded-full flex items-center justify-center hover:bg-green-600 transition-colors">
-                <Youtube size={16} />
+              <a href="https://youtube.com/@farmhith" target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors">
+                <Youtube size={15} />
               </a>
             </div>
           </div>
 
           <div>
-            <h4 className="text-white font-semibold mb-4">Quick Links</h4>
+            <h4 className="text-white font-semibold mb-4">Explore</h4>
             <ul className="space-y-2 text-sm">
-              <li><button onClick={() => navigateTo('about')} className="hover:text-green-400 transition-colors">About Us</button></li>
-              <li><button onClick={() => navigateTo('services')} className="hover:text-green-400 transition-colors">Our Services</button></li>
-              <li><button onClick={() => navigateTo('book-test')} className="hover:text-green-400 transition-colors">Book a Test</button></li>
-              <li><button onClick={() => navigateTo('partners')} className="hover:text-green-400 transition-colors">Our Partners</button></li>
-              <li><button onClick={() => navigateTo('blog')} className="hover:text-green-400 transition-colors">Blog</button></li>
+              <li><button onClick={() => navigateTo('about')} className="hover:text-white transition-colors">About</button></li>
+              <li><button onClick={() => navigateTo('services')} className="hover:text-white transition-colors">Services</button></li>
+              <li><button onClick={() => navigateTo('book-test')} className="hover:text-white transition-colors">Book Soil Test</button></li>
+              <li><button onClick={() => navigateTo('partners')} className="hover:text-white transition-colors">Partnerships</button></li>
             </ul>
           </div>
 
           <div>
             <h4 className="text-white font-semibold mb-4">Resources</h4>
             <ul className="space-y-2 text-sm">
-              <li><button onClick={() => navigateTo('education')} className="hover:text-green-400 transition-colors">Educational Hub</button></li>
-              <li><button onClick={() => navigateTo('reports')} className="hover:text-green-400 transition-colors">My Reports</button></li>
-              <li><button onClick={() => navigateTo('privacy')} className="hover:text-green-400 transition-colors">Privacy Policy</button></li>
-              <li><button onClick={() => navigateTo('terms')} className="hover:text-green-400 transition-colors">Terms of Service</button></li>
-              <li><button onClick={() => navigateTo('refund')} className="hover:text-green-400 transition-colors">Refund Policy</button></li>
+              <li><button onClick={() => navigateTo('education')} className="hover:text-white transition-colors">Education Hub</button></li>
+              <li><button onClick={() => navigateTo('reports')} className="hover:text-white transition-colors">My Reports</button></li>
+              <li><button onClick={() => navigateTo('privacy')} className="hover:text-white transition-colors">Privacy Policy</button></li>
+              <li><button onClick={() => navigateTo('terms')} className="hover:text-white transition-colors">Terms</button></li>
+              <li><button onClick={() => navigateTo('refund')} className="hover:text-white transition-colors">Refund Policy</button></li>
             </ul>
           </div>
 
           <div>
-            <h4 className="text-white font-semibold mb-4">Contact Us</h4>
+            <h4 className="text-white font-semibold mb-4">Contact</h4>
             <ul className="space-y-3 text-sm">
-              <li className="flex items-start gap-2">
-                <Phone size={16} className="mt-1 flex-shrink-0" />
-                <div>
-                  <p>+91 1234567890</p>
-                  <p className="text-xs text-gray-400">Mon-Sat, 9AM-6PM</p>
-                </div>
-              </li>
-              <li className="flex items-start gap-2">
-                <Mail size={16} className="mt-1 flex-shrink-0" />
-                <p>support@farmhith.in</p>
-              </li>
-              <li className="flex items-start gap-2">
-                <MapPin size={16} className="mt-1 flex-shrink-0" />
-                <p>Panipat, Haryana, India</p>
-              </li>
+              <li className="flex items-start gap-2"><Phone size={15} className="mt-0.5" /> +91 1234567890</li>
+              <li className="flex items-start gap-2"><Mail size={15} className="mt-0.5" /> support@farmhith.in</li>
+              <li className="flex items-start gap-2"><MapPin size={15} className="mt-0.5" /> Panipat, Haryana, India</li>
             </ul>
           </div>
         </div>
 
-        <div className="border-t border-gray-800 mt-8 pt-8 text-center text-sm">
-          <p>&copy; 2025 Farmहित (FarmHith). All rights reserved.</p>
-          <p className="text-gray-500 mt-2">
-            Built with ❤️ for Indian farmers | किसानों के कल्याण के लिए
-          </p>
+        <div className="border-t border-white/10 mt-10 pt-5 text-xs text-[#aab3a2] flex flex-col sm:flex-row gap-2 sm:items-center sm:justify-between">
+          <p>© 2026 FarmHith. All rights reserved.</p>
+          <p>Built for farmer-first, sustainable agriculture.</p>
         </div>
       </div>
     </footer>
@@ -92,3 +70,4 @@ const Footer = () => {
 };
 
 export default Footer;
+
