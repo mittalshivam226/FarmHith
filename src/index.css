@@ -9,6 +9,11 @@
   --bg-paper: #fbfefb;
   --ink: #133621;
   --muted: #456050;
+  --motion-fast: 180ms;
+  --motion-base: 280ms;
+  --motion-slow: 520ms;
+  --ease-standard: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-soft: cubic-bezier(0.19, 1, 0.22, 1);
 }
 
 @layer base {
@@ -59,44 +64,120 @@
 @layer components {
   .btn-primary {
     @apply inline-flex items-center justify-center bg-primary-600 text-white px-7 py-3.5 rounded-full font-semibold text-base;
-    @apply hover:bg-primary-700 hover:shadow-button-hover hover:-translate-y-0.5 active:translate-y-0;
-    @apply transition-all duration-300;
+    @apply hover:bg-primary-700 hover:shadow-button-hover active:translate-y-0;
     box-shadow: 0 8px 0 0 rgba(31, 67, 45, 0.25);
+    transition:
+      transform var(--motion-base) var(--ease-standard),
+      box-shadow var(--motion-base) var(--ease-standard),
+      background-color var(--motion-fast) linear,
+      border-color var(--motion-fast) linear,
+      color var(--motion-fast) linear;
+    will-change: transform;
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-3px) scale(1.01);
+  }
+
+  .btn-primary:active {
+    transform: translateY(0) scale(0.99);
   }
 
   .btn-secondary {
     @apply inline-flex items-center justify-center bg-white/90 text-primary-700 px-7 py-3.5 rounded-full font-semibold text-base border border-primary-200;
-    @apply hover:bg-white hover:border-primary-400 hover:-translate-y-0.5;
-    @apply transition-all duration-300;
+    @apply hover:bg-white hover:border-primary-400;
+    transition:
+      transform var(--motion-base) var(--ease-standard),
+      box-shadow var(--motion-base) var(--ease-standard),
+      background-color var(--motion-fast) linear,
+      border-color var(--motion-fast) linear,
+      color var(--motion-fast) linear;
+    will-change: transform;
+  }
+
+  .btn-secondary:hover {
+    transform: translateY(-3px);
+  }
+
+  .btn-secondary:active {
+    transform: translateY(0) scale(0.99);
   }
 
   .btn-accent {
     @apply inline-flex items-center justify-center bg-accent-500 text-white px-7 py-3.5 rounded-full font-semibold text-base;
-    @apply hover:bg-accent-600 hover:shadow-button-hover hover:-translate-y-0.5;
-    @apply transition-all duration-300;
+    @apply hover:bg-accent-600 hover:shadow-button-hover;
     box-shadow: 0 8px 0 0 rgba(33, 66, 43, 0.22);
+    transition:
+      transform var(--motion-base) var(--ease-standard),
+      box-shadow var(--motion-base) var(--ease-standard),
+      background-color var(--motion-fast) linear,
+      border-color var(--motion-fast) linear,
+      color var(--motion-fast) linear;
+    will-change: transform;
+  }
+
+  .btn-accent:hover {
+    transform: translateY(-3px);
+  }
+
+  .btn-accent:active {
+    transform: translateY(0) scale(0.99);
+  }
+
+  .interactive-chip {
+    transition:
+      transform var(--motion-base) var(--ease-standard),
+      background-color var(--motion-fast) linear,
+      border-color var(--motion-fast) linear,
+      color var(--motion-fast) linear,
+      box-shadow var(--motion-base) var(--ease-standard);
+    will-change: transform;
+  }
+
+  .interactive-chip:hover {
+    transform: translateY(-2px);
+  }
+
+  .interactive-chip:active {
+    transform: translateY(0) scale(0.99);
   }
 
   .card-hover {
     @apply bg-[var(--bg-paper)] border border-[#d4e8d8] rounded-2xl;
-    @apply hover:shadow-card-hover transition-all duration-500;
+    @apply hover:shadow-card-hover;
     transform-style: preserve-3d;
     perspective: 900px;
     will-change: transform, box-shadow;
+    backface-visibility: hidden;
+    transform: translate3d(0, 0, 0);
+    transition:
+      transform var(--motion-slow) var(--ease-soft),
+      box-shadow var(--motion-base) var(--ease-standard),
+      border-color var(--motion-base) var(--ease-standard),
+      background-color var(--motion-base) var(--ease-standard);
   }
 
   .card-hover:hover {
-    transform: translateY(-7px) rotateX(5deg) rotateY(-3deg);
+    transform: translate3d(0, -6px, 0) rotateX(2.2deg) rotateY(-2deg);
+    border-color: #b6e3c2;
+  }
+
+  .card-hover:active {
+    transform: translate3d(0, -2px, 0) rotateX(0deg) rotateY(0deg) scale(0.995);
   }
 
   .card-hover > * {
-    transform: translateZ(8px);
+    transform: translateZ(10px);
   }
 
   .form-input {
     @apply w-full px-4 py-3 border border-[#c8dfcd] rounded-xl bg-white text-slate-800;
     @apply focus:border-primary-500 focus:ring-2 focus:ring-primary-200 focus:outline-none;
-    @apply transition-all duration-300;
+    transition:
+      transform var(--motion-base) var(--ease-standard),
+      box-shadow var(--motion-base) var(--ease-standard),
+      border-color var(--motion-fast) linear,
+      background-color var(--motion-fast) linear;
   }
 
   .form-label {
@@ -120,12 +201,74 @@
     perspective: 1000px;
   }
 
-  .surface-3d:hover {
-    transform: rotateX(4deg) rotateY(-4deg) translateY(-6px);
-    transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+  .surface-3d:not(.card-hover) {
+    transition: transform var(--motion-base) var(--ease-standard);
+  }
+
+  .surface-3d:not(.card-hover):hover {
+    transform: translate3d(0, -4px, 0) rotateX(1.8deg) rotateY(-1.8deg);
+  }
+
+  .surface-3d:not(.card-hover):active {
+    transform: translate3d(0, -1px, 0) scale(0.995);
   }
 
   .ambient-orb {
     @apply absolute rounded-full blur-3xl opacity-60 pointer-events-none animate-ambient-shift;
+    transition: transform var(--motion-slow) var(--ease-standard);
+  }
+
+  .page-enter {
+    animation: fadeIn 0.42s var(--ease-standard) both;
+  }
+
+  .page-shell section {
+    opacity: 0;
+    animation: sectionReveal 0.64s var(--ease-standard) forwards;
+  }
+
+  .page-shell section:nth-of-type(1) { animation-delay: 40ms; }
+  .page-shell section:nth-of-type(2) { animation-delay: 110ms; }
+  .page-shell section:nth-of-type(3) { animation-delay: 170ms; }
+  .page-shell section:nth-of-type(4) { animation-delay: 230ms; }
+  .page-shell section:nth-of-type(5) { animation-delay: 280ms; }
+  .page-shell section:nth-of-type(6) { animation-delay: 330ms; }
+  .page-shell section:nth-of-type(7) { animation-delay: 380ms; }
+  .page-shell section:nth-of-type(8) { animation-delay: 430ms; }
+}
+
+@keyframes sectionReveal {
+  0% {
+    opacity: 0;
+    transform: translateY(14px) scale(0.99);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+  }
+
+  .card-hover:hover,
+  .card-hover:active,
+  .surface-3d:not(.card-hover):hover,
+  .surface-3d:not(.card-hover):active,
+  .btn-primary:hover,
+  .btn-primary:active,
+  .btn-secondary:hover,
+  .btn-secondary:active,
+  .btn-accent:hover,
+  .btn-accent:active,
+  .interactive-chip:hover,
+  .interactive-chip:active {
+    transform: none !important;
   }
 }

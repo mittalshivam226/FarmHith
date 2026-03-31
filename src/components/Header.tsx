@@ -25,7 +25,7 @@ const Header = () => {
         <div className="h-20 flex items-center justify-between gap-4">
           <button
             onClick={() => navigateTo('home')}
-            className="flex items-center gap-3 rounded-2xl px-2 py-1 hover:bg-white/70 transition-colors surface-3d"
+            className="flex items-center gap-3 rounded-2xl px-2 py-1 hover:bg-white/70 surface-3d interactive-chip"
           >
             <span className="w-11 h-11 rounded-xl bg-gradient-to-br from-primary-600 to-accent-500 text-white flex items-center justify-center shadow-md">
               <Sprout size={20} />
@@ -43,7 +43,7 @@ const Header = () => {
                 <button
                   key={item.id}
                   onClick={() => navigateTo(item.id)}
-                  className={`px-3.5 py-2 rounded-full text-sm font-semibold transition-all duration-300 ${
+                  className={`px-3.5 py-2 rounded-full text-sm font-semibold interactive-chip ${
                     currentPage === item.id
                       ? 'bg-primary-700 text-white shadow-md'
                       : item.highlight
@@ -60,7 +60,7 @@ const Header = () => {
             {isAuthenticated ? (
               <button
                 onClick={logout}
-                className="inline-flex items-center gap-2 rounded-full border border-primary-200 bg-primary-50 text-primary-700 px-4 py-2 text-sm font-semibold hover:bg-primary-100 transition-colors"
+                className="inline-flex items-center gap-2 rounded-full border border-primary-200 bg-primary-50 text-primary-700 px-4 py-2 text-sm font-semibold hover:bg-primary-100 interactive-chip"
               >
                 <LogOut size={16} />
                 Logout
@@ -68,7 +68,7 @@ const Header = () => {
             ) : (
               <button
                 onClick={() => navigateTo('login')}
-                className="inline-flex items-center gap-2 rounded-full border border-primary-200 bg-white text-primary-700 px-4 py-2 text-sm font-semibold hover:bg-primary-50 transition-colors"
+                className="inline-flex items-center gap-2 rounded-full border border-primary-200 bg-white text-primary-700 px-4 py-2 text-sm font-semibold hover:bg-primary-50 interactive-chip"
               >
                 <LogIn size={16} />
                 Login
@@ -78,7 +78,7 @@ const Header = () => {
 
           <button
             onClick={() => setMobileMenuOpen((prev) => !prev)}
-            className="lg:hidden inline-flex items-center justify-center w-11 h-11 rounded-xl border border-primary-200 bg-white text-slate-700"
+            className="lg:hidden inline-flex items-center justify-center w-11 h-11 rounded-xl border border-primary-200 bg-white text-slate-700 interactive-chip"
           >
             {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
@@ -97,7 +97,7 @@ const Header = () => {
                     navigateTo(item.id);
                     setMobileMenuOpen(false);
                   }}
-                  className={`px-3 py-2.5 rounded-xl text-sm font-semibold ${
+                  className={`px-3 py-2.5 rounded-xl text-sm font-semibold interactive-chip ${
                     currentPage === item.id
                       ? 'bg-primary-700 text-white'
                       : item.highlight
@@ -114,7 +114,7 @@ const Header = () => {
                   logout();
                   setMobileMenuOpen(false);
                 }}
-                className="col-span-2 mt-1 px-3 py-2.5 rounded-xl bg-red-50 text-red-700 font-semibold"
+                className="col-span-2 mt-1 px-3 py-2.5 rounded-xl bg-red-50 text-red-700 font-semibold interactive-chip"
               >
                 Logout
               </button>
@@ -124,7 +124,7 @@ const Header = () => {
                   navigateTo('login');
                   setMobileMenuOpen(false);
                 }}
-                className="col-span-2 mt-1 px-3 py-2.5 rounded-xl bg-white text-primary-700 font-semibold border border-primary-200"
+                className="col-span-2 mt-1 px-3 py-2.5 rounded-xl bg-white text-primary-700 font-semibold border border-primary-200 interactive-chip"
               >
                 Login
               </button>

@@ -14,16 +14,16 @@ const Footer = () => {
               A simple digital bridge between farmers, soil labs, and biomass buyers.
             </p>
             <div className="flex gap-2 mt-5">
-              <a href="https://facebook.com/farmhith" target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-full bg-white/10 hover:bg-accent-500 flex items-center justify-center transition-colors">
+              <a href="https://facebook.com/farmhith" target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-full bg-white/10 hover:bg-accent-500 flex items-center justify-center interactive-chip">
                 <Facebook size={15} />
               </a>
-              <a href="https://x.com/farmhith" target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-full bg-white/10 hover:bg-accent-500 flex items-center justify-center transition-colors">
+              <a href="https://x.com/farmhith" target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-full bg-white/10 hover:bg-accent-500 flex items-center justify-center interactive-chip">
                 <Twitter size={15} />
               </a>
-              <a href="https://instagram.com/farmhith" target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-full bg-white/10 hover:bg-accent-500 flex items-center justify-center transition-colors">
+              <a href="https://instagram.com/farmhith" target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-full bg-white/10 hover:bg-accent-500 flex items-center justify-center interactive-chip">
                 <Instagram size={15} />
               </a>
-              <a href="https://youtube.com/@farmhith" target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-full bg-white/10 hover:bg-accent-500 flex items-center justify-center transition-colors">
+              <a href="https://youtube.com/@farmhith" target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-full bg-white/10 hover:bg-accent-500 flex items-center justify-center interactive-chip">
                 <Youtube size={15} />
               </a>
             </div>
@@ -32,21 +32,21 @@ const Footer = () => {
           <div>
             <h4 className="text-white font-semibold mb-4">Explore</h4>
             <ul className="space-y-2 text-sm">
-              <li><button onClick={() => navigateTo('about')} className="hover:text-white transition-colors">About</button></li>
-              <li><button onClick={() => navigateTo('services')} className="hover:text-white transition-colors">Services</button></li>
-              <li><button onClick={() => navigateTo('book-test')} className="hover:text-white transition-colors">Book Soil Test</button></li>
-              <li><button onClick={() => navigateTo('partners')} className="hover:text-white transition-colors">Partnerships</button></li>
+              <li><button onClick={() => navigateTo('about')} className="hover:text-white interactive-chip">About</button></li>
+              <li><button onClick={() => navigateTo('services')} className="hover:text-white interactive-chip">Services</button></li>
+              <li><button onClick={() => navigateTo('book-test')} className="hover:text-white interactive-chip">Book Soil Test</button></li>
+              <li><button onClick={() => navigateTo('partners')} className="hover:text-white interactive-chip">Partnerships</button></li>
             </ul>
           </div>
 
           <div>
             <h4 className="text-white font-semibold mb-4">Resources</h4>
             <ul className="space-y-2 text-sm">
-              <li><button onClick={() => navigateTo('education')} className="hover:text-white transition-colors">Education Hub</button></li>
-              <li><button onClick={() => navigateTo('reports')} className="hover:text-white transition-colors">My Reports</button></li>
-              <li><button onClick={() => navigateTo('privacy')} className="hover:text-white transition-colors">Privacy Policy</button></li>
-              <li><button onClick={() => navigateTo('terms')} className="hover:text-white transition-colors">Terms</button></li>
-              <li><button onClick={() => navigateTo('refund')} className="hover:text-white transition-colors">Refund Policy</button></li>
+              <li><button onClick={() => navigateTo('education')} className="hover:text-white interactive-chip">Education Hub</button></li>
+              <li><button onClick={() => navigateTo('reports')} className="hover:text-white interactive-chip">My Reports</button></li>
+              <li><button onClick={() => navigateTo('privacy')} className="hover:text-white interactive-chip">Privacy Policy</button></li>
+              <li><button onClick={() => navigateTo('terms')} className="hover:text-white interactive-chip">Terms</button></li>
+              <li><button onClick={() => navigateTo('refund')} className="hover:text-white interactive-chip">Refund Policy</button></li>
             </ul>
           </div>
 

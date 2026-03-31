@@ -64,7 +64,9 @@ function AppContent() {
     <div className="min-h-screen text-slate-900">
       <LoadingScreen visible={isBootLoading || isPageLoading} />
       <Header />
-      <main className="animate-fade-in">{renderPage()}</main>
+      <main key={currentPage} className="page-enter">
+        <div className="page-shell">{renderPage()}</div>
+      </main>
       <Footer />
     </div>
   );
