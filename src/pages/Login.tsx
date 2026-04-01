@@ -6,7 +6,7 @@ import { logger } from '../utils/logger';
 import type { UserProfileFormData } from '../types';
 
 const Login = () => {
-  const { navigateTo } = useNavigation();
+  const { navigateTo, refreshAuth } = useNavigation();
   const [phone, setPhone] = useState('');
   const [otp, setOtp] = useState('');
   const [profileData, setProfileData] = useState<UserProfileFormData>({
@@ -48,9 +48,18 @@ const Login = () => {
     setSuccess(false);
 
     try {
-      await verifyPhoneOTP({ phone, otp });
+      const session = await verifyPhoneOTP({ phone, otp });
       logger.info('OTP verification successful', { phone });
-      setStep('profile');
+      await refreshAuth();
+
+      if (!session.user.name || session.user.name.startsWith('Farmer ')) {
+        setStep('profile');
+      } else {
+        setSuccess(true);
+        setTimeout(() => {
+          navigateTo('home');
+        }, 1200);
+      }
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Invalid OTP';
       setError(errorMessage);
@@ -68,6 +77,7 @@ const Login = () => {
     try {
       await createOrUpdateUserProfile(profileData);
       logger.info('Profile created successfully', { phone });
+      await refreshAuth();
       setSuccess(true);
       setTimeout(() => {
         navigateTo('home');
@@ -199,7 +209,7 @@ const Login = () => {
                     autoComplete="one-time-code"
                     required
                     value={otp}
-                    onChange={(e) => setOtp(e.target.value)}
+                    onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
                     className="form-input pl-10"
                     placeholder="Enter 6-digit OTP"
                     disabled={isLoading}

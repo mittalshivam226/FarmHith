@@ -1,8 +1,7 @@
 import { z } from 'zod'
-import { supabase } from '../lib/supabase'
 import { ContactMessage } from '../types'
 import { logger } from '../utils/logger'
-import { backendPost } from './backendApi'
+import { backendGet, backendPatch, backendPost } from './backendApi'
 
 export interface ContactMessageData {
   name: string
@@ -32,38 +31,16 @@ export const submitContactMessage = async (data: ContactMessageData): Promise<Co
     // Validate input data
     const validatedData = contactMessageSchema.parse(data)
 
-    let message: ContactMessage | null = null
-    try {
-      const backendResponse = await backendPost<ContactMessageData, { id: string; status: string }>(
-        '/contact-messages',
-        validatedData
-      )
+    const backendResponse = await backendPost<ContactMessageData, { id: string; status: string }>(
+      '/contact-messages',
+      validatedData
+    )
 
-      message = {
-        id: backendResponse.id,
-        status: backendResponse.status,
-        created_at: new Date().toISOString(),
-        ...validatedData,
-      }
-    } catch (backendError) {
-      logger.warn('Backend contact API unavailable, falling back to Supabase', {
-        error: backendError instanceof Error ? backendError.message : String(backendError),
-      })
-      const { data: supabaseMessage, error } = await supabase
-        .from('contact_messages')
-        .insert([validatedData])
-        .select()
-        .single()
-
-      if (error) {
-        logger.error('Database error submitting contact message', {
-          error: error.message,
-          email: data.email,
-        })
-        throw new Error('Failed to send message. Please try again.')
-      }
-
-      message = supabaseMessage as ContactMessage
+    const message: ContactMessage = {
+      id: backendResponse.id,
+      status: backendResponse.status,
+      created_at: new Date().toISOString(),
+      ...validatedData,
     }
 
     logger.info('Contact message submitted successfully', {
@@ -90,19 +67,10 @@ export const submitContactMessage = async (data: ContactMessageData): Promise<Co
  */
 export const getAllContactMessages = async (): Promise<ContactMessage[]> => {
   try {
-    const { data: messages, error } = await supabase
-      .from('contact_messages')
-      .select('*')
-      .order('created_at', { ascending: false })
-
-    if (error) {
-      logger.error('Database error fetching contact messages', { error: error.message })
-      throw new Error('Failed to fetch contact messages.')
-    }
+    const messages = await backendGet<ContactMessage[]>('/contact-messages')
 
     logger.info('Contact messages fetched successfully', { count: messages.length })
-
-    return messages as ContactMessage[]
+    return messages
   } catch (error) {
     logger.error('Error fetching contact messages', { error: error instanceof Error ? error.message : String(error) })
     throw error
@@ -117,28 +85,17 @@ export const getAllContactMessages = async (): Promise<ContactMessage[]> => {
  */
 export const updateContactMessageStatus = async (id: string, status: string): Promise<ContactMessage> => {
   try {
-    const { data: message, error } = await supabase
-      .from('contact_messages')
-      .update({ status })
-      .eq('id', id)
-      .select()
-      .single()
-
-    if (error) {
-      logger.error('Database error updating contact message', {
-        error: error.message,
-        id,
-        status,
-      })
-      throw new Error('Failed to update contact message.')
-    }
+    const message = await backendPatch<{ status: string }, ContactMessage>(
+      `/contact-messages/${id}/status`,
+      { status }
+    )
 
     logger.info('Contact message status updated successfully', {
       id,
       status,
     })
 
-    return message as ContactMessage
+    return message
   } catch (error) {
     logger.error('Error updating contact message', { error: error instanceof Error ? error.message : String(error) })
     throw error

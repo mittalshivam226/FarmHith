@@ -1,14 +1,15 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode, useRef } from 'react';
+import React, { createContext, useContext, useState, useEffect, ReactNode, useRef, useCallback } from 'react';
 import { getCurrentUserSession, signOutUser } from '../services/auth';
-import type { User } from '@supabase/supabase-js';
+import type { AuthUser } from '../services/auth';
 
 interface NavigationContextType {
   currentPage: string;
   navigateTo: (page: string) => void;
   isAuthenticated: boolean;
-  user: User | null;
+  user: AuthUser | null;
   isPageLoading: boolean;
   logout: () => Promise<void>;
+  refreshAuth: () => Promise<void>;
 }
 
 const NavigationContext = createContext<NavigationContextType | undefined>(undefined);
@@ -16,26 +17,30 @@ const NavigationContext = createContext<NavigationContextType | undefined>(undef
 const NavigationProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [currentPage, setCurrentPage] = useState('home');
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<AuthUser | null>(null);
   const [isPageLoading, setIsPageLoading] = useState(false);
   const navLoaderTimeout = useRef<number | null>(null);
 
-  useEffect(() => {
-    // Check for existing session on mount
-    const checkAuth = async () => {
-      try {
-        const session = await getCurrentUserSession();
-        if (session) {
-          setIsAuthenticated(true);
-          setUser(session.user);
-        }
-      } catch (error) {
-        console.error('Error checking auth status:', error);
+  const refreshAuth = useCallback(async () => {
+    try {
+      const session = await getCurrentUserSession();
+      if (session) {
+        setIsAuthenticated(true);
+        setUser(session.user);
+        return;
       }
-    };
-
-    checkAuth();
+      setIsAuthenticated(false);
+      setUser(null);
+    } catch (error) {
+      console.error('Error checking auth status:', error);
+      setIsAuthenticated(false);
+      setUser(null);
+    }
   }, []);
+
+  useEffect(() => {
+    refreshAuth();
+  }, [refreshAuth]);
 
   const navigateTo = (page: string) => {
     if (page === currentPage) {
@@ -79,7 +84,8 @@ const NavigationProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       isAuthenticated,
       user,
       isPageLoading,
-      logout
+      logout,
+      refreshAuth,
     }}>
       {children}
     </NavigationContext.Provider>

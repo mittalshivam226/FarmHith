@@ -1,408 +1,375 @@
-import { supabase } from '../lib/supabase'
-import { logger } from '../utils/logger'
-import type { User, Session } from '@supabase/supabase-js'
-import type { UserProfile, UserProfileFormData } from '../types'
+import { backendGet, backendPost, backendPut } from './backendApi';
+import { logger } from '../utils/logger';
+import type { UserProfile, UserProfileFormData } from '../types';
 
 export interface UserCredentials {
-  phone: string
-  password?: string
-  otp?: string
+  phone: string;
+  password?: string;
+  otp?: string;
 }
 
 export interface PhoneSignInData {
-  phone: string
+  phone: string;
+}
+
+export interface AuthUser {
+  id: string;
+  role: string;
+  phone: string;
+  name: string;
+  email?: string | null;
+  village?: string | null;
+  district?: string | null;
+  state?: string | null;
+  address?: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+interface TokenBundle {
+  access_token: string;
+  refresh_token: string;
+  token_type: string;
+  expires_in_seconds: number;
+}
+
+interface VerifyOtpResponse extends TokenBundle {
+  user: AuthUser;
+  needs_profile_completion: boolean;
+}
+
+interface RequestOtpResponse {
+  message: string;
+  expires_in_seconds: number;
+  otp_length: number;
+  dev_otp?: string;
 }
 
 export interface UserSession {
-  user: User
-  session: Session
+  user: AuthUser;
+  session: TokenBundle;
 }
 
 export interface AdminCredentials {
-  email: string
-  password: string
+  email: string;
+  password: string;
 }
 
 export interface AdminSession {
-  user: User
-  session: Session
+  user: AuthUser;
+  session: TokenBundle;
 }
 
-/**
- * Signs in an admin user
- * @param credentials - Admin email and password
- * @returns Admin session information
- * @throws Error if authentication fails
- */
-export const signInAdmin = async (credentials: AdminCredentials): Promise<AdminSession> => {
+const ACCESS_TOKEN_KEY = 'farmhith_access_token';
+const REFRESH_TOKEN_KEY = 'farmhith_refresh_token';
+const USER_KEY = 'farmhith_user';
+
+const isBrowser = typeof window !== 'undefined';
+
+function setStoredValue(key: string, value: string) {
+  if (!isBrowser) return;
+  localStorage.setItem(key, value);
+}
+
+function getStoredValue(key: string): string | null {
+  if (!isBrowser) return null;
+  return localStorage.getItem(key);
+}
+
+function removeStoredValue(key: string) {
+  if (!isBrowser) return;
+  localStorage.removeItem(key);
+}
+
+function storeUser(user: AuthUser) {
+  setStoredValue(USER_KEY, JSON.stringify(user));
+}
+
+function getStoredUser(): AuthUser | null {
+  const rawUser = getStoredValue(USER_KEY);
+  if (!rawUser) return null;
   try {
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email: credentials.email,
-      password: credentials.password,
-    })
-
-    if (error) {
-      logger.error('Admin authentication failed', {
-        error: error.message,
-        email: credentials.email,
-      })
-      throw new Error('Invalid admin credentials')
-    }
-
-    // Verify admin role (assuming role is stored in user metadata)
-    if (!data.user?.user_metadata?.role || data.user.user_metadata.role !== 'admin') {
-      logger.warn('Non-admin user attempted admin login', {
-        userId: data.user?.id,
-        email: credentials.email,
-      })
-      await supabase.auth.signOut()
-      throw new Error('Access denied: Admin privileges required')
-    }
-
-    logger.info('Admin signed in successfully', {
-      userId: data.user.id,
-      email: credentials.email,
-    })
-
-    return {
-      user: data.user,
-      session: data.session!,
-    }
-  } catch (error) {
-    logger.error('Admin sign-in error', { error: error instanceof Error ? error.message : String(error) })
-    throw error
+    return JSON.parse(rawUser) as AuthUser;
+  } catch {
+    return null;
   }
 }
 
+function clearStoredAuth() {
+  removeStoredValue(ACCESS_TOKEN_KEY);
+  removeStoredValue(REFRESH_TOKEN_KEY);
+  removeStoredValue(USER_KEY);
+}
+
+function toTokenBundle(accessToken: string, refreshToken: string, expiresInSeconds: number): TokenBundle {
+  return {
+    access_token: accessToken,
+    refresh_token: refreshToken,
+    token_type: 'bearer',
+    expires_in_seconds: expiresInSeconds,
+  };
+}
+
+function persistSession(data: VerifyOtpResponse | TokenBundle, user?: AuthUser) {
+  setStoredValue(ACCESS_TOKEN_KEY, data.access_token);
+  setStoredValue(REFRESH_TOKEN_KEY, data.refresh_token);
+  if ('user' in data && data.user) {
+    storeUser(data.user);
+  } else if (user) {
+    storeUser(user);
+  }
+}
+
+function toUserProfile(user: AuthUser): UserProfile {
+  return {
+    id: user.id,
+    user_id: user.id,
+    name: user.name,
+    email: user.email || undefined,
+    phone: user.phone,
+    village: user.village || undefined,
+    district: user.district || undefined,
+    state: user.state || undefined,
+    address: user.address || undefined,
+    farm_details: undefined,
+    created_at: user.created_at,
+    updated_at: user.updated_at,
+  };
+}
+
+export const getAccessToken = (): string | null => getStoredValue(ACCESS_TOKEN_KEY);
+
+const getRefreshToken = (): string | null => getStoredValue(REFRESH_TOKEN_KEY);
+
 /**
- * Signs out the current admin user
- * @throws Error if sign-out fails
+ * Temporary placeholder while admin auth migration is pending.
  */
+export const signInAdmin = async (_credentials: AdminCredentials): Promise<AdminSession> => {
+  throw new Error('Admin email/password login is not configured in backend yet.');
+};
+
 export const signOutAdmin = async (): Promise<void> => {
-  try {
-    const { error } = await supabase.auth.signOut()
+  clearStoredAuth();
+};
 
-    if (error) {
-      logger.error('Admin sign-out failed', { error: error.message })
-      throw new Error('Failed to sign out')
-    }
-
-    logger.info('Admin signed out successfully')
-  } catch (error) {
-    logger.error('Admin sign-out error', { error: error instanceof Error ? error.message : String(error) })
-    throw error
-  }
-}
-
-/**
- * Gets the current admin session
- * @returns Current admin session or null if not authenticated
- */
 export const getCurrentAdminSession = async (): Promise<AdminSession | null> => {
-  try {
-    const { data: { session }, error } = await supabase.auth.getSession()
+  const session = await getCurrentUserSession();
+  if (!session || session.user.role !== 'admin') return null;
+  return session;
+};
 
-    if (error) {
-      logger.error('Failed to get admin session', { error: error.message })
-      return null
-    }
-
-    if (!session || !session.user?.user_metadata?.role || session.user.user_metadata.role !== 'admin') {
-      return null
-    }
-
-    return {
-      user: session.user,
-      session,
-    }
-  } catch (error) {
-    logger.error('Error getting current admin session', { error: error instanceof Error ? error.message : String(error) })
-    return null
-  }
-}
-
-/**
- * Checks if the current user is an authenticated admin
- * @returns True if user is authenticated admin, false otherwise
- */
 export const isAdminAuthenticated = async (): Promise<boolean> => {
-  const session = await getCurrentAdminSession()
-  return session !== null
-}
+  const session = await getCurrentAdminSession();
+  return session !== null;
+};
 
-/**
- * Refreshes the admin session
- * @returns Refreshed admin session
- * @throws Error if refresh fails or user is not admin
- */
 export const refreshAdminSession = async (): Promise<AdminSession> => {
-  try {
-    const { data, error } = await supabase.auth.refreshSession()
-
-    if (error) {
-      logger.error('Admin session refresh failed', { error: error.message })
-      throw new Error('Failed to refresh session')
-    }
-
-    if (!data.user?.user_metadata?.role || data.user.user_metadata.role !== 'admin') {
-      logger.warn('Non-admin user session refresh attempted', {
-        userId: data.user?.id,
-      })
-      await supabase.auth.signOut()
-      throw new Error('Access denied: Admin privileges required')
-    }
-
-    logger.info('Admin session refreshed successfully', {
-      userId: data.user.id,
-    })
-
-    return {
-      user: data.user,
-      session: data.session!,
-    }
-  } catch (error) {
-    logger.error('Admin session refresh error', { error: error instanceof Error ? error.message : String(error) })
-    throw error
+  const session = await refreshUserSession();
+  if (session.user.role !== 'admin') {
+    throw new Error('Access denied: Admin privileges required');
   }
-}
+  return session;
+};
 
 /**
  * Sends OTP to phone number for sign in
- * @param phoneData - Phone number
- * @throws Error if OTP sending fails
  */
 export const sendPhoneOTP = async (phoneData: PhoneSignInData): Promise<void> => {
   try {
-    const { error } = await supabase.auth.signInWithOtp({
+    const response = await backendPost<PhoneSignInData, RequestOtpResponse>('/auth/otp/request', {
       phone: phoneData.phone,
-    })
-
-    if (error) {
-      logger.error('Phone OTP sending failed', {
-        error: error.message,
-        phone: phoneData.phone,
-      })
-      throw new Error('Failed to send OTP')
-    }
+    });
 
     logger.info('OTP sent successfully', {
       phone: phoneData.phone,
-    })
+      ...(response.dev_otp ? { devOtpAvailable: true } : {}),
+    });
   } catch (error) {
-    logger.error('Phone OTP sending error', { error: error instanceof Error ? error.message : String(error) })
-    throw error
+    logger.error('Phone OTP sending failed', {
+      phone: phoneData.phone,
+      error: error instanceof Error ? error.message : String(error),
+    });
+    throw error;
   }
-}
+};
 
 /**
  * Verifies OTP and signs in user
- * @param credentials - Phone and OTP
- * @returns User session information
- * @throws Error if verification fails
  */
 export const verifyPhoneOTP = async (credentials: UserCredentials): Promise<UserSession> => {
   try {
-    const { data, error } = await supabase.auth.verifyOtp({
-      phone: credentials.phone,
-      token: credentials.otp!,
-      type: 'sms',
-    })
-
-    if (error) {
-      logger.error('Phone OTP verification failed', {
-        error: error.message,
-        phone: credentials.phone,
-      })
-      throw new Error('Invalid OTP')
+    if (!credentials.otp) {
+      throw new Error('OTP is required');
     }
+
+    const data = await backendPost<{ phone: string; otp: string }, VerifyOtpResponse>('/auth/otp/verify', {
+      phone: credentials.phone,
+      otp: credentials.otp,
+    });
+
+    persistSession(data);
 
     logger.info('User signed in successfully with phone', {
-      userId: data.user!.id,
+      userId: data.user.id,
       phone: credentials.phone,
-    })
+      needsProfileCompletion: data.needs_profile_completion,
+    });
 
     return {
-      user: data.user!,
-      session: data.session!,
-    }
+      user: data.user,
+      session: toTokenBundle(data.access_token, data.refresh_token, data.expires_in_seconds),
+    };
   } catch (error) {
-    logger.error('Phone OTP verification error', { error: error instanceof Error ? error.message : String(error) })
-    throw error
+    logger.error('Phone OTP verification failed', {
+      phone: credentials.phone,
+      error: error instanceof Error ? error.message : String(error),
+    });
+    throw error;
   }
-}
+};
 
 /**
  * Creates or updates user profile after authentication
- * @param profileData - User profile information
- * @returns Created/updated user profile
- * @throws Error if profile creation/update fails
  */
 export const createOrUpdateUserProfile = async (profileData: UserProfileFormData): Promise<UserProfile> => {
+  const accessToken = getAccessToken();
+  if (!accessToken) {
+    throw new Error('User not authenticated');
+  }
+
   try {
-    const { data: { user }, error: authError } = await supabase.auth.getUser()
+    const payload = {
+      name: profileData.name,
+      email: profileData.email || undefined,
+      village: profileData.village || undefined,
+      district: profileData.district || undefined,
+      state: profileData.state || undefined,
+      address: profileData.address || undefined,
+    };
 
-    if (authError || !user) {
-      logger.error('User not authenticated for profile creation', { error: authError?.message })
-      throw new Error('User not authenticated')
-    }
+    const updatedUser = await backendPut<typeof payload, AuthUser>(
+      '/auth/profile',
+      payload,
+      accessToken
+    );
 
-    const { data, error } = await supabase
-      .from('user_profiles')
-      .upsert({
-        user_id: user.id,
-        name: profileData.name,
-        email: profileData.email,
-        phone: user.phone || '',
-        village: profileData.village,
-        district: profileData.district,
-        state: profileData.state,
-        address: profileData.address,
-        farm_details: profileData.farm_details,
-      }, {
-        onConflict: 'user_id'
-      })
-      .select()
-      .single()
-
-    if (error) {
-      logger.error('User profile creation/update failed', {
-        error: error.message,
-        userId: user.id,
-      })
-      throw new Error('Failed to save profile')
-    }
+    storeUser(updatedUser);
 
     logger.info('User profile created/updated successfully', {
-      userId: user.id,
-      profileId: data.id,
-    })
+      userId: updatedUser.id,
+    });
 
-    return data
+    return toUserProfile(updatedUser);
   } catch (error) {
-    logger.error('User profile creation/update error', { error: error instanceof Error ? error.message : String(error) })
-    throw error
+    logger.error('User profile creation/update failed', {
+      error: error instanceof Error ? error.message : String(error),
+    });
+    throw error;
   }
-}
+};
 
 /**
  * Gets the current user's profile
- * @returns User profile or null if not found
- * @throws Error if query fails
  */
 export const getCurrentUserProfile = async (): Promise<UserProfile | null> => {
   try {
-    const { data: { user }, error: authError } = await supabase.auth.getUser()
-
-    if (authError || !user) {
-      logger.error('User not authenticated for profile fetch', { error: authError?.message })
-      return null
-    }
-
-    const { data, error } = await supabase
-      .from('user_profiles')
-      .select('*')
-      .eq('user_id', user.id)
-      .single()
-
-    if (error) {
-      if (error.code === 'PGRST116') {
-        // No profile found
-        return null
-      }
-      logger.error('User profile fetch failed', {
-        error: error.message,
-        userId: user.id,
-      })
-      throw new Error('Failed to fetch profile')
-    }
-
-    return data
+    const session = await getCurrentUserSession();
+    if (!session) return null;
+    return toUserProfile(session.user);
   } catch (error) {
-    logger.error('User profile fetch error', { error: error instanceof Error ? error.message : String(error) })
-    throw error
+    logger.error('User profile fetch failed', {
+      error: error instanceof Error ? error.message : String(error),
+    });
+    return null;
   }
-}
+};
 
 /**
  * Signs out the current user
- * @throws Error if sign-out fails
  */
 export const signOutUser = async (): Promise<void> => {
+  const accessToken = getAccessToken();
   try {
-    const { error } = await supabase.auth.signOut()
-
-    if (error) {
-      logger.error('User sign-out failed', { error: error.message })
-      throw new Error('Failed to sign out')
+    if (accessToken) {
+      await backendPost<undefined, { message: string }>('/auth/logout', undefined, accessToken);
     }
-
-    logger.info('User signed out successfully')
   } catch (error) {
-    logger.error('User sign-out error', { error: error instanceof Error ? error.message : String(error) })
-    throw error
+    logger.warn('User sign-out request failed, clearing local session anyway', {
+      error: error instanceof Error ? error.message : String(error),
+    });
+  } finally {
+    clearStoredAuth();
   }
-}
+};
 
 /**
  * Gets the current user session
- * @returns Current user session or null if not authenticated
  */
 export const getCurrentUserSession = async (): Promise<UserSession | null> => {
-  try {
-    const { data: { session }, error } = await supabase.auth.getSession()
-
-    if (error) {
-      logger.error('Failed to get user session', { error: error.message })
-      return null
-    }
-
-    if (!session) {
-      return null
-    }
-
-    return {
-      user: session.user,
-      session,
-    }
-  } catch (error) {
-    logger.error('Error getting current user session', { error: error instanceof Error ? error.message : String(error) })
-    return null
+  const accessToken = getAccessToken();
+  const refreshToken = getRefreshToken();
+  if (!accessToken || !refreshToken) {
+    return null;
   }
-}
+
+  try {
+    const user = await backendGet<AuthUser>('/auth/me', accessToken);
+    storeUser(user);
+    return {
+      user,
+      session: toTokenBundle(accessToken, refreshToken, 0),
+    };
+  } catch (error) {
+    logger.warn('Access token check failed, trying refresh', {
+      error: error instanceof Error ? error.message : String(error),
+    });
+    try {
+      return await refreshUserSession();
+    } catch {
+      clearStoredAuth();
+      return null;
+    }
+  }
+};
 
 /**
  * Checks if the current user is authenticated
- * @returns True if user is authenticated, false otherwise
  */
 export const isUserAuthenticated = async (): Promise<boolean> => {
-  const session = await getCurrentUserSession()
-  return session !== null
-}
+  const session = await getCurrentUserSession();
+  return session !== null;
+};
 
 /**
- * Refreshes the user session
- * @returns Refreshed user session
- * @throws Error if refresh fails
+ * Refreshes the user session using refresh token
  */
 export const refreshUserSession = async (): Promise<UserSession> => {
-  try {
-    const { data, error } = await supabase.auth.refreshSession()
-
-    if (error) {
-      logger.error('User session refresh failed', { error: error.message })
-      throw new Error('Failed to refresh session')
-    }
-
-    logger.info('User session refreshed successfully', {
-      userId: data.user!.id,
-    })
-
-    return {
-      user: data.user!,
-      session: data.session!,
-    }
-  } catch (error) {
-    logger.error('User session refresh error', { error: error instanceof Error ? error.message : String(error) })
-    throw error
+  const refreshToken = getRefreshToken();
+  if (!refreshToken) {
+    throw new Error('No refresh token found');
   }
-}
+
+  const refreshedTokens = await backendPost<{ refresh_token: string }, TokenBundle>(
+    '/auth/refresh',
+    { refresh_token: refreshToken }
+  );
+
+  const existingUser = getStoredUser();
+  persistSession(refreshedTokens, existingUser || undefined);
+
+  const user = await backendGet<AuthUser>('/auth/me', refreshedTokens.access_token);
+  storeUser(user);
+
+  logger.info('User session refreshed successfully', {
+    userId: user.id,
+  });
+
+  return {
+    user,
+    session: toTokenBundle(
+      refreshedTokens.access_token,
+      refreshedTokens.refresh_token,
+      refreshedTokens.expires_in_seconds
+    ),
+  };
+};

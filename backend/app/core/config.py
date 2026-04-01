@@ -18,6 +18,19 @@ class Settings(BaseSettings):
     razorpay_key_id: str = ""
     razorpay_key_secret: str = ""
 
+    jwt_secret_key: str = "change-me-in-production"
+    jwt_algorithm: str = "HS256"
+    jwt_access_token_exp_minutes: int = 30
+    jwt_refresh_token_exp_days: int = 14
+
+    otp_secret_key: str = "change-me-otp-secret"
+    otp_expiry_minutes: int = 5
+    otp_max_attempts: int = 5
+    otp_resend_cooldown_seconds: int = 60
+    otp_mode: str = "console"  # console | provider
+    otp_dev_static_code: str | None = None
+    default_country_code: str = "+91"
+
     @property
     def mysql_url(self) -> str:
         return (
@@ -27,4 +40,3 @@ class Settings(BaseSettings):
 
 
 settings = Settings()
-

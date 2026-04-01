@@ -43,7 +43,18 @@ Contact endpoint:
 
 Both endpoints are ready to plug into frontend checkout flow.
 
-## 4. Notes
+## 4. Auth (OTP + JWT)
+
+- `POST /api/v1/auth/otp/request`
+- `POST /api/v1/auth/otp/verify`
+- `POST /api/v1/auth/refresh`
+- `GET /api/v1/auth/me`
+- `PUT /api/v1/auth/profile`
+- `POST /api/v1/auth/logout`
+
+Default mode is `otp_mode=console` for local development, which prints OTP to backend logs.
+
+## 5. Notes
 
 - Tables are created automatically on startup for quick bootstrapping.
-- Auth/JWT is intentionally kept as next step so we can align role onboarding with your final UX.
+- Use strong `jwt_secret_key` and `otp_secret_key` values before production.

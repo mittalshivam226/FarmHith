@@ -1,7 +1,7 @@
 import { vi } from 'vitest'
 
 // Mock Supabase client
-export const mockSupabase = {
+export const mockSupabase: any = {
   from: vi.fn(() => ({
     insert: vi.fn(() => ({
       select: vi.fn(() => ({
