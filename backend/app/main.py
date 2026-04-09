@@ -23,5 +23,5 @@ app.include_router(api_router)
 
 @app.on_event("startup")
 def on_startup() -> None:
-    Base.metadata.create_all(bind=engine)
-
+    if settings.auto_create_tables:
+        Base.metadata.create_all(bind=engine)

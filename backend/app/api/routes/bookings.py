@@ -1,8 +1,11 @@
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 
+from app.api.deps import require_roles
 from app.db.session import get_db
 from app.models.booking import Booking
+from app.models.enums import UserRole
+from app.models.user import User
 from app.schemas.booking import (
     BookingResponse,
     CreateBookingRequest,
@@ -45,7 +48,10 @@ def create_booking(payload: CreateBookingRequest, db: Session = Depends(get_db))
 
 
 @router.get("", response_model=list[BookingResponse])
-def list_bookings(db: Session = Depends(get_db)):
+def list_bookings(
+    _: User = Depends(require_roles(UserRole.LAB, UserRole.ADMIN)),
+    db: Session = Depends(get_db),
+):
     bookings = db.query(Booking).order_by(Booking.created_at.desc()).all()
     return [to_booking_response(booking) for booking in bookings]
 
@@ -70,6 +76,7 @@ def get_booking_by_tracking(
 def update_booking_status(
     booking_id: str,
     payload: UpdateBookingStatusRequest,
+    _: User = Depends(require_roles(UserRole.LAB, UserRole.ADMIN)),
     db: Session = Depends(get_db),
 ):
     booking = db.query(Booking).filter(Booking.id == booking_id).first()

@@ -26,3 +26,22 @@ class VerifyPaymentSignatureRequest(BaseModel):
 class VerifyPaymentSignatureResponse(BaseModel):
     valid: bool
     message: str
+
+
+class PaymentResponse(BaseModel):
+    id: str
+    user_id: str | None
+    purpose: str
+    purpose_ref_id: str
+    amount_inr: float
+    currency: str
+    status: str
+    razorpay_order_id: str | None
+    razorpay_payment_id: str | None
+    created_at: str
+    updated_at: str
+
+
+class PaymentWebhookResponse(BaseModel):
+    status: str
+    message: str

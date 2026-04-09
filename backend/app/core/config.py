@@ -2,12 +2,13 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
-    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
+    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore")
 
     app_name: str = "FarmHith API"
     app_env: str = "development"
     app_host: str = "0.0.0.0"
     app_port: int = 8000
+    auto_create_tables: bool = True
 
     mysql_user: str = "root"
     mysql_password: str = ""
@@ -17,6 +18,7 @@ class Settings(BaseSettings):
 
     razorpay_key_id: str = ""
     razorpay_key_secret: str = ""
+    razorpay_webhook_secret: str = ""
 
     jwt_secret_key: str = "change-me-in-production"
     jwt_algorithm: str = "HS256"

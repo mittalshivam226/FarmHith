@@ -1,8 +1,11 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
+from app.api.deps import require_roles
 from app.db.session import get_db
 from app.models.contact import ContactMessage
+from app.models.enums import UserRole
+from app.models.user import User
 from app.schemas.contact import (
     ContactMessageResponse,
     CreateContactMessageRequest,
@@ -24,7 +27,10 @@ def create_contact_message(payload: CreateContactMessageRequest, db: Session = D
 
 
 @router.get("", response_model=list[ContactMessageResponse])
-def list_contact_messages(db: Session = Depends(get_db)):
+def list_contact_messages(
+    _: User = Depends(require_roles(UserRole.ADMIN)),
+    db: Session = Depends(get_db),
+):
     messages = db.query(ContactMessage).order_by(ContactMessage.created_at.desc()).all()
     return [
         ContactMessageResponse(
@@ -45,6 +51,7 @@ def list_contact_messages(db: Session = Depends(get_db)):
 def update_contact_message_status(
     message_id: str,
     payload: UpdateContactMessageStatusRequest,
+    _: User = Depends(require_roles(UserRole.ADMIN)),
     db: Session = Depends(get_db),
 ):
     message = db.query(ContactMessage).filter(ContactMessage.id == message_id).first()

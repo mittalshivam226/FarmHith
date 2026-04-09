@@ -6,34 +6,34 @@
 - [x] Scaffold backend folder with FastAPI app entrypoint
 - [x] Add MySQL SQLAlchemy models for users, soil requests/reports, residue listings/orders, payments
 - [x] Add Razorpay order creation + signature verification endpoints
-- [ ] Add Alembic migrations for production-safe schema evolution
+- [x] Add Alembic scaffolding for production-safe schema evolution
 
 ## Phase 1: Auth and Roles
-- [ ] Replace Supabase OTP flow with backend-owned auth service
-- [ ] Implement role-based signup (single flow with role selection)
-- [ ] Implement JWT access/refresh tokens
-- [ ] Add route guards for Farmer/Lab/Buyer/Admin APIs
-- [ ] Add basic admin bootstrap script
+- [x] Replace Supabase OTP flow with backend-owned auth service
+- [x] Implement role-based signup (single flow with role selection)
+- [x] Implement JWT access/refresh tokens
+- [x] Add route guards for Farmer/Lab/Buyer/Admin APIs
+- [x] Add basic admin bootstrap script
 
 ## Phase 2: Soil Intelligence
-- [ ] Farmer can create soil test request
-- [ ] Lab discovery and assignment flow
-- [ ] Lab accepts/rejects request and uploads report parameters (N, P, K, pH, moisture)
-- [ ] Farmer can view report history and recommendations
+- [x] Farmer can create soil test request
+- [x] Lab assignment flow (admin assigns lab; role-based list APIs)
+- [x] Lab accepts/rejects request and uploads report parameters (N, P, K, pH, moisture)
+- [x] Farmer can view report by tracking and recommendations
 - [ ] Add status timeline and notifications
 
 ## Phase 3: Crop Residue Marketplace
-- [ ] Farmer creates residue listing (type, quantity, location, expected price)
-- [ ] Buyer browsing/filter/search
-- [ ] Buyer places order intent
+- [x] Farmer creates residue listing (type, quantity, location, expected price)
+- [x] Buyer browsing/filter (status)
+- [x] Buyer places order intent
 - [ ] Farmer confirms order and logistics window
-- [ ] Buyer/farmer order history views
+- [x] Buyer/farmer order history views
 
 ## Phase 4: Payments (Razorpay)
-- [ ] Soil test checkout from frontend using backend-created Razorpay orders
+- [x] Soil test checkout from frontend using backend-created Razorpay orders
 - [ ] Residue order payment flow
-- [ ] Webhook endpoint for payment capture/failed events
-- [ ] Settlement status and transaction history in dashboards
+- [x] Webhook endpoint for payment capture/failed events
+- [x] Payment history endpoint for dashboard integration
 - [ ] Refund workflow hooks
 
 ## Phase 5: Matching and Ranking

@@ -2,10 +2,10 @@ from datetime import datetime, timedelta
 import re
 
 from fastapi import APIRouter, Depends, HTTPException, status
-from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from jwt import InvalidTokenError
 from sqlalchemy.orm import Session
 
+from app.api.deps import get_current_user, require_roles
 from app.core.config import settings
 from app.db.session import get_db
 from app.models.enums import UserRole
@@ -19,6 +19,7 @@ from app.schemas.auth import (
     RequestOtpResponse,
     TokenBundleResponse,
     UpdateProfilePayload,
+    UpdateUserRolePayload,
     VerifyOtpPayload,
     VerifyOtpResponse,
 )
@@ -26,7 +27,6 @@ from app.services.auth_service import create_token, decode_token, generate_otp, 
 
 
 router = APIRouter(prefix="/auth", tags=["auth"])
-bearer_security = HTTPBearer(auto_error=False)
 OTP_REGEX = re.compile(r"^\d{4,8}$")
 
 
@@ -68,27 +68,6 @@ def issue_token_bundle(user: User) -> TokenBundleResponse:
         refresh_token=refresh_token,
         expires_in_seconds=settings.jwt_access_token_exp_minutes * 60,
     )
-
-
-def get_current_user(
-    credentials: HTTPAuthorizationCredentials | None = Depends(bearer_security),
-    db: Session = Depends(get_db),
-) -> User:
-    if not credentials or not credentials.credentials:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Authentication required")
-
-    try:
-        payload = decode_token(credentials.credentials, expected_type="access")
-        user_id = payload.get("sub")
-        if not user_id:
-            raise InvalidTokenError("Missing subject")
-    except InvalidTokenError as exc:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid or expired token") from exc
-
-    user = db.query(User).filter(User.id == user_id).first()
-    if not user:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="User not found")
-    return user
 
 
 def _is_profile_incomplete(user: User) -> bool:
@@ -196,14 +175,17 @@ def verify_otp(payload: VerifyOtpPayload, db: Session = Depends(get_db)):
 
     challenge.consumed_at = now
 
+    requested_role = payload.role or UserRole.FARMER
     user = db.query(User).filter(User.phone == normalized_phone).first()
     if not user:
         user = User(
-            role=UserRole.FARMER,
+            role=requested_role,
             phone=normalized_phone,
-            name=f"Farmer {normalized_phone[-4:]}",
+            name=f"{requested_role.value.title()} {normalized_phone[-4:]}",
         )
         db.add(user)
+    elif payload.role and _is_profile_incomplete(user):
+        user.role = payload.role
 
     db.commit()
     db.refresh(user)
@@ -264,3 +246,21 @@ def update_profile(
 def logout():
     # Stateless JWT logout; frontend clears local tokens.
     return MessageResponse(message="Logged out successfully")
+
+
+@router.patch("/users/{user_id}/role", response_model=AuthUserResponse)
+def update_user_role(
+    user_id: str,
+    payload: UpdateUserRolePayload,
+    _: User = Depends(require_roles(UserRole.ADMIN)),
+    db: Session = Depends(get_db),
+):
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+
+    user.role = payload.role
+    db.add(user)
+    db.commit()
+    db.refresh(user)
+    return to_user_response(user)

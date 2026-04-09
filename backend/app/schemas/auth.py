@@ -2,6 +2,8 @@ from datetime import datetime
 
 from pydantic import BaseModel, Field
 
+from app.models.enums import UserRole
+
 
 class RequestOtpPayload(BaseModel):
     phone: str = Field(min_length=8, max_length=20)
@@ -17,6 +19,7 @@ class RequestOtpResponse(BaseModel):
 class VerifyOtpPayload(BaseModel):
     phone: str = Field(min_length=8, max_length=20)
     otp: str = Field(min_length=4, max_length=8)
+    role: UserRole | None = None
 
 
 class RefreshTokenPayload(BaseModel):
@@ -30,6 +33,10 @@ class UpdateProfilePayload(BaseModel):
     district: str | None = None
     state: str | None = None
     address: str | None = None
+
+
+class UpdateUserRolePayload(BaseModel):
+    role: UserRole
 
 
 class AuthUserResponse(BaseModel):

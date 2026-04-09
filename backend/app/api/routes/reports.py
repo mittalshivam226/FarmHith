@@ -3,8 +3,11 @@ from datetime import date
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 
+from app.api.deps import require_roles
 from app.db.session import get_db
+from app.models.enums import UserRole
 from app.models.report import Report
+from app.models.user import User
 from app.schemas.report import ReportResponse, UpsertReportRequest
 
 
@@ -38,7 +41,10 @@ def parse_iso_date(value: str | None) -> date | None:
 
 
 @router.get("", response_model=list[ReportResponse])
-def list_reports(db: Session = Depends(get_db)):
+def list_reports(
+    _: User = Depends(require_roles(UserRole.LAB, UserRole.ADMIN)),
+    db: Session = Depends(get_db),
+):
     reports = db.query(Report).order_by(Report.created_at.desc()).all()
     return [to_report_response(report) for report in reports]
 
@@ -52,7 +58,11 @@ def get_report_by_tracking(tracking_id: str = Query(..., min_length=1), db: Sess
 
 
 @router.post("/upsert", response_model=ReportResponse)
-def upsert_report(payload: UpsertReportRequest, db: Session = Depends(get_db)):
+def upsert_report(
+    payload: UpsertReportRequest,
+    _: User = Depends(require_roles(UserRole.LAB, UserRole.ADMIN)),
+    db: Session = Depends(get_db),
+):
     report = db.query(Report).filter(Report.tracking_id == payload.tracking_id).first()
     if not report:
         report = Report(
