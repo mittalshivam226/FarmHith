@@ -1,8 +1,8 @@
 import { Calendar, FileText, Mail, MapPin, Phone, Settings, User } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useNavigation } from '../context/NavigationContext';
-import { getCurrentUserProfile } from '../services/auth';
-import type { UserProfile } from '../types';
+import { createOrUpdateUserProfile, getCurrentUserProfile } from '../services/auth';
+import type { UserProfile, UserProfileFormData } from '../types';
 
 interface BookingItem {
   id: string;
@@ -16,7 +16,19 @@ const Profile = () => {
   const { user, isAuthenticated, navigateTo } = useNavigation();
   const [recentBookings, setRecentBookings] = useState<BookingItem[]>([]);
   const [profile, setProfile] = useState<UserProfile | null>(null);
+  const [profileForm, setProfileForm] = useState<UserProfileFormData>({
+    name: '',
+    email: '',
+    village: '',
+    district: '',
+    state: '',
+    address: '',
+    farm_details: '',
+  });
   const [loading, setLoading] = useState(true);
+  const [isEditingProfile, setIsEditingProfile] = useState(false);
+  const [isSavingProfile, setIsSavingProfile] = useState(false);
+  const [profileMessage, setProfileMessage] = useState('');
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -28,6 +40,17 @@ const Profile = () => {
       try {
         const userProfile = await getCurrentUserProfile();
         setProfile(userProfile);
+        if (userProfile) {
+          setProfileForm({
+            name: userProfile.name,
+            email: userProfile.email || '',
+            village: userProfile.village || '',
+            district: userProfile.district || '',
+            state: userProfile.state || '',
+            address: userProfile.address || '',
+            farm_details: userProfile.farm_details || '',
+          });
+        }
       } catch (error) {
         console.error('Failed to fetch profile:', error);
       } finally {
@@ -54,6 +77,29 @@ const Profile = () => {
       },
     ]);
   }, [isAuthenticated, navigateTo]);
+
+  const handleProfileInput = (field: keyof UserProfileFormData, value: string) => {
+    setProfileForm((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handleSaveProfile = async () => {
+    if (!profileForm.name?.trim()) {
+      setProfileMessage('Name is required to update profile.');
+      return;
+    }
+    setIsSavingProfile(true);
+    setProfileMessage('');
+    try {
+      const updated = await createOrUpdateUserProfile(profileForm);
+      setProfile(updated);
+      setProfileMessage('Profile updated successfully.');
+      setIsEditingProfile(false);
+    } catch (error) {
+      setProfileMessage(error instanceof Error ? error.message : 'Unable to update profile.');
+    } finally {
+      setIsSavingProfile(false);
+    }
+  };
 
   if (!isAuthenticated || !user) {
     return null;
@@ -174,10 +220,97 @@ const Profile = () => {
                 </div>
               </div>
 
-              <button onClick={() => navigateTo('login')} className="btn-primary w-full mt-5">
-                <Settings size={16} />
-                Edit Profile
-              </button>
+              {!isEditingProfile ? (
+                <button onClick={() => setIsEditingProfile(true)} className="btn-primary w-full mt-5">
+                  <Settings size={16} />
+                  Edit Profile
+                </button>
+              ) : (
+                <div className="mt-5 rounded-xl border border-primary-100 bg-white p-4 space-y-3">
+                  <div>
+                    <label className="form-label">Name</label>
+                    <input
+                      type="text"
+                      value={profileForm.name}
+                      onChange={(e) => handleProfileInput('name', e.target.value)}
+                      className="form-input"
+                    />
+                  </div>
+                  <div>
+                    <label className="form-label">Email</label>
+                    <input
+                      type="email"
+                      value={profileForm.email || ''}
+                      onChange={(e) => handleProfileInput('email', e.target.value)}
+                      className="form-input"
+                    />
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="form-label">Village</label>
+                      <input
+                        type="text"
+                        value={profileForm.village || ''}
+                        onChange={(e) => handleProfileInput('village', e.target.value)}
+                        className="form-input"
+                      />
+                    </div>
+                    <div>
+                      <label className="form-label">District</label>
+                      <input
+                        type="text"
+                        value={profileForm.district || ''}
+                        onChange={(e) => handleProfileInput('district', e.target.value)}
+                        className="form-input"
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="form-label">State</label>
+                    <input
+                      type="text"
+                      value={profileForm.state || ''}
+                      onChange={(e) => handleProfileInput('state', e.target.value)}
+                      className="form-input"
+                    />
+                  </div>
+                  <div>
+                    <label className="form-label">Address</label>
+                    <textarea
+                      rows={3}
+                      value={profileForm.address || ''}
+                      onChange={(e) => handleProfileInput('address', e.target.value)}
+                      className="form-input resize-none"
+                    />
+                  </div>
+                  {profileMessage && (
+                    <p className="text-sm text-primary-700">{profileMessage}</p>
+                  )}
+                  <div className="grid grid-cols-2 gap-3">
+                    <button
+                      onClick={() => {
+                        setIsEditingProfile(false);
+                        setProfileMessage('');
+                      }}
+                      className="btn-secondary"
+                      type="button"
+                      disabled={isSavingProfile}
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      onClick={() => {
+                        void handleSaveProfile();
+                      }}
+                      className="btn-primary"
+                      type="button"
+                      disabled={isSavingProfile}
+                    >
+                      {isSavingProfile ? 'Saving...' : 'Save'}
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 

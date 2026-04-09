@@ -94,17 +94,14 @@ const Contact = () => {
                   title: 'Office',
                   value: 'Panipat, Haryana, India',
                   hint: 'Remote and in-person support available',
-                  href: '#',
+                  href: 'https://maps.google.com/?q=Panipat,Haryana,India',
                 },
               ].map((item) => (
                 <a
                   key={item.title}
                   href={item.href}
-                  onClick={(e) => {
-                    if (item.href === '#') {
-                      e.preventDefault();
-                    }
-                  }}
+                  target={item.href.startsWith('http') ? '_blank' : undefined}
+                  rel={item.href.startsWith('http') ? 'noopener noreferrer' : undefined}
                   className="card-hover surface-3d p-5 block"
                 >
                   <div className="w-10 h-10 rounded-xl bg-primary-100 text-primary-700 flex items-center justify-center">

@@ -1,8 +1,30 @@
 import { useState } from 'react';
 import { CheckCircle, Clock, Download, Search, Send, TrendingUp } from 'lucide-react';
 import { useNavigation } from '../context/NavigationContext';
+import { getBookingByTracking, getReportByTracking } from '../services/reports';
 
 type ReportStatus = 'completed' | 'in_process' | 'pending';
+
+interface ReportResultSummary {
+  pH: number;
+  nitrogen: number;
+  phosphorus: number;
+  potassium: number;
+  organicCarbon: number;
+}
+
+interface ReportCard {
+  id: string;
+  trackingId: string;
+  farmerName: string;
+  status: ReportStatus;
+  submittedDate: string;
+  completedDate?: string;
+  packageName: string;
+  pdfUrl?: string;
+  results?: ReportResultSummary;
+  recommendations?: string;
+}
 
 const Reports = () => {
   const { navigateTo } = useNavigation();
@@ -10,38 +32,90 @@ const Reports = () => {
   const [mobile, setMobile] = useState('');
   const [authenticated, setAuthenticated] = useState(false);
   const [actionMessage, setActionMessage] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [authError, setAuthError] = useState('');
+  const [reportCards, setReportCards] = useState<ReportCard[]>([]);
 
-  const mockReports = [
-    {
-      id: '1',
-      trackingId: 'FH12345678',
-      farmerName: 'Rajesh Kumar',
-      status: 'completed' as ReportStatus,
-      submittedDate: '2025-10-25',
-      completedDate: '2025-11-01',
-      packageName: 'Advanced Soil Test',
-      pdfUrl: '#',
-      results: {
-        pH: 7.2,
-        nitrogen: 245,
-        phosphorus: 18,
-        potassium: 210,
-        organicCarbon: 0.65,
-      },
-    },
-    {
-      id: '2',
-      trackingId: 'FH12345679',
-      farmerName: 'Rajesh Kumar',
-      status: 'in_process' as ReportStatus,
-      submittedDate: '2025-11-02',
-      packageName: 'Basic Soil Test',
-    },
-  ];
+  const getReadablePackageName = (packageId: string) => {
+    const normalized = packageId.toLowerCase();
+    if (normalized === 'basic') return 'Basic Soil Test';
+    if (normalized === 'advanced') return 'Advanced Soil Test';
+    if (normalized === 'crop_specific') return 'Crop-Specific Soil Test';
+    return packageId;
+  };
 
-  const handleLogin = () => {
-    if (trackingId && mobile) {
+  const normalizeStatus = (status?: string): ReportStatus => {
+    if (!status) return 'pending';
+    if (status === 'completed' || status === 'report_ready') return 'completed';
+    if (status === 'in_process' || status === 'accepted' || status === 'sample_collected') return 'in_process';
+    return 'pending';
+  };
+
+  const toDateOnly = (value?: string | null) => {
+    if (!value) return '';
+    const parsed = new Date(value);
+    if (Number.isNaN(parsed.getTime())) return value;
+    return parsed.toISOString().slice(0, 10);
+  };
+
+  const handleLogin = async () => {
+    if (!trackingId || !mobile) return;
+
+    setIsLoading(true);
+    setAuthError('');
+    setActionMessage('');
+
+    try {
+      const booking = await getBookingByTracking(trackingId.trim(), mobile.trim());
+      let reportData: Awaited<ReturnType<typeof getReportByTracking>> | null = null;
+
+      try {
+        reportData = await getReportByTracking(trackingId.trim());
+      } catch (error) {
+        const message = error instanceof Error ? error.message.toLowerCase() : '';
+        if (!message.includes('not found')) {
+          throw error;
+        }
+      }
+
+      const hasNumericResults =
+        reportData?.ph_level != null &&
+        reportData.nitrogen != null &&
+        reportData.phosphorus != null &&
+        reportData.potassium != null &&
+        reportData.organic_carbon != null;
+
+      const card: ReportCard = {
+        id: reportData?.id || booking.id,
+        trackingId: booking.tracking_id,
+        farmerName: booking.farmer_name,
+        status: normalizeStatus(reportData?.status || booking.status),
+        submittedDate: toDateOnly(reportData?.submitted_date || booking.created_at),
+        completedDate: toDateOnly(reportData?.completed_date || undefined) || undefined,
+        packageName: getReadablePackageName(booking.package_id),
+        pdfUrl: reportData?.pdf_url || undefined,
+        results: hasNumericResults
+          ? {
+              pH: Number(reportData.ph_level),
+              nitrogen: Number(reportData.nitrogen),
+              phosphorus: Number(reportData.phosphorus),
+              potassium: Number(reportData.potassium),
+              organicCarbon: Number(reportData.organic_carbon),
+            }
+          : undefined,
+        recommendations: reportData?.recommendations || undefined,
+      };
+
+      setReportCards([card]);
       setAuthenticated(true);
+
+      if (!reportData) {
+        setActionMessage('Your booking is active. The lab report is not uploaded yet, please check again shortly.');
+      }
+    } catch (error) {
+      setAuthError(error instanceof Error ? error.message : 'Unable to fetch report right now.');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -87,7 +161,13 @@ const Reports = () => {
               <h2 className="text-2xl md:text-3xl mt-4">Access your reports</h2>
               <p className="text-slate-600 mt-2">Use your tracking ID and mobile number to view your report timeline.</p>
 
-              <div className="mt-6 space-y-4">
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  void handleLogin();
+                }}
+                className="mt-6 space-y-4"
+              >
                 <div>
                   <label className="form-label">Tracking ID</label>
                   <input
@@ -108,14 +188,19 @@ const Reports = () => {
                     className="form-input"
                   />
                 </div>
+                {authError && (
+                  <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+                    {authError}
+                  </div>
+                )}
                 <button
-                  onClick={handleLogin}
-                  disabled={!trackingId || !mobile}
+                  type="submit"
+                  disabled={!trackingId || !mobile || isLoading}
                   className="btn-primary w-full disabled:opacity-60"
                 >
-                  View Reports
+                  {isLoading ? 'Fetching report...' : 'View Reports'}
                 </button>
-              </div>
+              </form>
 
               <p className="mt-5 text-sm text-slate-600">
                 Do not have a tracking ID yet?{' '}
@@ -128,13 +213,14 @@ const Reports = () => {
             <div className="space-y-6">
               <div className="card-hover surface-3d p-5 md:p-6 flex flex-wrap items-start justify-between gap-4">
                 <div>
-                  <h2 className="text-2xl md:text-3xl">Welcome back, {mockReports[0].farmerName}</h2>
-                  <p className="text-slate-600 mt-1">{mockReports.length} report entries available in your dashboard.</p>
+                  <h2 className="text-2xl md:text-3xl">Welcome back, {reportCards[0]?.farmerName}</h2>
+                  <p className="text-slate-600 mt-1">{reportCards.length} report entries available in your dashboard.</p>
                 </div>
                 <button
                   onClick={() => {
                     setAuthenticated(false);
                     setActionMessage('');
+                    setReportCards([]);
                   }}
                   className="btn-secondary"
                 >
@@ -148,7 +234,7 @@ const Reports = () => {
                 </div>
               )}
 
-              {mockReports.map((report) => (
+              {reportCards.map((report) => (
                 <div key={report.id} className="card-hover surface-3d overflow-hidden">
                   <div className="p-5 md:p-6">
                     <div className="flex flex-wrap items-start justify-between gap-3">
@@ -230,11 +316,21 @@ const Reports = () => {
                         Key Recommendations
                       </p>
                       <ul className="mt-3 space-y-2 text-sm text-slate-700">
-                        <li>- Soil pH is in a suitable range for most crops.</li>
-                        <li>- Nitrogen levels are adequate; maintain with compost and manure.</li>
-                        <li>- Phosphorus is slightly lower; consider DAP around 50 kg/acre.</li>
-                        <li>- Add potash for improved grain and fruit quality.</li>
-                        <li>- Organic carbon is healthy; continue residue composting where possible.</li>
+                        {report.recommendations
+                          ? report.recommendations
+                              .split('\n')
+                              .map((line) => line.trim())
+                              .filter(Boolean)
+                              .map((line, idx) => <li key={`${report.id}-recommendation-${idx}`}>- {line}</li>)
+                          : (
+                            <>
+                              <li>- Soil pH is in a suitable range for most crops.</li>
+                              <li>- Nitrogen levels are adequate; maintain with compost and manure.</li>
+                              <li>- Phosphorus is slightly lower; consider DAP around 50 kg/acre.</li>
+                              <li>- Add potash for improved grain and fruit quality.</li>
+                              <li>- Organic carbon is healthy; continue residue composting where possible.</li>
+                            </>
+                          )}
                       </ul>
                     </div>
                   )}
