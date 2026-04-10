@@ -1,20 +1,15 @@
 import { Calendar, FileText, Mail, MapPin, Phone, Settings, User } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useNavigation } from '../context/NavigationContext';
 import { createOrUpdateUserProfile, getCurrentUserProfile } from '../services/auth';
+import { listSoilRequests, type SoilRequest } from '../services/soil';
 import type { UserProfile, UserProfileFormData } from '../types';
 
-interface BookingItem {
-  id: string;
-  trackingId: string;
-  packageName: string;
-  status: string;
-  date: string;
-}
-
 const Profile = () => {
-  const { user, isAuthenticated, navigateTo } = useNavigation();
-  const [recentBookings, setRecentBookings] = useState<BookingItem[]>([]);
+  const { user, isAuthenticated } = useNavigation();
+  const navigate = useNavigate();
+  const [recentRequests, setRecentRequests] = useState<SoilRequest[]>([]);
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [profileForm, setProfileForm] = useState<UserProfileFormData>({
     name: '',
@@ -32,14 +27,18 @@ const Profile = () => {
 
   useEffect(() => {
     if (!isAuthenticated) {
-      navigateTo('login');
+      navigate('/login');
       return;
     }
 
-    const fetchProfile = async () => {
+    const fetchData = async () => {
       try {
-        const userProfile = await getCurrentUserProfile();
+        const [userProfile, soilReqs] = await Promise.all([
+          getCurrentUserProfile(),
+          listSoilRequests().catch(() => [] as SoilRequest[]),
+        ]);
         setProfile(userProfile);
+        setRecentRequests(soilReqs.slice(0, 5));
         if (userProfile) {
           setProfileForm({
             name: userProfile.name,
@@ -52,31 +51,14 @@ const Profile = () => {
           });
         }
       } catch (error) {
-        console.error('Failed to fetch profile:', error);
+        console.error('Failed to fetch profile data:', error);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchProfile();
-
-    setRecentBookings([
-      {
-        id: '1',
-        trackingId: 'FH2024001',
-        packageName: 'Basic Soil Test',
-        status: 'completed',
-        date: '2024-01-15',
-      },
-      {
-        id: '2',
-        trackingId: 'FH2024002',
-        packageName: 'Advanced Soil Test',
-        status: 'in_process',
-        date: '2024-01-20',
-      },
-    ]);
-  }, [isAuthenticated, navigateTo]);
+    fetchData();
+  }, [isAuthenticated, navigate]);
 
   const handleProfileInput = (field: keyof UserProfileFormData, value: string) => {
     setProfileForm((prev) => ({ ...prev, [field]: value }));
@@ -318,34 +300,34 @@ const Profile = () => {
             <div className="card-hover surface-3d p-5">
               <h2 className="text-2xl inline-flex items-center gap-2">
                 <FileText size={20} className="text-primary-700" />
-                Recent Bookings
+                Recent Soil Requests
               </h2>
 
-              {recentBookings.length > 0 ? (
+              {recentRequests.length > 0 ? (
                 <div className="mt-4 space-y-3">
-                  {recentBookings.map((booking) => (
+                  {recentRequests.map((req) => (
                     <div
-                      key={booking.id}
-                      onClick={() => navigateTo('reports')}
+                      key={req.id}
+                      onClick={() => navigate('/reports')}
                       className="rounded-xl border border-primary-100 bg-white p-4 cursor-pointer hover:border-primary-300 transition-all duration-300"
                     >
                       <div className="flex items-start justify-between gap-3">
                         <div>
-                          <h3 className="font-semibold text-slate-900">{booking.packageName}</h3>
-                          <p className="text-sm text-slate-600 mt-1">Tracking ID: {booking.trackingId}</p>
+                          <h3 className="font-semibold text-slate-900">{req.crop_type}</h3>
+                          <p className="text-sm text-slate-600 mt-1">Tracking ID: {req.tracking_id}</p>
                         </div>
-                        <span className={`rounded-full px-3 py-1 text-xs font-semibold ${getStatusColor(booking.status)}`}>
-                          {getStatusText(booking.status)}
+                        <span className={`rounded-full px-3 py-1 text-xs font-semibold ${getStatusColor(req.status)}`}>
+                          {getStatusText(req.status)}
                         </span>
                       </div>
                       <div className="mt-3 flex items-center justify-between">
                         <p className="text-xs text-slate-500">
-                          Booked on {new Date(booking.date).toLocaleDateString('en-IN')}
+                          Booked on {new Date(req.created_at).toLocaleDateString('en-IN')}
                         </p>
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
-                            navigateTo('reports');
+                            navigate('/reports');
                           }}
                           className="text-sm font-semibold text-primary-700 hover:underline"
                         >
@@ -357,9 +339,9 @@ const Profile = () => {
                 </div>
               ) : (
                 <div className="mt-5 rounded-xl border border-primary-100 bg-white p-5 text-center">
-                  <p className="text-slate-700 font-semibold">No bookings yet</p>
-                  <p className="text-sm text-slate-600 mt-1">Start your first soil test to see booking history here.</p>
-                  <button onClick={() => navigateTo('book-test')} className="btn-primary mt-4">
+                  <p className="text-slate-700 font-semibold">No requests yet</p>
+                  <p className="text-sm text-slate-600 mt-1">Start your first soil test to see your history here.</p>
+                  <button onClick={() => navigate('/book-test')} className="btn-primary mt-4">
                     Book First Test
                   </button>
                 </div>

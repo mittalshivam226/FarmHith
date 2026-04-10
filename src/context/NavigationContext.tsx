@@ -1,5 +1,11 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode, useRef, useCallback } from 'react';
-import { getCurrentUserSession, signOutUser } from '../services/auth';
+/**
+ * Backward-compatibility shim.
+ * Pages that use `useNavigation()` can continue to work while migrating.
+ * New code should use `useAuth()` from AuthContext and `useNavigate()` from react-router-dom.
+ */
+import React, { createContext, useContext, ReactNode } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from './AuthContext';
 import type { AuthUser } from '../services/auth';
 
 interface NavigationContextType {
@@ -14,90 +20,54 @@ interface NavigationContextType {
 
 const NavigationContext = createContext<NavigationContextType | undefined>(undefined);
 
-const NavigationProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [currentPage, setCurrentPage] = useState('home');
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [user, setUser] = useState<AuthUser | null>(null);
-  const [isPageLoading, setIsPageLoading] = useState(false);
-  const navLoaderTimeout = useRef<number | null>(null);
+// Map legacy page keys to routes
+const PAGE_ROUTES: Record<string, string> = {
+  home: '/',
+  about: '/about',
+  services: '/services',
+  'book-test': '/book-test',
+  reports: '/reports',
+  education: '/education',
+  blog: '/blog',
+  partners: '/partners',
+  contact: '/contact',
+  login: '/login',
+  profile: '/profile',
+  dashboard: '/dashboard',
+  privacy: '/privacy',
+  terms: '/terms',
+  refund: '/refund',
+};
 
-  const refreshAuth = useCallback(async () => {
-    try {
-      const session = await getCurrentUserSession();
-      if (session) {
-        setIsAuthenticated(true);
-        setUser(session.user);
-        return;
-      }
-      setIsAuthenticated(false);
-      setUser(null);
-    } catch (error) {
-      console.error('Error checking auth status:', error);
-      setIsAuthenticated(false);
-      setUser(null);
-    }
-  }, []);
-
-  useEffect(() => {
-    refreshAuth();
-  }, [refreshAuth]);
+export const NavigationProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+  const navigate = useNavigate();
+  const { isAuthenticated, user, logout, refreshAuth } = useAuth();
 
   const navigateTo = (page: string) => {
-    if (page === currentPage) {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-      return;
-    }
-    setIsPageLoading(true);
-    setCurrentPage(page);
-    if (navLoaderTimeout.current) {
-      clearTimeout(navLoaderTimeout.current);
-    }
-    navLoaderTimeout.current = window.setTimeout(() => {
-      setIsPageLoading(false);
-    }, 420);
+    const route = PAGE_ROUTES[page] ?? `/${page}`;
+    navigate(route);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  useEffect(() => {
-    return () => {
-      if (navLoaderTimeout.current) {
-        clearTimeout(navLoaderTimeout.current);
-      }
-    };
-  }, []);
-
-  const logout = async () => {
-    try {
-      await signOutUser();
-      setIsAuthenticated(false);
-      setUser(null);
-      navigateTo('home');
-    } catch (error) {
-      console.error('Error during logout:', error);
-    }
-  };
-
   return (
-    <NavigationContext.Provider value={{
-      currentPage,
-      navigateTo,
-      isAuthenticated,
-      user,
-      isPageLoading,
-      logout,
-      refreshAuth,
-    }}>
+    <NavigationContext.Provider
+      value={{
+        currentPage: '',
+        navigateTo,
+        isAuthenticated,
+        user,
+        isPageLoading: false,
+        logout,
+        refreshAuth,
+      }}
+    >
       {children}
     </NavigationContext.Provider>
   );
 };
 
-const useNavigation = () => {
-  const context = useContext(NavigationContext);
-  if (!context) {
-    throw new Error('useNavigation must be used within NavigationProvider');
-  }
-  return context;
+export const useNavigation = (): NavigationContextType => {
+  const ctx = useContext(NavigationContext);
+  if (!ctx) throw new Error('useNavigation must be used within NavigationProvider');
+  return ctx;
 };
-
-export { NavigationProvider, useNavigation };

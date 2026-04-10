@@ -96,11 +96,11 @@ const Reports = () => {
         pdfUrl: reportData?.pdf_url || undefined,
         results: hasNumericResults
           ? {
-              pH: Number(reportData.ph_level),
-              nitrogen: Number(reportData.nitrogen),
-              phosphorus: Number(reportData.phosphorus),
-              potassium: Number(reportData.potassium),
-              organicCarbon: Number(reportData.organic_carbon),
+              pH: Number(reportData?.ph_level ?? 0),
+              nitrogen: Number(reportData?.nitrogen ?? 0),
+              phosphorus: Number(reportData?.phosphorus ?? 0),
+              potassium: Number(reportData?.potassium ?? 0),
+              organicCarbon: Number(reportData?.organic_carbon ?? 0),
             }
           : undefined,
         recommendations: reportData?.recommendations || undefined,

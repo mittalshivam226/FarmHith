@@ -1,23 +1,29 @@
 import { Menu, X, LogIn, LogOut, Sprout } from 'lucide-react';
 import { useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { useNavigation } from '../context/NavigationContext';
 
 const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const { currentPage, navigateTo, isAuthenticated, logout } = useNavigation();
+  const { navigateTo, isAuthenticated, logout } = useNavigation();
+  const location = useLocation();
 
   const navItems = [
-    { id: 'home', label: 'Home' },
-    { id: 'about', label: 'About' },
-    { id: 'services', label: 'Services' },
-    { id: 'book-test', label: 'Book Test', highlight: true },
-    { id: 'reports', label: 'Reports' },
-    { id: 'education', label: 'Learn' },
-    { id: 'blog', label: 'Blog' },
-    { id: 'partners', label: 'Partners' },
-    { id: 'contact', label: 'Contact' },
-    { id: 'profile', label: 'Profile', authenticated: true },
+    { id: 'home', label: 'Home', path: '/' },
+    { id: 'about', label: 'About', path: '/about' },
+    { id: 'services', label: 'Services', path: '/services' },
+    { id: 'book-test', label: 'Book Test', path: '/book-test', highlight: true },
+    { id: 'reports', label: 'Reports', path: '/reports' },
+    { id: 'education', label: 'Learn', path: '/education' },
+    { id: 'blog', label: 'Blog', path: '/blog' },
+    { id: 'partners', label: 'Partners', path: '/partners' },
+    { id: 'contact', label: 'Contact', path: '/contact' },
+    { id: 'dashboard', label: 'Dashboard', path: '/dashboard', authenticated: true },
+    { id: 'profile', label: 'Profile', path: '/profile', authenticated: true },
   ];
+
+  const isActive = (path: string) =>
+    path === '/' ? location.pathname === '/' : location.pathname.startsWith(path);
 
   return (
     <header className="sticky top-0 z-50 border-b border-primary-200/60 bg-[#eef7ef]/92 backdrop-blur-xl">
@@ -44,7 +50,7 @@ const Header = () => {
                   key={item.id}
                   onClick={() => navigateTo(item.id)}
                   className={`px-3.5 py-2 rounded-full text-sm font-semibold interactive-chip ${
-                    currentPage === item.id
+                    isActive(item.path)
                       ? 'bg-primary-700 text-white shadow-md'
                       : item.highlight
                       ? 'bg-accent-500 text-white hover:bg-accent-600 shadow-sm'
@@ -98,7 +104,7 @@ const Header = () => {
                     setMobileMenuOpen(false);
                   }}
                   className={`px-3 py-2.5 rounded-xl text-sm font-semibold interactive-chip ${
-                    currentPage === item.id
+                    isActive(item.path)
                       ? 'bg-primary-700 text-white'
                       : item.highlight
                       ? 'bg-accent-500 text-white'
